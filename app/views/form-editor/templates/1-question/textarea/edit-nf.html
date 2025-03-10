@@ -184,14 +184,29 @@ activeLinkId: "nav-editor"
                                 spellcheck: false
                                 }) }}
 
+                                {{ govukInput({
+                                label: {
+                                text: "Max words (optional)",
+                                classes: "govuk-label--m",
+                                isPageHeading: false
+                                },
+                                hint: {
+                                text: "Determines the maximum number of words users can enter"
+                                },
+                                classes: "govuk-input--width-3",
+                                id: "max-words",
+                                name: "maxWords",
+                                inputmode: "numeric",
+                                spellcheck: false
+                                }) }}
 
-                                {% include "/redesigntest/templates/answer-limits/max-words" %}
+                                {% include "/form-editor/templates/answer-limits/max-words" %}
 
-                                {% include "/redesigntest/templates/answer-limits/rows" %}
+                                {% include "/form-editor/templates/answer-limits/rows" %}
 
-                                {% include "/redesigntest/templates/answer-limits/classes" %}
+                                {% include "/form-editor/templates/answer-limits/classes.html" %}
 
-                                {% include "/redesigntest/templates/answer-limits/regex" %}
+                                {% include "/form-editor/templates/answer-limits/regex" %}
 
                               </div>
                           </details>
@@ -289,7 +304,7 @@ activeLinkId: "nav-editor"
                 </a>
               </p>
 
-              {% include "/redesigntest/templates/previews/textarea/edit.html" %}
+              {% include "/form-editor/templates/previews/textarea/edit.html" %}
 
               <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;"
                 data-module="govuk-skip-link">

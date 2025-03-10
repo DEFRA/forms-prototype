@@ -16,14 +16,14 @@ signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
 { href: "/library.html", text: "Forms library", id: "nav-library" },
 { href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/redesigntest/listing", text: "Editor", id: "nav-editor" } ],
+{ href: "/form-editor/listing", text: "Editor", id: "nav-editor" } ],
 activeLinkId: "nav-editor"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
   <div class="govuk-width-container">
     {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text: "Back to add
-    and edit pages", href: "/redesigntest/listing.html" }) }}
+    and edit pages", href: "/form-editor/listing.html" }) }}
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
       style="border-bottom: 1px solid white; margin-bottom: 0" />
@@ -83,7 +83,7 @@ activeLinkId: "nav-editor"
                         <h2 class="govuk-heading-l" id="page-heading">Overview of questions</h2>
 
 
-                        <form class="form" action="/redesigntest/Multi/question-2-date/information-type" method="post">
+                        <form class="form" action="/form-editor/Multi/question-2-date/information-type" method="post">
 
                           <!-- Dynamic Summary List -->
                           <div id="summary-container">
@@ -103,7 +103,7 @@ activeLinkId: "nav-editor"
                             actions: {
                             items: [
                             {
-                            href: "/redesigntest/templates/1-question/phone/edit.html",
+                            href: "/form-editor/templates/1-question/phone/edit.html",
                             text: "Change",
                             visuallyHiddenText: "name"
                             }
@@ -127,17 +127,16 @@ activeLinkId: "nav-editor"
                         </a>
 
                         <div class="govuk-button-group govuk-!-margin-top-6">
-                          <a href="/redesigntest/templates/1-question/page-type.html" class="govuk-button"
-                            role="button">
+                          <a href="/form-editor/templates/1-question/page-type.html" class="govuk-button" role="button">
                             Create next page
                           </a>
 
-                          <a href="/redesigntest/listing.html" class="govuk-button govuk-button--inverse" role="button">
+                          <a href="/form-editor/listing.html" class="govuk-button govuk-button--inverse" role="button">
                             Back to all pages
                           </a>
 
                           <p class="govuk-body">
-                            <a href="/redesigntest/templates/delete.html"
+                            <a href="/form-editor/templates/delete.html"
                               class="govuk-link govuk-link--no-visited-state">Delete page</a>
                           </p>
 
@@ -189,7 +188,7 @@ activeLinkId: "nav-editor"
                 </a>
               </p>
 
-              {% include "/redesigntest/templates/previews/phone/overview.html" %}
+              {% include "/form-editor/templates/previews/phone/overview.html" %}
 
               <a href="#overviewquestions" class="govuk-skip-link" style="margin-bottom: 30px!important;"
                 data-module="govuk-skip-link">

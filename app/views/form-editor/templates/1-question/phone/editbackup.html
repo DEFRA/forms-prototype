@@ -16,14 +16,14 @@ signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
 { href: "/library.html", text: "Forms library", id: "nav-library" },
 { href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/redesigntest/listing", text: "Editor", id: "nav-editor" } ],
+{ href: "/form-editor/listing", text: "Editor", id: "nav-editor" } ],
 activeLinkId: "nav-editor"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
   <div class="govuk-width-container">
     {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text: "Back to add
-    and edit pages", href: "/redesigntest/listing.html" }) }}
+    and edit pages", href: "/form-editor/listing.html" }) }}
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
       style="border-bottom: 1px solid white; margin-bottom: 0" />
@@ -83,8 +83,7 @@ activeLinkId: "nav-editor"
                         <span class="govuk-caption-l">Page 1</span>
                         <h2 class="govuk-heading-l">Question</h2>
 
-                        <form method="post" id="options-form"
-                          action="/redesigntest/templates/1-question/phone/overview">
+                        <form method="post" id="options-form" action="/form-editor/templates/1-question/phone/overview">
                           {% from "govuk/components/input/macro.njk" import govukInput %}
 
                           <!-- Question Label Input -->
@@ -141,8 +140,8 @@ activeLinkId: "nav-editor"
                                 classes: "govuk-label govuk-label--m govuk-!-margin-top-0"
                                 },
                                 hint: {
-                                text: "Page headings should be a statement and not a question. For example, ‘Passport
-                                information’",
+                                text: "Page headings should be a statement and not a question. For example, 'Passport
+                                information'",
                                 id: "page-heading-input-hint"
                                 },
                                 id: "page-heading-input",
@@ -240,7 +239,7 @@ activeLinkId: "nav-editor"
         </div>
 
         <!-- Include the preview template -->
-        {% include "/redesigntest/templates/previews/phone/edit.html" %}
+        {% include "/form-editor/templates/previews/phone/edit.html" %}
       </div>
     </div>
 

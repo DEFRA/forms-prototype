@@ -16,7 +16,7 @@ signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
 { href: "/library.html", text: "Forms library", id: "nav-library" },
 { href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/redesigntest/listing", text: "Editor", id: "nav-editor" }
+{ href: "/form-editor/listing", text: "Editor", id: "nav-editor" }
 ],
 activeLinkId: "nav-editor"
 }) }}
@@ -50,7 +50,7 @@ activeLinkId: "nav-editor"
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds" id="container">
-    <form class="form" action="/redesigntest/templates/1-question/radios/edit" method="post">
+    <form class="form" action="/form-editor/templates/1-question/radios/edit" method="post">
       <span class="govuk-caption-l">
         Option text: {{ data['optionText'] or 'N/A' }}
       </span>
@@ -67,7 +67,7 @@ activeLinkId: "nav-editor"
           data-govuk-button-init="">
           Delete radio option
         </button>
-        <a href="/redesigntest/templates/1-question/radios/edit.html" id="cancel-delete"
+        <a href="/form-editor/templates/1-question/radios/edit.html" id="cancel-delete"
           class="govuk-button govuk-button--secondary">Cancel</a>
       </div>
     </form>
@@ -81,13 +81,13 @@ activeLinkId: "nav-editor"
 
         deleteButton.addEventListener('click', function () {
           // Redirect back to edit.html with the deleteIndex parameter
-          const redirectUrl = `/redesigntest/templates/1-question/radios/edit.html?deleteIndex=${optionIndex}`;
+          const redirectUrl = `/form-editor/templates/1-question/radios/edit.html?deleteIndex=${optionIndex}`;
           window.location.href = redirectUrl;
         });
 
         cancelButton.addEventListener('click', function () {
           // Cancel and go back to the edit.html page without deletion
-          const redirectUrl = `/redesigntest/templates/1-question/radios/edit.html`;
+          const redirectUrl = `/form-editor/templates/1-question/radios/edit.html`;
           window.location.href = redirectUrl;
         });
       });
@@ -99,7 +99,7 @@ activeLinkId: "nav-editor"
         const optionIndex = urlParams.get('index');
 
         if (optionIndex) {
-          const redirectUrl = `/redesigntest/templates/1-question/radios/edit.html?deleteIndex=${optionIndex}`;
+          const redirectUrl = `/form-editor/templates/1-question/radios/edit.html?deleteIndex=${optionIndex}`;
           console.log("Redirecting to edit.html with deleteIndex:", optionIndex);
           window.location.href = redirectUrl;
         } else {
