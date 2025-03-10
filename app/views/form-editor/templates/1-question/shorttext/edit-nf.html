@@ -16,14 +16,14 @@ signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
 { href: "/library.html", text: "Forms library", id: "nav-library" },
 { href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/redesigntest/listing", text: "Editor", id: "nav-editor" } ],
+{ href: "/form-editor/listing", text: "Editor", id: "nav-editor" } ],
 activeLinkId: "nav-editor"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
   <div class="govuk-width-container">
     {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text: "Back to add
-    and edit pages", href: "/redesigntest/listing.html" }) }}
+    and edit pages", href: "/form-editor/listing.html" }) }}
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
       style="border-bottom: 1px solid white; margin-bottom: 0" />
@@ -185,8 +185,8 @@ activeLinkId: "nav-editor"
                                 spellcheck: false
                                 }) }}
 
-                                {% include "/redesigntest/templates/answer-limits/regex.html" %}
-                                {% include "/redesigntest/templates/answer-limits/classes.html" %}
+                                {% include "/form-editor/templates/answer-limits/regex.html" %}
+                                {% include "/form-editor/templates/answer-limits/classes.html" %}
 
                               </div>
                           </details>
@@ -213,7 +213,7 @@ activeLinkId: "nav-editor"
                           "actions": {
                           "items": [
                           {
-                          "href": "/redesigntest/templates/1-question/information-type.html",
+                          "href": "/form-editor/templates/1-question/information-type.html",
                           "text": "Change",
                           "visuallyHiddenText": " type"
                           }
@@ -287,7 +287,7 @@ activeLinkId: "nav-editor"
                 </a>
               </p>
 
-              {% include "/redesigntest/templates/previews/shorttext/edit.html" %}
+              {% include "/form-editor/templates/previews/shorttext/edit.html" %}
 
               <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;"
                 data-module="govuk-skip-link">

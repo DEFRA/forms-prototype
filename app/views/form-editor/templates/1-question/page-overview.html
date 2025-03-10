@@ -16,7 +16,7 @@ signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
 { href: "/library.html", text: "Forms library", id: "nav-library" },
 { href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/redesigntest/listing", text: "Editor", id: "nav-editor" }
+{ href: "/form-editor/listing", text: "Editor", id: "nav-editor" }
 ],
 activeLinkId: "nav-editor"
 }) }}
@@ -26,7 +26,7 @@ activeLinkId: "nav-editor"
     {{ govukBackLink({
     classes: "govuk-back-link--inverse govuk-!-margin-bottom-0",
     text: "Back to add and edit pages",
-    href: "/redesigntest/listing.html"
+    href: "/form-editor/listing.html"
     }) }}
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
@@ -38,7 +38,7 @@ activeLinkId: "nav-editor"
           Food order form (user research)
         </h1>
 
-        <a href="/redesigntest/questiontype.html" role="button" draggable="false"
+        <a href="/form-editor/questiontype.html" role="button" draggable="false"
           class="govuk-button govuk-button--inverse" data-module="govuk-button">
           Add new page
         </a>
@@ -123,7 +123,7 @@ activeLinkId: "nav-editor"
                         </ul>
 
                         <div class="govuk-button-group govuk-!-margin-top-6">
-                          <a href="/redesigntest/templates/1-question/information-type-nf.html"
+                          <a href="/form-editor/templates/1-question/information-type-nf.html"
                             class="govuk-button hide-in-reorder-mode hide-when-edit-mode">
                             Add another question
                           </a>
@@ -137,7 +137,7 @@ activeLinkId: "nav-editor"
                           {% endif %}
 
                           <p class="govuk-body">
-                            <a href="/redesigntest/templates/delete/{{ currentPage.pageId }}"
+                            <a href="/form-editor/templates/delete/{{ currentPage.pageId }}"
                               class="govuk-link govuk-link--no-visited-state govuk-link--destructive hide-in-reorder-mode hide-when-edit-mode">
                               Delete page
                             </a>
@@ -481,7 +481,7 @@ activeLinkId: "nav-editor"
                 {% if currentPage.questions.length > 0 %}
                 {% for question in currentPage.questions %}
                 <div class="preview-item" data-id="question-{{ question.questionId }}">
-                  {% set previewTemplate = '/redesigntest/templates/previews/questions/' %}
+                  {% set previewTemplate = '/form-editor/templates/previews/questions/' %}
 
                   {% if question.type == 'phone' %}
                   {% set previewTemplate = previewTemplate ~ 'phone-preview.html' %}

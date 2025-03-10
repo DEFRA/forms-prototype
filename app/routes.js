@@ -8,36 +8,36 @@ const router = govukPrototypeKit.requests.setupRouter();
 
 // import lists stuff
 
-router.get("/redesigntest/new-list", (req, res) => {
-  res.render("redesigntest/new-list");
+router.get("/form-editor/new-list", (req, res) => {
+  res.render("form-editor/new-list");
 });
-router.post("/redesigntest/new-list", require("./routes/lists.js").post);
-router.get("/redesigntest/list-manager", require("./routes/lists.js").get);
+router.post("/form-editor/new-list", require("./routes/lists.js").post);
+router.get("/form-editor/list-manager", require("./routes/lists.js").get);
 router.get(
-  "/redesigntest/edit-list/:name",
+  "/form-editor/edit-list/:name",
   require("./routes/lists.js").editGet
 );
 router.post(
-  "/redesigntest/update-list/:name",
+  "/form-editor/update-list/:name",
   require("./routes/lists.js").editPost
 );
 router.post(
-  "/redesigntest/delete-list/:name",
+  "/form-editor/delete-list/:name",
   require("./routes/lists.js").delete
 );
 
 // New route to get predefined lists from the lists.js file
-router.get("/redesigntest/api/lists", require("./routes/lists.js").getListsAPI);
+router.get("/form-editor/api/lists", require("./routes/lists.js").getListsAPI);
 
 // New route to get a specific list by name
 router.get(
-  "/redesigntest/api/list/:name",
+  "/form-editor/api/list/:name",
   require("./routes/lists.js").getListAPI
 );
 
 // Preview lists
 router.get(
-  "/redesigntest/view-list/:name",
+  "/form-editor/view-list/:name",
   require("./routes/lists.js").viewGet
 );
 
@@ -48,10 +48,10 @@ const express = require("express");
 
 // **** LISTING AND SETUP ROUTES ****************************************************
 //--------------------------------------
-// 2. GET /redesigntest/listing.html
+// 2. GET /form-editor/listing.html
 //    Show the initial listing page
 //--------------------------------------
-router.get("/redesigntest/listing.html", function (req, res) {
+router.get("/form-editor/listing.html", function (req, res) {
   const formPages = req.session.data["formPages"] || [];
 
   // Ensure each question inside each page has its own options array
@@ -69,7 +69,7 @@ router.get("/redesigntest/listing.html", function (req, res) {
     formPages
   );
 
-  res.render("redesigntest/listing.html", {
+  res.render("form-editor/listing.html", {
     formPages,
   });
 });
@@ -81,7 +81,7 @@ router.get("/redesigntest/listing.html", function (req, res) {
 router.get("/questiontype", function (req, res) {
   // Renders questiontype.html (the page with radio buttons:
   // "Question page" or "Guidance page")
-  res.render("redesigntest/questiontype.html");
+  res.render("form-editor/questiontype.html");
 });
 
 // **** CREATE A NEW PAGE (QUESTION OR GUIDANCE) ****************************************************
@@ -118,12 +118,12 @@ router.post("/question-number", function (req, res) {
   if (pageType === "oncenf") {
     // If user chose "question" page
     return res.redirect(
-      "/redesigntest/templates/1-question/information-type-nf.html"
+      "/form-editor/templates/1-question/information-type-nf.html"
     );
   } else if (pageType === "guidance") {
     // If user chose "guidance" page
     return res.redirect(
-      "/redesigntest/templates/1-question/guidance-configuration.html"
+      "/form-editor/templates/1-question/guidance-configuration.html"
     );
   } else {
     // If user somehow chose nothing, redirect back or show an error
@@ -153,7 +153,7 @@ router.post("/information-type-answer-nf", function (req, res) {
   const pageIndex = req.session.data["currentPageIndex"];
   if (pageIndex === undefined || !formPages[pageIndex]) {
     console.error("❌ Current page not found in session");
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
 
   // Get the current page
@@ -199,58 +199,55 @@ router.get("/question-configuration", function (req, res) {
   const listSubType = req.session.data["listSubType"];
 
   // Decide which template to render
-  let templateToRender = "/redesigntest/templates/1-question/default.html";
+  let templateToRender = "/form-editor/templates/1-question/default.html";
 
   // Decide which template to render based on mainType & subType
   if (mainType === "text") {
     // Choose the template based on writtenSubType
     if (writtenSubType === "short-answer-nf") {
       templateToRender =
-        "/redesigntest/templates/1-question/shorttext/edit-nf.html";
+        "/form-editor/templates/1-question/shorttext/edit-nf.html";
     } else if (writtenSubType === "long-answer") {
       templateToRender =
-        "/redesigntest/templates/1-question/textarea/edit-nf.html";
+        "/form-editor/templates/1-question/textarea/edit-nf.html";
     } else if (writtenSubType === "numbers") {
       templateToRender =
-        "/redesigntest/templates/1-question/numbers/edit-nf.html";
+        "/form-editor/templates/1-question/numbers/edit-nf.html";
     } else {
       // Fallback for an unknown sub-type
-      templateToRender = "/redesigntest/templates/1-question/default.html";
+      templateToRender = "/form-editor/templates/1-question/default.html";
     }
   } else if (mainType === "date") {
     if (dateSubType === "day-month-year") {
-      templateToRender = "/redesigntest/templates/1-question/date/edit-nf.html";
+      templateToRender = "/form-editor/templates/1-question/date/edit-nf.html";
     } else if (dateSubType === "month-year") {
       templateToRender =
-        "/redesigntest/templates/1-question/date-mmyy/edit-nf.html";
+        "/form-editor/templates/1-question/date-mmyy/edit-nf.html";
     } else {
-      templateToRender = "/redesigntest/templates/1-question/default.html";
+      templateToRender = "/form-editor/templates/1-question/default.html";
     }
   } else if (mainType === "address") {
-    templateToRender =
-      "/redesigntest/templates/1-question/address/edit-nf.html";
+    templateToRender = "/form-editor/templates/1-question/address/edit-nf.html";
   } else if (mainType === "phone") {
-    templateToRender = "/redesigntest/templates/1-question/phone/edit-nf.html";
+    templateToRender = "/form-editor/templates/1-question/phone/edit-nf.html";
   } else if (mainType === "file") {
     templateToRender =
-      "/redesigntest/templates/1-question/fileupload/edit-nf.html";
+      "/form-editor/templates/1-question/fileupload/edit-nf.html";
   } else if (mainType === "email") {
-    templateToRender = "/redesigntest/templates/1-question/email/edit-nf.html";
+    templateToRender = "/form-editor/templates/1-question/email/edit-nf.html";
   } else if (mainType === "list") {
     if (listSubType === "yes-no") {
-      templateToRender =
-        "/redesigntest/templates/1-question/yesno/edit-nf.html";
+      templateToRender = "/form-editor/templates/1-question/yesno/edit-nf.html";
     } else if (listSubType === "checkboxes") {
       templateToRender =
-        "/redesigntest/templates/1-question/checkboxes-nf/add.html";
+        "/form-editor/templates/1-question/checkboxes-nf/add.html";
     } else if (listSubType === "radios") {
-      templateToRender =
-        "/redesigntest/templates/1-question/radios-nf/add.html";
+      templateToRender = "/form-editor/templates/1-question/radios-nf/add.html";
     } else if (listSubType === "select") {
       templateToRender =
-        "/redesigntest/templates/1-question/autocomplete-nf/edit.html";
+        "/form-editor/templates/1-question/autocomplete-nf/edit.html";
     } else {
-      templateToRender = "/redesigntest/templates/1-question/default.html";
+      templateToRender = "/form-editor/templates/1-question/default.html";
     }
   }
 
@@ -410,7 +407,7 @@ router.get("/page-overview", function (req, res) {
 
   if (!formPages[pageIndex]) {
     console.log("⚠️ No current page found, redirecting...");
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
 
   const currentPage = formPages[pageIndex];
@@ -435,7 +432,7 @@ router.get("/page-overview", function (req, res) {
 
   console.log("📌 Current Page ID:", currentPage.pageId); // Debug log for page ID
 
-  res.render("redesigntest/templates/1-question/page-overview", {
+  res.render("form-editor/templates/1-question/page-overview", {
     currentPage,
   });
 });
@@ -452,7 +449,7 @@ router.get("/edit-page/:pageId", function (req, res) {
   );
   if (pageIndex === -1) {
     // If the page isn't found, redirect back to the listing page (or show an error)
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
   // Set this page as the current page for editing
   req.session.data["currentPageIndex"] = pageIndex;
@@ -463,11 +460,11 @@ router.get("/edit-page/:pageId", function (req, res) {
     res.redirect("/page-overview");
   } else if (pageToEdit.pageType === "guidance") {
     res.redirect(
-      "/redesigntest/templates/1-question/guidance-configuration.html"
+      "/form-editor/templates/1-question/guidance-configuration.html"
     );
   } else {
     // Fallback
-    res.redirect("/redesigntest/listing.html");
+    res.redirect("/form-editor/listing.html");
   }
 });
 
@@ -643,7 +640,7 @@ router.post("/configure-checkbox-nf", function (req, res) {
     allOptions: currentQuestion.options,
   });
 
-  res.redirect("/redesigntest/templates/1-question/checkboxes-nf/edit");
+  res.redirect("/form-editor/templates/1-question/checkboxes-nf/edit");
 });
 
 // Route to save the checkbox option
@@ -667,7 +664,7 @@ router.post("/save-checkbox-option", (req, res) => {
   // Save back to session
   req.session.data["formPages"] = formPages;
 
-  res.redirect("/redesigntest/templates/1-question/checkboxes-nf/edit");
+  res.redirect("/form-editor/templates/1-question/checkboxes-nf/edit");
 });
 
 // Route to save the checkbox option
@@ -683,12 +680,12 @@ router.post("/save-option", (req, res) => {
   }
 
   // Redirect back to the edit page for checkboxes
-  res.redirect("/redesigntest/templates/1-question/checkboxes-nf/edit");
+  res.redirect("/form-editor/templates/1-question/checkboxes-nf/edit");
 });
 
 /// Route to access the edit page for checkboxes
 router.get(
-  "/redesigntest/templates/1-question/checkboxes-nf/edit",
+  "/form-editor/templates/1-question/checkboxes-nf/edit",
   function (req, res) {
     const formPages = req.session.data["formPages"] || [];
     const pageIndex = req.session.data["currentPageIndex"];
@@ -703,18 +700,18 @@ router.get(
     const currentPage = formPages[pageIndex];
     if (!currentPage) {
       console.error("Page not found");
-      return res.redirect("/redesigntest/listing.html");
+      return res.redirect("/form-editor/listing.html");
     }
 
     const currentQuestion = currentPage.questions[questionIndex];
     if (!currentQuestion) {
       console.error("Question not found");
       return res.redirect(
-        "/redesigntest/templates/1-question/checkboxes-nf/add.html"
+        "/form-editor/templates/1-question/checkboxes-nf/add.html"
       );
     }
 
-    res.render("redesigntest/templates/1-question/checkboxes-nf/edit.html", {
+    res.render("form-editor/templates/1-question/checkboxes-nf/edit.html", {
       currentPageIndex: pageIndex,
       currentQuestionIndex: questionIndex,
       formPages: formPages,
@@ -800,20 +797,18 @@ router.post("/configure-radio-nf", function (req, res) {
     radioList: currentPage.radioList,
   });
 
-  res.redirect("/redesigntest/templates/1-question/radios-nf/edit");
+  res.redirect("/form-editor/templates/1-question/radios-nf/edit");
 });
 
 // Edit page for radio options
-router.get("/redesigntest/templates/1-question/radios-nf/edit", (req, res) => {
+router.get("/form-editor/templates/1-question/radios-nf/edit", (req, res) => {
   const formPages = req.session.data["formPages"] || [];
   const pageIndex = req.session.data["currentPageIndex"] || 0;
 
   // Ensure current page exists
   if (!formPages[pageIndex]) {
     console.log("⚠️ No current page found, redirecting...");
-    return res.redirect(
-      "/redesigntest/templates/1-question/radios-nf/add.html"
-    );
+    return res.redirect("/form-editor/templates/1-question/radios-nf/add.html");
   }
 
   const currentPage = formPages[pageIndex];
@@ -824,21 +819,21 @@ router.get("/redesigntest/templates/1-question/radios-nf/edit", (req, res) => {
   console.log("Current radio options:", currentPage.radioList);
 
   // Pass the radioList to the template
-  res.render("redesigntest/templates/1-question/radios-nf/edit.html", {
+  res.render("form-editor/templates/1-question/radios-nf/edit.html", {
     radioList: currentPage.radioList,
   });
 });
 
 // Route to access the edit page for radio buttons
-router.get("/redesigntest/templates/1-question/radios-nf/edit", (req, res) => {
+router.get("/form-editor/templates/1-question/radios-nf/edit", (req, res) => {
   const radioList = req.session.data?.radioList || [];
 
   // Check if the radioList is empty, redirect to the add page if so
   if (radioList.length === 0) {
-    res.redirect("/redesigntest/templates/1-question/radios-nf/add.html");
+    res.redirect("/form-editor/templates/1-question/radios-nf/add.html");
   } else {
     // Render the edit page if there are items in the list
-    res.render("/redesigntest/templates/1-question/radios-nf/edit.html", {
+    res.render("/form-editor/templates/1-question/radios-nf/edit.html", {
       radioList: radioList,
     });
   }
@@ -939,7 +934,7 @@ router.get("/conditions/:pageId", function (req, res) {
 
   if (!currentPage) {
     console.log("Page not found:", pageId);
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
 
   // Get the page index and create a label
@@ -1012,7 +1007,7 @@ router.get("/conditions/:pageId", function (req, res) {
   // Store current page ID in session
   req.session.data["currentPageId"] = pageId;
 
-  res.render("redesigntest/templates/1-question/conditions.html", {
+  res.render("form-editor/templates/1-question/conditions.html", {
     currentPage: currentPage,
     pageId: pageId,
     question: {
@@ -1178,7 +1173,7 @@ router.post("/conditions-remove", function (req, res) {
 
   if (pageIndex === -1) {
     console.log("⚠️ Page not found:", pageId);
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
 
   // Remove condition by ID
@@ -1198,9 +1193,9 @@ router.post("/conditions-remove", function (req, res) {
 
 // **** PAGE REORDERING ****************************************************
 
-router.get("/redesigntest/reorder/main.html", function (req, res) {
+router.get("/form-editor/reorder/main.html", function (req, res) {
   const formPages = req.session.data["formPages"] || [];
-  res.render("redesigntest/reorder/main.html", { formPages: formPages });
+  res.render("form-editor/reorder/main.html", { formPages: formPages });
 });
 
 router.post("/update-page-order", function (req, res) {
@@ -1238,7 +1233,7 @@ router.post("/update-page-order", function (req, res) {
 });
 
 // Add this route to handle the delete confirmation page
-router.get("/redesigntest/templates/delete/:pageId", function (req, res) {
+router.get("/form-editor/templates/delete/:pageId", function (req, res) {
   const pageId = parseInt(req.params.pageId, 10);
   const formPages = req.session.data["formPages"] || [];
 
@@ -1251,7 +1246,7 @@ router.get("/redesigntest/templates/delete/:pageId", function (req, res) {
 
   if (!currentPage) {
     console.log("Page not found:", pageId);
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
 
   console.log("Found page to delete:", {
@@ -1259,7 +1254,7 @@ router.get("/redesigntest/templates/delete/:pageId", function (req, res) {
     heading: currentPage.pageHeading,
   });
 
-  res.render("redesigntest/templates/delete.html", {
+  res.render("form-editor/templates/delete.html", {
     currentPage: currentPage,
     pageTitle: currentPage.pageHeading || "Untitled page",
   });
@@ -1300,7 +1295,7 @@ router.post("/delete-page", function (req, res) {
     }
 
     // Redirect to the listing page
-    res.redirect("/redesigntest/listing.html");
+    res.redirect("/form-editor/listing.html");
   } else {
     // If user selected "No" or invalid pageId, return to page overview
     res.redirect(`/page-overview?pageId=${pageId}`);
@@ -1309,7 +1304,7 @@ router.post("/delete-page", function (req, res) {
 
 // Add this after your existing routes
 // Update this existing route
-router.post("/redesigntest/templates/guidance/overview", function (req, res) {
+router.post("/form-editor/templates/guidance/overview", function (req, res) {
   console.log("Form data received:", req.body);
 
   const formPages = req.session.data["formPages"] || [];
@@ -1339,7 +1334,7 @@ router.post("/redesigntest/templates/guidance/overview", function (req, res) {
   req.session.data["formPages"] = formPages;
 
   // Add this to pass the currentPage to the template
-  res.render("redesigntest/templates/1-question/guidance-configuration", {
+  res.render("form-editor/templates/1-question/guidance-configuration", {
     currentPage: guidancePage,
     data: req.session.data,
   });
@@ -1347,7 +1342,7 @@ router.post("/redesigntest/templates/guidance/overview", function (req, res) {
 
 // Add this GET route for guidance configuration
 router.get(
-  "/redesigntest/templates/1-question/guidance-configuration.html",
+  "/form-editor/templates/1-question/guidance-configuration.html",
   function (req, res) {
     const formPages = req.session.data["formPages"] || [];
     const pageIndex = req.session.data["currentPageIndex"];
@@ -1360,12 +1355,12 @@ router.get(
         pageIndex,
         formPagesLength: formPages.length,
       });
-      return res.redirect("/redesigntest/listing.html");
+      return res.redirect("/form-editor/listing.html");
     }
 
     console.log("Rendering guidance config with page:", currentPage);
 
-    res.render("redesigntest/templates/1-question/guidance-configuration", {
+    res.render("form-editor/templates/1-question/guidance-configuration", {
       currentPage: currentPage,
       data: req.session.data,
     });
@@ -1375,13 +1370,13 @@ router.get(
 //--------------------------------------
 // Edit an existing guidance page
 //--------------------------------------
-router.get("/redesigntest/edit-guidance", function (req, res) {
+router.get("/form-editor/edit-guidance", function (req, res) {
   const pageId = (req.query.pageId || "").trim();
   console.log("Editing guidance page with ID:", pageId);
 
   if (!pageId) {
     console.log("No pageId provided – redirecting to listing.");
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
 
   // Retrieve formPages from session
@@ -1394,7 +1389,7 @@ router.get("/redesigntest/edit-guidance", function (req, res) {
 
   if (foundPageIndex === -1) {
     console.log("Guidance page not found – redirecting to listing.");
-    return res.redirect("/redesigntest/listing.html");
+    return res.redirect("/form-editor/listing.html");
   }
 
   // Set the found page as the current page for editing
@@ -1403,9 +1398,7 @@ router.get("/redesigntest/edit-guidance", function (req, res) {
   const guidancePage = formPages[foundPageIndex];
   console.log("Editing guidance page details:", guidancePage);
 
-  res.redirect(
-    "/redesigntest/templates/1-question/guidance-configuration.html"
-  );
+  res.redirect("/form-editor/templates/1-question/guidance-configuration.html");
 });
 
 // Finally, export the router
