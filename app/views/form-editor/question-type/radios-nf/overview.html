@@ -34,7 +34,7 @@ text: "Editor"
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-l">Radio options overview</h1>
 
-      <form class="form" action="/form-editor/templates/1-question/radios/edit" method="post">
+      <form class="form" action="/form-editor/question-type/radios/edit" method="post">
         {{ govukSummaryList({
         rows: [
         {
@@ -47,7 +47,7 @@ text: "Editor"
         actions: {
         items: [
         {
-        href: "/form-editor/templates/1-question/radios/edit.html?optionIndex=1",
+        href: "/form-editor/question-type/radios/edit.html?optionIndex=1",
         text: "Change",
         visuallyHiddenText: "Option 1"
         }
@@ -68,8 +68,8 @@ text: "Editor"
         type: "submit"
         }) }}
 
-        <a href="/form-editor/templates/1-question/radios/settings.html"
-          class="govuk-button govuk-button--secondary">Page settings</a>
+        <a href="/form-editor/question-type/radios/settings.html" class="govuk-button govuk-button--secondary">Page
+          settings</a>
       </form>
     </div>
   </div>
@@ -84,9 +84,9 @@ text: "Editor"
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         if (e.submitter === addOptionButton) {
-          window.location.href = '/form-editor/templates/1-question/radios/add.html';
+          window.location.href = '/form-editor/question-type/radios/add.html';
         } else {
-          window.location.href = '/form-editor/templates/1-question/radios/overview.html';
+          window.location.href = '/form-editor/question-type/radios/overview.html';
         }
       });
     }

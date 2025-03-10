@@ -117,14 +117,10 @@ router.post("/question-number", function (req, res) {
   // Decide where to go next
   if (pageType === "oncenf") {
     // If user chose "question" page
-    return res.redirect(
-      "/form-editor/templates/1-question/information-type-nf.html"
-    );
+    return res.redirect("/form-editor/question-type/information-type-nf.html");
   } else if (pageType === "guidance") {
     // If user chose "guidance" page
-    return res.redirect(
-      "/form-editor/templates/1-question/guidance-configuration.html"
-    );
+    return res.redirect("/form-editor/guidance/configuration.html");
   } else {
     // If user somehow chose nothing, redirect back or show an error
     return res.redirect("/questiontype");
@@ -199,55 +195,48 @@ router.get("/question-configuration", function (req, res) {
   const listSubType = req.session.data["listSubType"];
 
   // Decide which template to render
-  let templateToRender = "/form-editor/templates/1-question/default.html";
+  let templateToRender = "/form-editor/question-type/default.html";
 
   // Decide which template to render based on mainType & subType
   if (mainType === "text") {
     // Choose the template based on writtenSubType
     if (writtenSubType === "short-answer-nf") {
-      templateToRender =
-        "/form-editor/templates/1-question/shorttext/edit-nf.html";
+      templateToRender = "/form-editor/question-type/shorttext/edit-nf.html";
     } else if (writtenSubType === "long-answer") {
-      templateToRender =
-        "/form-editor/templates/1-question/textarea/edit-nf.html";
+      templateToRender = "/form-editor/question-type/textarea/edit-nf.html";
     } else if (writtenSubType === "numbers") {
-      templateToRender =
-        "/form-editor/templates/1-question/numbers/edit-nf.html";
+      templateToRender = "/form-editor/question-type/numbers/edit-nf.html";
     } else {
       // Fallback for an unknown sub-type
-      templateToRender = "/form-editor/templates/1-question/default.html";
+      templateToRender = "/form-editor/question-type/default.html";
     }
   } else if (mainType === "date") {
     if (dateSubType === "day-month-year") {
-      templateToRender = "/form-editor/templates/1-question/date/edit-nf.html";
+      templateToRender = "/form-editor/question-type/date/edit-nf.html";
     } else if (dateSubType === "month-year") {
-      templateToRender =
-        "/form-editor/templates/1-question/date-mmyy/edit-nf.html";
+      templateToRender = "/form-editor/question-type/date-mmyy/edit-nf.html";
     } else {
-      templateToRender = "/form-editor/templates/1-question/default.html";
+      templateToRender = "/form-editor/question-type/default.html";
     }
   } else if (mainType === "address") {
-    templateToRender = "/form-editor/templates/1-question/address/edit-nf.html";
+    templateToRender = "/form-editor/question-type/address/edit-nf.html";
   } else if (mainType === "phone") {
-    templateToRender = "/form-editor/templates/1-question/phone/edit-nf.html";
+    templateToRender = "/form-editor/question-type/phone/edit-nf.html";
   } else if (mainType === "file") {
-    templateToRender =
-      "/form-editor/templates/1-question/fileupload/edit-nf.html";
+    templateToRender = "/form-editor/question-type/fileupload/edit-nf.html";
   } else if (mainType === "email") {
-    templateToRender = "/form-editor/templates/1-question/email/edit-nf.html";
+    templateToRender = "/form-editor/question-type/email/edit-nf.html";
   } else if (mainType === "list") {
     if (listSubType === "yes-no") {
-      templateToRender = "/form-editor/templates/1-question/yesno/edit-nf.html";
+      templateToRender = "/form-editor/question-type/yesno/edit-nf.html";
     } else if (listSubType === "checkboxes") {
-      templateToRender =
-        "/form-editor/templates/1-question/checkboxes-nf/add.html";
+      templateToRender = "/form-editor/question-type/checkboxes-nf/add.html";
     } else if (listSubType === "radios") {
-      templateToRender = "/form-editor/templates/1-question/radios-nf/add.html";
+      templateToRender = "/form-editor/question-type/radios-nf/add.html";
     } else if (listSubType === "select") {
-      templateToRender =
-        "/form-editor/templates/1-question/autocomplete-nf/edit.html";
+      templateToRender = "/form-editor/question-type/autocomplete-nf/edit.html";
     } else {
-      templateToRender = "/form-editor/templates/1-question/default.html";
+      templateToRender = "/form-editor/question-type/default.html";
     }
   }
 
@@ -432,7 +421,7 @@ router.get("/page-overview", function (req, res) {
 
   console.log("📌 Current Page ID:", currentPage.pageId); // Debug log for page ID
 
-  res.render("form-editor/templates/1-question/page-overview", {
+  res.render("form-editor/question-type/page-overview", {
     currentPage,
   });
 });
@@ -459,9 +448,7 @@ router.get("/edit-page/:pageId", function (req, res) {
   if (pageToEdit.pageType === "question") {
     res.redirect("/page-overview");
   } else if (pageToEdit.pageType === "guidance") {
-    res.redirect(
-      "/form-editor/templates/1-question/guidance-configuration.html"
-    );
+    res.redirect("/form-editor/guidance/configuration.html");
   } else {
     // Fallback
     res.redirect("/form-editor/listing.html");
@@ -640,7 +627,7 @@ router.post("/configure-checkbox-nf", function (req, res) {
     allOptions: currentQuestion.options,
   });
 
-  res.redirect("/form-editor/templates/1-question/checkboxes-nf/edit");
+  res.redirect("/form-editor/question-type/checkboxes-nf/edit");
 });
 
 // Route to save the checkbox option
@@ -664,7 +651,7 @@ router.post("/save-checkbox-option", (req, res) => {
   // Save back to session
   req.session.data["formPages"] = formPages;
 
-  res.redirect("/form-editor/templates/1-question/checkboxes-nf/edit");
+  res.redirect("/form-editor/question-type/checkboxes-nf/edit");
 });
 
 // Route to save the checkbox option
@@ -680,12 +667,12 @@ router.post("/save-option", (req, res) => {
   }
 
   // Redirect back to the edit page for checkboxes
-  res.redirect("/form-editor/templates/1-question/checkboxes-nf/edit");
+  res.redirect("/form-editor/question-type/checkboxes-nf/edit");
 });
 
 /// Route to access the edit page for checkboxes
 router.get(
-  "/form-editor/templates/1-question/checkboxes-nf/edit",
+  "/form-editor/question-type/checkboxes-nf/edit",
   function (req, res) {
     const formPages = req.session.data["formPages"] || [];
     const pageIndex = req.session.data["currentPageIndex"];
@@ -706,12 +693,10 @@ router.get(
     const currentQuestion = currentPage.questions[questionIndex];
     if (!currentQuestion) {
       console.error("Question not found");
-      return res.redirect(
-        "/form-editor/templates/1-question/checkboxes-nf/add.html"
-      );
+      return res.redirect("/form-editor/question-type/checkboxes-nf/add.html");
     }
 
-    res.render("form-editor/templates/1-question/checkboxes-nf/edit.html", {
+    res.render("form-editor/question-type/checkboxes-nf/edit.html", {
       currentPageIndex: pageIndex,
       currentQuestionIndex: questionIndex,
       formPages: formPages,
@@ -797,18 +782,18 @@ router.post("/configure-radio-nf", function (req, res) {
     radioList: currentPage.radioList,
   });
 
-  res.redirect("/form-editor/templates/1-question/radios-nf/edit");
+  res.redirect("/form-editor/question-type/radios-nf/edit");
 });
 
 // Edit page for radio options
-router.get("/form-editor/templates/1-question/radios-nf/edit", (req, res) => {
+router.get("/form-editor/question-type/radios-nf/edit", (req, res) => {
   const formPages = req.session.data["formPages"] || [];
   const pageIndex = req.session.data["currentPageIndex"] || 0;
 
   // Ensure current page exists
   if (!formPages[pageIndex]) {
     console.log("⚠️ No current page found, redirecting...");
-    return res.redirect("/form-editor/templates/1-question/radios-nf/add.html");
+    return res.redirect("/form-editor/question-type/radios-nf/add.html");
   }
 
   const currentPage = formPages[pageIndex];
@@ -819,21 +804,21 @@ router.get("/form-editor/templates/1-question/radios-nf/edit", (req, res) => {
   console.log("Current radio options:", currentPage.radioList);
 
   // Pass the radioList to the template
-  res.render("form-editor/templates/1-question/radios-nf/edit.html", {
+  res.render("form-editor/question-type/radios-nf/edit.html", {
     radioList: currentPage.radioList,
   });
 });
 
 // Route to access the edit page for radio buttons
-router.get("/form-editor/templates/1-question/radios-nf/edit", (req, res) => {
+router.get("/form-editor/question-type/radios-nf/edit", (req, res) => {
   const radioList = req.session.data?.radioList || [];
 
   // Check if the radioList is empty, redirect to the add page if so
   if (radioList.length === 0) {
-    res.redirect("/form-editor/templates/1-question/radios-nf/add.html");
+    res.redirect("/form-editor/question-type/radios-nf/add.html");
   } else {
     // Render the edit page if there are items in the list
-    res.render("/form-editor/templates/1-question/radios-nf/edit.html", {
+    res.render("/form-editor/question-type/radios-nf/edit.html", {
       radioList: radioList,
     });
   }
@@ -1007,7 +992,7 @@ router.get("/conditions/:pageId", function (req, res) {
   // Store current page ID in session
   req.session.data["currentPageId"] = pageId;
 
-  res.render("form-editor/templates/1-question/conditions.html", {
+  res.render("form-editor/question-type/conditions.html", {
     currentPage: currentPage,
     pageId: pageId,
     question: {
@@ -1334,38 +1319,35 @@ router.post("/form-editor/templates/guidance/overview", function (req, res) {
   req.session.data["formPages"] = formPages;
 
   // Add this to pass the currentPage to the template
-  res.render("form-editor/templates/1-question/guidance-configuration", {
+  res.render("form-editor/guidance/configuration", {
     currentPage: guidancePage,
     data: req.session.data,
   });
 });
 
 // Add this GET route for guidance configuration
-router.get(
-  "/form-editor/templates/1-question/guidance-configuration.html",
-  function (req, res) {
-    const formPages = req.session.data["formPages"] || [];
-    const pageIndex = req.session.data["currentPageIndex"];
+router.get("/form-editor/guidance/configuration.html", function (req, res) {
+  const formPages = req.session.data["formPages"] || [];
+  const pageIndex = req.session.data["currentPageIndex"];
 
-    // Get the current page from the session
-    const currentPage = formPages[pageIndex];
+  // Get the current page from the session
+  const currentPage = formPages[pageIndex];
 
-    if (!currentPage) {
-      console.log("No current page found:", {
-        pageIndex,
-        formPagesLength: formPages.length,
-      });
-      return res.redirect("/form-editor/listing.html");
-    }
-
-    console.log("Rendering guidance config with page:", currentPage);
-
-    res.render("form-editor/templates/1-question/guidance-configuration", {
-      currentPage: currentPage,
-      data: req.session.data,
+  if (!currentPage) {
+    console.log("No current page found:", {
+      pageIndex,
+      formPagesLength: formPages.length,
     });
+    return res.redirect("/form-editor/listing.html");
   }
-);
+
+  console.log("Rendering guidance config with page:", currentPage);
+
+  res.render("form-editor/guidance/configuration", {
+    currentPage: currentPage,
+    data: req.session.data,
+  });
+});
 
 //--------------------------------------
 // Edit an existing guidance page
@@ -1398,7 +1380,7 @@ router.get("/form-editor/edit-guidance", function (req, res) {
   const guidancePage = formPages[foundPageIndex];
   console.log("Editing guidance page details:", guidancePage);
 
-  res.redirect("/form-editor/templates/1-question/guidance-configuration.html");
+  res.redirect("/form-editor/guidance/configuration.html");
 });
 
 // Finally, export the router

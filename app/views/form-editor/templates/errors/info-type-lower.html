@@ -70,10 +70,10 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                           aria-label="Sub navigation">
                           <ul class="moj-sub-navigation__list" id="nav-list2">
                             <!-- Question Link -->
-                            {# <li class="moj-sub-navigation__item">
-                              <a class="moj-sub-navigation__link" href="/form-editor/templates/1-question/settings">Page
+                            <li class="moj-sub-navigation__item">
+                              <a class="moj-sub-navigation__link" href="/form-editor/question-type/settings">Page
                                 settings</a>
-                            </li> #}
+                            </li>
 
                             <li class="moj-sub-navigation__item">
                               <a class="moj-sub-navigation__link" aria-current="page" href="#overview-noquestions">Page
@@ -783,7 +783,7 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
             return;
           }
 
-          // Initial `setName` retrieved from `data-setname`
+          // Original `setName` retrieved from `data-setname`
           let originalSetName = dynamicCaption.getAttribute("data-setname");
 
           // Function to update `data-setname` based on selected option
