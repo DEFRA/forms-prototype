@@ -317,7 +317,7 @@ activeLinkId: "nav-editor"
                 {% if currentPage.questions.length > 0 %}
                 {% for question in currentPage.questions %}
                 <div class="preview-item" data-id="question-{{ question.questionId }}">
-                  {% set previewTemplate = '/form-editor/templates/previews/questions/' %}
+                  {% set previewTemplate = '/form-editor/question-type/questions/previews/' %}
 
                   {% if question.type == 'phone' %}
                   {% set previewTemplate = previewTemplate ~ 'phone-preview.html' %}

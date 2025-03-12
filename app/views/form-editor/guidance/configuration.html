@@ -291,28 +291,26 @@ activeLinkId: "nav-editor"
               </p>
 
               <div id="heading-container">
-                {% include "form-editor/templates/previews/questions/guidance-preview.html" %}
+                {% include "form-editor/previews/questions/guidance-preview.html" %}
               </div>
 
+              <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;" <!-- Guidance
+                Paragraph -->
+
+
+                {% from "govuk/components/radios/macro.njk" import govukRadios %}
+
+
+                {% set setName = currentPage.setName or '' %}
 
 
 
-              <!-- Guidance Paragraph -->
-
-
-              {% from "govuk/components/radios/macro.njk" import govukRadios %}
-
-
-              {% set setName = currentPage.setName or '' %}
-
-
-
-              {# {{ govukButton({
-              text: "Continue",
-              classes: "govuk-button govuk-!-margin-top-6",
-              id: "once-button",
-              disabled: true
-              }) }} #}
+                {# {{ govukButton({
+                text: "Continue",
+                classes: "govuk-button govuk-!-margin-top-6",
+                id: "once-button",
+                disabled: true
+                }) }} #}
 
             </div>
           </div>

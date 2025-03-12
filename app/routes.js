@@ -120,7 +120,9 @@ router.post("/question-number", function (req, res) {
     return res.redirect("/form-editor/question-type/information-type-nf.html");
   } else if (pageType === "guidance") {
     // If user chose "guidance" page
-    return res.redirect("/form-editor/guidance/configuration.html");
+    return res.redirect(
+      "/form-editor/question-type/guidance-configuration.html"
+    );
   } else {
     // If user somehow chose nothing, redirect back or show an error
     return res.redirect("/questiontype");
@@ -448,7 +450,7 @@ router.get("/edit-page/:pageId", function (req, res) {
   if (pageToEdit.pageType === "question") {
     res.redirect("/page-overview");
   } else if (pageToEdit.pageType === "guidance") {
-    res.redirect("/form-editor/guidance/configuration.html");
+    res.redirect("/form-editor/question-type/guidance-configuration.html");
   } else {
     // Fallback
     res.redirect("/form-editor/listing.html");
@@ -1217,8 +1219,8 @@ router.post("/update-page-order", function (req, res) {
   }
 });
 
-// Add this route to handle the delete confirmation page
-router.get("/form-editor/templates/delete/:pageId", function (req, res) {
+// Update the delete page route
+router.get("/form-editor/delete/:pageId", function (req, res) {
   const pageId = parseInt(req.params.pageId, 10);
   const formPages = req.session.data["formPages"] || [];
 
@@ -1239,57 +1241,14 @@ router.get("/form-editor/templates/delete/:pageId", function (req, res) {
     heading: currentPage.pageHeading,
   });
 
-  res.render("form-editor/templates/delete.html", {
+  res.render("form-editor/delete", {
     currentPage: currentPage,
     pageTitle: currentPage.pageHeading || "Untitled page",
   });
 });
 
-// Add this route to handle the actual deletion
-router.post("/delete-page", function (req, res) {
-  const formPages = req.session.data["formPages"] || [];
-
-  // More robust pageId parsing
-  let pageId = req.body.pageId;
-  if (typeof pageId === "string") {
-    pageId = parseInt(pageId.trim(), 10);
-  }
-
-  const confirmDelete = req.body.confirmDelete;
-
-  console.log("Delete request received:", {
-    rawPageId: req.body.pageId,
-    parsedPageId: pageId,
-    confirmDelete,
-    currentPages: formPages.length,
-  });
-
-  if (confirmDelete === "yes" && !isNaN(pageId)) {
-    // Find the page index
-    const pageIndex = formPages.findIndex((page) => page.pageId === pageId);
-
-    console.log("Found page index:", pageIndex);
-    console.log("Page to delete:", formPages[pageIndex]);
-
-    if (pageIndex !== -1) {
-      // Remove the page
-      formPages.splice(pageIndex, 1);
-      req.session.data["formPages"] = formPages;
-
-      console.log("Page deleted. Remaining pages:", formPages.length);
-    }
-
-    // Redirect to the listing page
-    res.redirect("/form-editor/listing.html");
-  } else {
-    // If user selected "No" or invalid pageId, return to page overview
-    res.redirect(`/page-overview?pageId=${pageId}`);
-  }
-});
-
-// Add this after your existing routes
-// Update this existing route
-router.post("/form-editor/templates/guidance/overview", function (req, res) {
+// Update the guidance overview route
+router.post("/form-editor/guidance/overview", function (req, res) {
   console.log("Form data received:", req.body);
 
   const formPages = req.session.data["formPages"] || [];
@@ -1319,35 +1278,38 @@ router.post("/form-editor/templates/guidance/overview", function (req, res) {
   req.session.data["formPages"] = formPages;
 
   // Add this to pass the currentPage to the template
-  res.render("form-editor/guidance/configuration", {
+  res.render("form-editor/question-type/guidance-configuration", {
     currentPage: guidancePage,
     data: req.session.data,
   });
 });
 
 // Add this GET route for guidance configuration
-router.get("/form-editor/guidance/configuration.html", function (req, res) {
-  const formPages = req.session.data["formPages"] || [];
-  const pageIndex = req.session.data["currentPageIndex"];
+router.get(
+  "/form-editor/question-type/guidance-configuration.html",
+  function (req, res) {
+    const formPages = req.session.data["formPages"] || [];
+    const pageIndex = req.session.data["currentPageIndex"];
 
-  // Get the current page from the session
-  const currentPage = formPages[pageIndex];
+    // Get the current page from the session
+    const currentPage = formPages[pageIndex];
 
-  if (!currentPage) {
-    console.log("No current page found:", {
-      pageIndex,
-      formPagesLength: formPages.length,
+    if (!currentPage) {
+      console.log("No current page found:", {
+        pageIndex,
+        formPagesLength: formPages.length,
+      });
+      return res.redirect("/form-editor/listing.html");
+    }
+
+    console.log("Rendering guidance config with page:", currentPage);
+
+    res.render("form-editor/question-type/guidance-configuration", {
+      currentPage: currentPage,
+      data: req.session.data,
     });
-    return res.redirect("/form-editor/listing.html");
   }
-
-  console.log("Rendering guidance config with page:", currentPage);
-
-  res.render("form-editor/guidance/configuration", {
-    currentPage: currentPage,
-    data: req.session.data,
-  });
-});
+);
 
 //--------------------------------------
 // Edit an existing guidance page
@@ -1380,7 +1342,23 @@ router.get("/form-editor/edit-guidance", function (req, res) {
   const guidancePage = formPages[foundPageIndex];
   console.log("Editing guidance page details:", guidancePage);
 
-  res.redirect("/form-editor/guidance/configuration.html");
+  res.redirect("/form-editor/question-type/guidance-configuration.html");
+});
+
+// Delete page route
+router.post("/delete-page", function (req, res) {
+  const pageId = parseInt(req.body.pageId, 10);
+  const formPages = req.session.data["formPages"] || [];
+
+  // Find and remove the page
+  const pageIndex = formPages.findIndex((page) => page.pageId === pageId);
+  if (pageIndex !== -1) {
+    formPages.splice(pageIndex, 1);
+    req.session.data["formPages"] = formPages;
+  }
+
+  // Redirect back to the listing page
+  res.redirect("/form-editor/listing.html");
 });
 
 // Finally, export the router

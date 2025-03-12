@@ -137,7 +137,7 @@ activeLinkId: "nav-editor"
                           {% endif %}
 
                           <p class="govuk-body">
-                            <a href="/form-editor/templates/delete/{{ currentPage.pageId }}"
+                            <a href="/form-editor/delete/{{ currentPage.pageId }}"
                               class="govuk-link govuk-link--no-visited-state govuk-link--destructive hide-in-reorder-mode hide-when-edit-mode">
                               Delete page
                             </a>
@@ -481,7 +481,7 @@ activeLinkId: "nav-editor"
                 {% if currentPage.questions.length > 0 %}
                 {% for question in currentPage.questions %}
                 <div class="preview-item" data-id="question-{{ question.questionId }}">
-                  {% set previewTemplate = '/form-editor/templates/previews/questions/' %}
+                  {% set previewTemplate = '/form-editor/question-type/questions/previews/' %}
 
                   {% if question.type == 'phone' %}
                   {% set previewTemplate = previewTemplate ~ 'phone-preview.html' %}
