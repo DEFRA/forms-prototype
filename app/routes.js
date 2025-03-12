@@ -78,10 +78,8 @@ router.get("/form-editor/listing", function (req, res) {
 // 3. GET /questiontype
 //    Show the page type selection form
 //--------------------------------------
-router.get("/questiontype", function (req, res) {
-  // Renders questiontype.html (the page with radio buttons:
-  // "Question page" or "Guidance page")
-  res.render("form-editor/questiontype.html");
+router.get("/form-editor/page-type.html", function (req, res) {
+  res.render("form-editor/page-type.html");
 });
 
 // **** CREATE A NEW PAGE (QUESTION OR GUIDANCE) ****************************************************
@@ -125,7 +123,7 @@ router.post("/question-number", function (req, res) {
     );
   } else {
     // If user somehow chose nothing, redirect back or show an error
-    return res.redirect("/questiontype");
+    return res.redirect("/form-editor/page-type.html");
   }
 });
 
