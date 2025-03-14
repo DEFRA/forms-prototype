@@ -1359,5 +1359,16 @@ router.post("/delete-page", function (req, res) {
   res.redirect("/form-editor/listing.html");
 });
 
+// Add preview route
+router.get("/form-editor/preview", function (req, res) {
+  const formPages = req.session.data["formPages"] || [];
+  console.log("Rendering preview with form pages:", formPages);
+  res.render("form-editor/preview", {
+    data: {
+      formPages: formPages,
+    },
+  });
+});
+
 // Finally, export the router
 module.exports = router;

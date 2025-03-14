@@ -6,7 +6,6 @@
 {% set pageName = "Add and edit your pages - Apply for a county parish holding number in England" %}
 
 {% block header %}
-
 {{ serviceHeader({
 organisationName: "Defra",
 productName: "Forms Designer",
@@ -52,15 +51,12 @@ activeLinkId: "nav-editor"
                 Re-order pages
             </a>
 
-            <a href="#" class="govuk-link govuk-link--inverse" id="preview-link" style="display: none;">
+            <a href="#" class="govuk-link govuk-link--inverse" id="preview-link" style="display: inline-block;">
                 Preview form
             </a>
         </div>
     </div>
 </div>
-</div>
-
-
 {% endblock %}
 
 {% block content %}
@@ -1121,4 +1117,120 @@ CHECK ANSWERS PAGE
     }
 </style>
 
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+    // Single script to handle preview functionality
+    (function () {
+        // Get the preview link
+        const previewLink = document.getElementById('preview-link');
+
+        if (!previewLink) {
+            console.error('Preview link not found');
+            return;
+        }
+
+        // Show preview link if we have pages
+        const pageCards = document.querySelectorAll('.app-page-card');
+        if (pageCards.length > 0) {
+            previewLink.style.display = 'inline-block';
+            document.getElementById('reorder-button').style.display = 'inline-block';
+        }
+
+        // Handle preview link click
+        previewLink.onclick = function (e) {
+            e.preventDefault();
+
+            // Collect data from all pages
+            const formPages = [];
+
+            pageCards.forEach((card, index) => {
+                console.log(`Processing card ${index + 1}:`, card);
+
+                // Get the summary card title
+                const titleElement = card.querySelector('.govuk-summary-card__title');
+                const title = titleElement ? titleElement.textContent.trim().replace(/^Page \d+:\s*/, '') : '';
+
+                // Determine if it's a guidance page by checking for the guidance class or data attribute
+                const isGuidance = card.querySelector('.govuk-summary-card').style.borderLeft.includes('b1b4b6') ||
+                    card.querySelector('.guidance-card');
+
+                // Get page ID from the edit link
+                const editLink = card.querySelector('a[href*="/edit-page/"], a[href*="/edit-guidance"]');
+                if (!editLink) {
+                    console.warn(`No edit link found for card ${index + 1}`);
+                    return;
+                }
+
+                // Extract page ID from the edit link
+                let pageId;
+                if (isGuidance) {
+                    pageId = new URLSearchParams(editLink.href.split('?')[1]).get('pageId');
+                } else {
+                    pageId = editLink.href.split('/edit-page/')[1];
+                }
+
+                // Get questions data
+                const questions = [];
+                if (!isGuidance) {
+                    const questionRows = card.querySelectorAll('.govuk-summary-list__row');
+                    questionRows.forEach(row => {
+                        const key = row.querySelector('.govuk-summary-list__key')?.textContent.trim();
+                        const value = row.querySelector('.govuk-summary-list__value')?.textContent.trim();
+
+                        // Only add if it's a question (not metadata like conditions)
+                        if (key && !key.includes('Page shown when')) {
+                            questions.push({
+                                questionId: Date.now() + Math.random(),
+                                label: key.startsWith('Question') ? value : key,
+                                hint: '',
+                                type: 'text',
+                                subType: 'short-answer-nf',
+                                options: []
+                            });
+                        }
+                    });
+                }
+
+                // Get guidance content
+                let guidanceContent = '';
+                if (isGuidance) {
+                    const guidanceRow = card.querySelector('.govuk-summary-list__row');
+                    if (guidanceRow) {
+                        guidanceContent = guidanceRow.querySelector('.govuk-summary-list__value')?.textContent.trim() || '';
+                    }
+                }
+
+                // Create the page object
+                const pageData = {
+                    pageId: pageId || Date.now() + Math.random(),
+                    pageType: isGuidance ? 'guidance' : 'question',
+                    title: title,
+                    pageHeading: title,
+                    guidanceTextarea: guidanceContent,
+                    guidanceOnlyHeadingInput: isGuidance ? title : '',
+                    guidanceOnlyGuidanceTextInput: guidanceContent,
+                    questions: questions,
+                    order: index + 1
+                };
+
+                console.log('Adding page:', pageData);
+                formPages.push(pageData);
+            });
+
+            console.log('Preview data:', formPages);
+
+            if (formPages.length === 0) {
+                console.error('No valid pages found to preview');
+                alert('No pages found to preview. Please add some pages first.');
+                return;
+            }
+
+            // Store data and navigate
+            sessionStorage.setItem('formPages', JSON.stringify(formPages));
+            window.location.href = '/form-editor/preview';
+        };
+    })();
+</script>
 {% endblock %}
