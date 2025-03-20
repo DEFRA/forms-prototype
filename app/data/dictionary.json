@@ -331,6 +331,83 @@
           "title": "There is a problem"
         }
       }
+    },
+    "overview": {
+      "title": "Overview",
+      "back_to_library": "Back to forms library",
+      "sections": {
+        "form_status": {
+          "title": "Form status",
+          "status": "Status",
+          "updated": "Updated",
+          "created": "Created",
+          "preview_link": "Preview link"
+        },
+        "submission": {
+          "title": "Where submitted forms are sent",
+          "email_label": "Submitted forms sent to",
+          "change": "Change"
+        },
+        "support": {
+          "title": "Contact details for support",
+          "description": "You must provide at least one way for users to get help.",
+          "footer_note": "The contact details are shown in the footer of every page of the form.",
+          "phone": {
+            "label": "Phone",
+            "add": "Enter phone number for support",
+            "change": "Change"
+          },
+          "email": {
+            "label": "Email address",
+            "add": "Enter email address for support",
+            "change": "Change"
+          },
+          "link": {
+            "label": "Online contact link",
+            "add": "Enter online contact link for support",
+            "change": "Change"
+          }
+        },
+        "next_steps": {
+          "title": "What happens next",
+          "label": "Tell users what happens after they submit their form",
+          "add": "Enter what happens next",
+          "change": "Change"
+        },
+        "data_protection": {
+          "title": "Data protection",
+          "privacy_notice": {
+            "label": "Privacy notice",
+            "add": "Enter link to privacy notice",
+            "change": "Change"
+          }
+        },
+        "organisation": {
+          "title": "Organisation details",
+          "form_name": {
+            "label": "Form name",
+            "change": "Change"
+          },
+          "lead_org": {
+            "label": "Lead organisation",
+            "change": "Change"
+          }
+        }
+      },
+      "manage_form": {
+        "title": "Manage form",
+        "edit_draft": "Edit draft",
+        "make_live": "Make draft live",
+        "delete_draft": "Delete draft"
+      },
+      "internal_notes": {
+        "title": "Internal notes",
+        "add_note": "Add internal note",
+        "new_form": {
+          "label": "New form created",
+          "text": "Created this forms as requested by Policy Team."
+        }
+      }
     }
   }
 }

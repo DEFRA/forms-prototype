@@ -1429,7 +1429,7 @@ router.post("/create-new-form/form-name", (req, res) => {
       id: req.session.data.formId || `FORM-${Date.now()}`,
       name: formName,
       createdAt: new Date().toISOString(),
-      status: "draft",
+      status: "Draft",
     },
   };
 
@@ -1519,13 +1519,289 @@ router.post("/create-new-form/policy-sme", (req, res) => {
       teamName: teamName,
       email: email,
       lastUpdated: new Date().toISOString(),
+      status: "Draft", // Set initial status to Draft
     },
   };
 
   // Log the final session data
   console.log("Final session data:", req.session.data);
 
-  res.redirect("/cph-overview/draft/default");
+  res.redirect("/form-overview/draft/overview");
+});
+
+// Overview page route
+router.get("/form-overview/draft/overview", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+
+  // Map status to GOV.UK Design System tag colors
+  const statusColorMap = {
+    Draft: "orange",
+    Live: "green",
+    Closed: "red",
+  };
+
+  const status = formData.formDetails?.status || "Draft";
+  const statusColor = statusColorMap[status] || "grey";
+
+  // Create a URL-friendly version of the form name
+  const urlFriendlyName = (formData.formName || "untitled-form")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  // Create the preview URL
+  const previewUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/preview/draft/${urlFriendlyName}`;
+
+  // Create the form object that the templates expect
+  const form = {
+    name: formData.formName || "Untitled form",
+    status: {
+      text: status,
+      color: statusColor,
+    },
+    previewUrl: previewUrl,
+    createdAt: formData.formDetails?.createdAt || new Date().toISOString(),
+    updatedAt: formData.formDetails?.lastUpdated || new Date().toISOString(),
+    organisation: {
+      name: formData.formDetails?.organisation || "Not set",
+    },
+    team: {
+      name: formData.formDetails?.teamName || "Not set",
+      email: formData.formDetails?.email || "Not set",
+    },
+    support: {
+      phone: formData.formDetails?.support?.phone,
+      email: formData.formDetails?.support?.email,
+      link: formData.formDetails?.support?.link,
+    },
+    nextSteps: formData.formDetails?.nextSteps,
+    privacyNotice: formData.formDetails?.privacyNotice,
+    notificationEmail: formData.formDetails?.notificationEmail,
+  };
+
+  res.render("form-overview/draft/overview", {
+    form: form,
+    pageName: `Overview - ${form.name}`,
+  });
+});
+
+// Support pages routes
+router.get("/form-overview/draft/support/phone", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/draft/support/phone", {
+    form: {
+      name: formData.formName || "Untitled form",
+      support: {
+        phone: formData.formDetails?.support?.phone || "",
+      },
+    },
+    pageName: "Add phone number for support",
+  });
+});
+
+router.post("/form-overview/draft/support/phone", (req, res) => {
+  const formData = req.session.data || {};
+  const phoneDetails = req.body.moreDetail;
+
+  // Update the form details with the phone number
+  formData.formDetails = {
+    ...formData.formDetails,
+    support: {
+      ...formData.formDetails?.support,
+      phone: phoneDetails,
+    },
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/draft/overview");
+});
+
+router.get("/form-overview/draft/support/email", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/draft/support/email", {
+    form: {
+      name: formData.formName || "Untitled form",
+      support: {
+        email: formData.formDetails?.support?.email || "",
+      },
+    },
+    pageName: "Add email address for support",
+  });
+});
+
+router.post("/form-overview/draft/support/email", (req, res) => {
+  const formData = req.session.data || {};
+  const emailAddress = req.body.emailAddress;
+
+  // Update the form details with the email address
+  formData.formDetails = {
+    ...formData.formDetails,
+    support: {
+      ...formData.formDetails?.support,
+      email: emailAddress,
+    },
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/draft/overview");
+});
+
+router.get("/form-overview/draft/support/link", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/draft/support/link", {
+    form: {
+      name: formData.formName || "Untitled form",
+      support: {
+        link: formData.formDetails?.support?.link || "",
+      },
+    },
+    pageName: "Add online contact link for support",
+  });
+});
+
+router.post("/form-overview/draft/support/link", (req, res) => {
+  const formData = req.session.data || {};
+  const contactLink = req.body.contactLink;
+
+  // Update the form details with the contact link
+  formData.formDetails = {
+    ...formData.formDetails,
+    support: {
+      ...formData.formDetails?.support,
+      link: contactLink,
+    },
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/draft/overview");
+});
+
+router.get("/form-overview/draft/support/address", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/support/add-address", {
+    form: {
+      name: formData.formName || "Untitled form",
+      support: {
+        address: formData.formDetails?.support?.address || {
+          line1: "",
+          line2: "",
+          town: "",
+          county: "",
+          postcode: "",
+        },
+      },
+    },
+    pageName: "Add address for support",
+  });
+});
+
+router.post("/form-overview/draft/support/address", (req, res) => {
+  const formData = req.session.data || {};
+  const addressDetails = {
+    line1: req.body.addressLine1,
+    line2: req.body.addressLine2,
+    town: req.body.addressTown,
+    county: req.body.addressCounty,
+    postcode: req.body.addressPostcode,
+  };
+
+  // Update the form details with the address
+  formData.formDetails = {
+    ...formData.formDetails,
+    support: {
+      ...formData.formDetails?.support,
+      address: addressDetails,
+    },
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/draft/overview");
+});
+
+// Next steps support
+router.get("/form-overview/draft/support/next-steps", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/support/next-steps", {
+    form: {
+      name: formData.formName || "Untitled form",
+      nextSteps: formData.formDetails?.nextSteps || "",
+    },
+    pageName: "What happens next",
+  });
+});
+
+router.post("/form-overview/draft/support/next-steps", (req, res) => {
+  const formData = req.session.data || {};
+  const nextSteps = req.body.nextSteps;
+
+  // Update the form details with the next steps
+  formData.formDetails = {
+    ...formData.formDetails,
+    nextSteps: nextSteps,
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/draft/overview");
+});
+
+// Privacy notice support
+router.get("/form-overview/draft/support/privacy-notice", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/support/privacy-notice", {
+    form: {
+      name: formData.formName || "Untitled form",
+      privacyNotice: formData.formDetails?.privacyNotice || "",
+    },
+    pageName: "Add privacy notice link",
+  });
+});
+
+router.post("/form-overview/draft/support/privacy-notice", (req, res) => {
+  const formData = req.session.data || {};
+  const privacyLink = req.body.privacyLink;
+
+  // Update the form details with the privacy notice link
+  formData.formDetails = {
+    ...formData.formDetails,
+    privacyNotice: privacyLink,
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/draft/overview");
+});
+
+// Notification email routes
+router.get("/form-overview/draft/support/notification-email", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/support/notification-email", {
+    form: {
+      name: formData.formName || "Untitled form",
+      notificationEmail: formData.formDetails?.notificationEmail || "",
+    },
+    pageName: "Email address for submitted forms",
+  });
+});
+
+router.post("/form-overview/draft/support/notification-email", (req, res) => {
+  const formData = req.session.data || {};
+  const notificationEmail = req.body.notificationEmail;
+
+  // Update the form details with the notification email
+  formData.formDetails = {
+    ...formData.formDetails,
+    notificationEmail: notificationEmail,
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/draft/overview");
 });
 
 /* dictionary stuff */
