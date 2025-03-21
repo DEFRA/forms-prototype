@@ -625,24 +625,40 @@ activeLinkId: "nav-editor"
             firstValue = selectElement ? selectElement.value : "";
           }
 
-
           rules.push({
             questionText: firstQuestionText,
-            operator: operatorSelect.value,
-            value: firstValue, // This will now be an array for checkboxes
-            logicalOperator: null // First rule doesn't need a logical operator
+            operator: operatorSelect ? operatorSelect.value : "is",
+            value: firstValue,
+            logicalOperator: null
           });
 
           // Get additional conditions
           const additionalConditions = document.querySelectorAll('#additional-conditions .condition-item');
           additionalConditions.forEach((condition, index) => {
-            const logicalOperator = condition.querySelector('select[name^="logical-operator"]').value;
+            const logicalOperator = condition.querySelector('select[name^="logical-operator"]')?.value || 'AND';
             const questionSelect = condition.querySelector('.condition-question');
             const operatorSelect = condition.querySelector('select[id^="condition-operator"]');
-            const valueSelect = condition.querySelector('.condition-value');
+            const valueContainer = condition.querySelector('.condition-value-container');
 
-            const questionText = questionSelect.options[questionSelect.selectedIndex].text.replace(/\s*\([^)]*\)/, '').trim();
-            const value = valueSelect.value;
+            if (!questionSelect || !operatorSelect || !valueContainer) {
+              console.error('Missing required elements in additional condition:', { questionSelect, operatorSelect, valueContainer });
+              return;
+            }
+
+            const questionText = questionSelect.options[questionSelect.selectedIndex]?.text.replace(/\s*\([^)]*\)/, '').trim() || '';
+            const questionType = questionSelect.options[questionSelect.selectedIndex]?.getAttribute("data-type") || '';
+            let value = '';
+
+            if (questionType === "radios") {
+              const selectedRadio = valueContainer.querySelector('input[type="radio"]:checked');
+              value = selectedRadio ? selectedRadio.value : "";
+            } else if (questionType === "checkboxes") {
+              const checkedBoxes = valueContainer.querySelectorAll('input[type="checkbox"]:checked');
+              value = Array.from(checkedBoxes).map(cb => cb.value);
+            } else {
+              const selectElement = valueContainer.querySelector('select');
+              value = selectElement ? selectElement.value : "";
+            }
 
             rules.push({
               questionText: questionText,
@@ -658,7 +674,8 @@ activeLinkId: "nav-editor"
           const inputs = {
             'conditionType': 'new',
             'conditionName': conditionNameInput.value,
-            'rules': JSON.stringify(rules)
+            'rules': JSON.stringify(rules),
+            'currentPageId': '{{ currentPage.pageId }}'  // Add the current page ID
           };
 
           // Debug log
@@ -801,19 +818,177 @@ activeLinkId: "nav-editor"
 
               <div class="govuk-form-group">
                   <label class="govuk-label" for="condition-value-${conditionCount}">Select a value</label>
-                  <select class="govuk-select condition-value" 
-                          id="condition-value-${conditionCount}" 
-                          name="value-${conditionCount}">
-                      <option value="">Select a value</option>
-                  </select>
+                  <div class="condition-value-container">
+                    <select class="govuk-select condition-value" 
+                            id="condition-value-${conditionCount}" 
+                            name="value-${conditionCount}">
+                        <option value="">Select a value</option>
+                    </select>
+                  </div>
               </div>
           `;
 
           // Add event listener to new question select
           const newQuestionSelect = newCondition.querySelector('.condition-question');
-          const newValueSelect = newCondition.querySelector('.condition-value');
+          const newValueContainer = newCondition.querySelector('.condition-value-container');
           newQuestionSelect.addEventListener('change', () => {
-            updateValueOptions(newQuestionSelect, newValueSelect);
+            const selectedOption = newQuestionSelect.options[newQuestionSelect.selectedIndex];
+            const questionType = selectedOption.getAttribute("data-type") || "";
+            const rawOptions = selectedOption.getAttribute("data-options");
+
+            // Clear existing options
+            newValueContainer.innerHTML = ''; // Clear the entire container
+
+            try {
+              // Handle yes/no questions with dropdown
+              if (questionType === "yes-no") {
+                const select = document.createElement("select");
+                select.classList.add("govuk-select");
+                select.id = `condition-value-${conditionCount}`;
+                select.name = `value-${conditionCount}`;
+
+                select.innerHTML = `
+                  <option value="">Select yes or no</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                `;
+
+                const label = document.createElement("label");
+                label.classList.add("govuk-label");
+                label.setAttribute("for", `condition-value-${conditionCount}`);
+                label.textContent = "Select yes or no";
+
+                newValueContainer.appendChild(label);
+                newValueContainer.appendChild(select);
+                newValueContainer.style.display = "block";
+                return;
+              }
+
+              // Handle radio questions with radio buttons
+              if (questionType === "radios") {
+                const options = rawOptions ? JSON.parse(rawOptions) : [];
+
+                if (Array.isArray(options) && options.length > 0) {
+                  const fieldset = document.createElement("fieldset");
+                  fieldset.classList.add("govuk-fieldset");
+
+                  const legend = document.createElement("legend");
+                  legend.classList.add("govuk-fieldset__legend", "govuk-fieldset__legend");
+                  legend.textContent = "Select an option";
+                  fieldset.appendChild(legend);
+
+                  const radiosDiv = document.createElement("div");
+                  radiosDiv.classList.add("govuk-radios--small");
+                  radiosDiv.setAttribute("data-module", "govuk-radios");
+
+                  options.forEach((option, index) => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.classList.add("govuk-radios__item");
+
+                    const radio = document.createElement("input");
+                    radio.classList.add("govuk-radios__input");
+                    radio.type = "radio";
+                    radio.id = `radio-${conditionCount}-${index}`;
+                    radio.name = `value-${conditionCount}`;
+                    radio.value = option.value || option.label;
+
+                    const label = document.createElement("label");
+                    label.classList.add("govuk-label", "govuk-radios__label");
+                    label.setAttribute("for", `radio-${conditionCount}-${index}`);
+                    label.textContent = option.label;
+
+                    itemDiv.appendChild(radio);
+                    itemDiv.appendChild(label);
+                    radiosDiv.appendChild(itemDiv);
+                  });
+
+                  fieldset.appendChild(radiosDiv);
+                  newValueContainer.appendChild(fieldset);
+                  newValueContainer.style.display = "block";
+                  return;
+                }
+              }
+
+              // Handle checkbox questions with actual checkboxes
+              if (questionType === "checkboxes") {
+                const options = rawOptions ? JSON.parse(rawOptions) : [];
+
+                if (Array.isArray(options) && options.length > 0) {
+                  const fieldset = document.createElement("fieldset");
+                  fieldset.classList.add("govuk-fieldset");
+
+                  const legend = document.createElement("legend");
+                  legend.classList.add("govuk-fieldset__legend", "govuk-fieldset__legend");
+                  legend.textContent = "Select all that apply";
+                  fieldset.appendChild(legend);
+
+                  const checkboxesDiv = document.createElement("div");
+                  checkboxesDiv.classList.add("govuk-checkboxes", "govuk-checkboxes--small");
+                  checkboxesDiv.setAttribute("data-module", "govuk-checkboxes");
+
+                  options.forEach((option, index) => {
+                    const itemDiv = document.createElement("div");
+                    itemDiv.classList.add("govuk-checkboxes__item");
+
+                    const checkbox = document.createElement("input");
+                    checkbox.classList.add("govuk-checkboxes__input");
+                    checkbox.type = "checkbox";
+                    checkbox.id = `checkbox-${conditionCount}-${index}`;
+                    checkbox.name = `value-${conditionCount}`;
+                    checkbox.value = option.value || option.label;
+
+                    const label = document.createElement("label");
+                    label.classList.add("govuk-label", "govuk-checkboxes__label");
+                    label.setAttribute("for", `checkbox-${conditionCount}-${index}`);
+                    label.textContent = option.label;
+
+                    itemDiv.appendChild(checkbox);
+                    itemDiv.appendChild(label);
+                    checkboxesDiv.appendChild(itemDiv);
+                  });
+
+                  fieldset.appendChild(checkboxesDiv);
+                  newValueContainer.appendChild(fieldset);
+                  newValueContainer.style.display = "block";
+                  return;
+                }
+              }
+
+              // Handle select questions with dropdown
+              if (questionType === "select") {
+                const select = document.createElement("select");
+                select.classList.add("govuk-select");
+                select.id = `condition-value-${conditionCount}`;
+                select.name = `value-${conditionCount}`;
+
+                const defaultOption = document.createElement("option");
+                defaultOption.value = "";
+                defaultOption.textContent = "Select from the list";
+                select.appendChild(defaultOption);
+
+                const options = rawOptions ? JSON.parse(rawOptions) : [];
+
+                if (Array.isArray(options) && options.length > 0) {
+                  options.forEach(option => {
+                    const newOption = document.createElement("option");
+                    newOption.value = option.value || option.label;
+                    newOption.textContent = option.label;
+                    select.appendChild(newOption);
+                  });
+
+                  const label = document.createElement("label");
+                  label.classList.add("govuk-label");
+                  label.setAttribute("for", `condition-value-${conditionCount}`);
+                  label.textContent = "Select from the list";
+
+                  newValueContainer.appendChild(label);
+                  newValueContainer.appendChild(select);
+                  newValueContainer.style.display = "block";
+                }
+              }
+            } catch (e) {
+              console.error("Error parsing options:", e);
+            }
           });
 
           additionalConditions.appendChild(newCondition);

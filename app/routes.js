@@ -204,7 +204,16 @@ router.post("/information-type-answer-nf", function (req, res) {
   // 5. Save back to session
   req.session.data["formPages"] = formPages;
 
-  // 6. Redirect to the question configuration route
+  // 6. Redirect based on question type
+  if (mainType === "list") {
+    if (listSubType === "radios") {
+      return res.redirect("/form-editor/question-type/radios-nf/add.html");
+    } else if (listSubType === "checkboxes") {
+      return res.redirect("/form-editor/question-type/checkboxes-nf/add.html");
+    }
+  }
+
+  // For all other types, continue with the default question configuration flow
   res.redirect("/question-configuration");
 });
 
@@ -423,12 +432,25 @@ router.get("/page-overview", function (req, res) {
   const formData = req.session.data || {};
   const pageIndex = req.session.data["currentPageIndex"] || 0;
   const pageNumber = pageIndex + 1;
+  const formPages = req.session.data["formPages"] || [];
+  const currentPage = formPages[pageIndex] || {
+    questions: [],
+    pageType: "question",
+    pageHeading: "",
+    hasGuidance: false,
+    guidanceTextarea: "",
+    allowMultipleResponses: false,
+    setName: "",
+    minResponseCount: "",
+    maxResponseCount: "",
+  };
 
   res.render("form-editor/page-overview.html", {
     form: {
       name: formData.formName || "Form name",
     },
     pageNumber: pageNumber,
+    currentPage: currentPage,
   });
 });
 
@@ -805,38 +827,44 @@ router.get("/form-editor/question-type/radios-nf/edit", (req, res) => {
   const formPages = req.session.data["formPages"] || [];
   const pageIndex = req.session.data["currentPageIndex"] || 0;
 
-  // Ensure current page exists
-  if (!formPages[pageIndex]) {
-    console.log("⚠️ No current page found, redirecting...");
+  // First try to get radioList from the current page
+  let radioList = [];
+  if (formPages[pageIndex]) {
+    const currentPage = formPages[pageIndex];
+    radioList = currentPage.radioList || [];
+  }
+
+  // If no radioList found in current page, try to get it from session data
+  if (radioList.length === 0) {
+    radioList = req.session.data?.radioList || [];
+  }
+
+  // If still no radioList, redirect to add page
+  if (radioList.length === 0) {
+    console.log("⚠️ No radio options found, redirecting to add page...");
     return res.redirect("/form-editor/question-type/radios-nf/add.html");
   }
 
-  const currentPage = formPages[pageIndex];
+  console.log("Current radio options:", radioList);
 
-  // Ensure radioList exists
-  currentPage.radioList = currentPage.radioList || [];
-
-  console.log("Current radio options:", currentPage.radioList);
-
-  // Pass the radioList to the template
+  // Render the edit page with the radioList
   res.render("form-editor/question-type/radios-nf/edit.html", {
-    radioList: currentPage.radioList,
+    radioList: radioList,
   });
 });
 
-// Route to access the edit page for radio buttons
-router.get("/form-editor/question-type/radios-nf/edit", (req, res) => {
-  const radioList = req.session.data?.radioList || [];
+// Route to access the add page for radio buttons
+router.get("/form-editor/question-type/radios-nf/add.html", (req, res) => {
+  const formPages = req.session.data["formPages"] || [];
+  const pageIndex = req.session.data["currentPageIndex"] || 0;
+  const pageNumber = pageIndex + 1;
+  const questionIndex = req.session.data["currentQuestionIndex"] || 0;
+  const questionNumber = questionIndex + 1;
 
-  // Check if the radioList is empty, redirect to the add page if so
-  if (radioList.length === 0) {
-    res.redirect("/form-editor/question-type/radios-nf/add.html");
-  } else {
-    // Render the edit page if there are items in the list
-    res.render("/form-editor/question-type/radios-nf/edit.html", {
-      radioList: radioList,
-    });
-  }
+  res.render("form-editor/question-type/radios-nf/add.html", {
+    pageNumber: pageNumber,
+    questionNumber: questionNumber,
+  });
 });
 
 router.post("/update-radio-label", function (req, res) {
@@ -927,46 +955,67 @@ function findQuestionById(formPages, questionId) {
 
 router.get("/form-editor/conditions/:pageId", function (req, res) {
   const formData = req.session.data || {};
-  const pageIndex = req.session.data["currentPageIndex"] || 0;
+  const formPages = req.session.data["formPages"] || [];
+  const pageId = req.params.pageId;
+
+  // Find the current page by pageId
+  const currentPage = formPages.find((page) => String(page.pageId) === pageId);
+
+  if (!currentPage) {
+    console.error("Page not found:", pageId);
+    return res.redirect("/form-editor/listing");
+  }
+
+  // Store the current page ID in session for other routes
+  req.session.data.currentPageId = pageId;
+
+  // Find the page index for numbering
+  const pageIndex = formPages.findIndex(
+    (page) => String(page.pageId) === pageId
+  );
   const pageNumber = pageIndex + 1;
+
+  // Get all available questions for conditions
+  const availableQuestions = formPages
+    .flatMap((page) => page.questions)
+    .map((question) => ({
+      value: question.questionId,
+      text: question.label,
+      type: question.subType || question.type,
+      options: question.options,
+    }));
 
   res.render("form-editor/conditions.html", {
     form: {
       name: formData.formName || "Form name",
     },
     pageNumber: pageNumber,
+    currentPage: currentPage,
+    availableQuestions: availableQuestions,
+    conditions: currentPage.conditions || [],
   });
 });
 
 //--------------------------------------
 // 2. POST /conditions-add
-//    Add a new condition to the page
+//    Add a new condition or copy an existing one
 //--------------------------------------
 router.post("/conditions-add", function (req, res) {
-  console.log("Current conditions:", req.session.data.conditions || []);
-  console.log("Adding condition - Debug info:", {
-    pageId: req.session.data.currentPageId,
-    availablePages: req.session.data.formPages?.map((p) => p.pageId),
-    body: req.body,
-  });
-
-  // Add this debug log
-  console.log("Raw request body:", {
-    conditionName: req.body.conditionName,
-    question: req.body.question,
-    operator: req.body.operator,
-    "condition-value": req.body["condition-value"],
-    allKeys: Object.keys(req.body),
-  });
-
-  // Get the current page
-  const pageId = req.session.data.currentPageId;
   const formPages = req.session.data.formPages || [];
-  const currentPage = formPages.find((page) => page.pageId === pageId);
+  const currentPageId = req.body.currentPageId;
+
+  // Debug log
+  console.log("Received currentPageId:", currentPageId);
+  console.log("Form pages:", formPages);
+
+  // Find the current page by pageId
+  const currentPage = formPages.find(
+    (page) => String(page.pageId) === String(currentPageId)
+  );
 
   if (!currentPage) {
-    console.error("Current page not found");
-    return res.redirect("back");
+    console.error("Page not found:", currentPageId);
+    return res.redirect("/form-editor/listing");
   }
 
   // Initialize conditions array if it doesn't exist
@@ -974,13 +1023,15 @@ router.post("/conditions-add", function (req, res) {
 
   if (req.body.conditionType === "existing") {
     // Handle existing condition
-    const existingConditionId = parseInt(req.body.existingConditionId);
-
-    // Find the existing condition from all pages
+    const existingConditionId = req.body.existingConditionId;
     let existingCondition = null;
+
+    // Find the existing condition in any page
     for (const page of formPages) {
       if (page.conditions) {
-        const found = page.conditions.find((c) => c.id === existingConditionId);
+        const found = page.conditions.find(
+          (c) => c.id.toString() === existingConditionId
+        );
         if (found) {
           existingCondition = found;
           break;
@@ -1073,8 +1124,9 @@ router.post("/conditions-add", function (req, res) {
   // Save back to session
   req.session.data.formPages = formPages;
 
-  // Replace deprecated redirect with secure version
-  const returnUrl = `/conditions/${req.session.data.currentPageId}`;
+  // Fix the redirect URL to include the form-editor prefix
+  const returnUrl = `/form-editor/conditions/${currentPageId}`;
+  console.log("Redirecting to:", returnUrl);
   res.redirect(returnUrl);
 });
 
