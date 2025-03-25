@@ -42,8 +42,8 @@
       "select_existing": "Select an existing condition",
       "add_existing_button": "Add existing condition",
       "operator": {
-        "label": "Operator",
-        "select": "Select an operator",
+        "label": "Condition type",
+        "select": "Select a condition type",
         "is": "is",
         "is_not": "is not"
       },
