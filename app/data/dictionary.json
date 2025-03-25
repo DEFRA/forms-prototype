@@ -177,7 +177,7 @@
             "title": "Checkboxes",
             "hint": "A list for users to select multiple answers",
             "add_option": "Add item",
-            "edit_title": "Create and edit list items",
+            "edit_title": "List items",
             "hint_text": "Use single short sentence without a full stop",
             "option": {
               "text": {
@@ -198,7 +198,7 @@
             "title": "Radios",
             "hint": "A list for users to select one answer",
             "add_option": "Add item",
-            "edit_title": "Create and edit list items",
+            "edit_title": "List items",
             "hint_text": "Use single short sentence without a full stop",
             "option": {
               "text": {

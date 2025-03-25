@@ -142,6 +142,22 @@ activeLinkId: "nav-editor"
 														</div>
 													</div>
 
+													<!-- Error Message Input -->
+													{{ govukInput({
+													label: {
+													text:
+													commonTerms.form_editor.question_settings.short_description.title,
+													classes: "govuk-label--m",
+													isPageHeading: false
+													},
+													hint: {
+													text:
+													commonTerms.form_editor.question_settings.short_description.hint
+													},
+													id: "error-message-input",
+													name: "errorMessageInput"
+													}) }}
+
 													<!-- Hidden input for hint text -->
 													<input type="hidden" name="hintText"
 														value="{{ data['question-hint-text-input-checkboxes'] }}">
@@ -285,24 +301,6 @@ activeLinkId: "nav-editor"
 															{{ commonTerms.form_editor.common.edit_list }}
 														</button>
 													</div>
-
-
-
-													<!-- Error Message Input -->
-													{{ govukInput({
-													label: {
-													text:
-													commonTerms.form_editor.question_settings.short_description.title,
-													classes: "govuk-label--m",
-													isPageHeading: false
-													},
-													hint: {
-													text:
-													commonTerms.form_editor.question_settings.short_description.hint
-													},
-													id: "error-message-input",
-													name: "errorMessageInput"
-													}) }}
 
 													<!-- Hidden input for radio options -->
 													<input type="hidden" name="radioOptions" id="radio-options-data"
@@ -723,49 +721,72 @@ activeLinkId: "nav-editor"
 		// Save item button click
 		saveItemButton.addEventListener('click', function (e) {
 			e.preventDefault();
+			const addOptionForm = document.getElementById('add-option-form');
+			const editIndex = addOptionForm.dataset.editIndex;
 			const labelValue = newOptionLabel.value.trim();
+			const hintValue = newOptionHint.value.trim();
 
-			// Add the new option
-			const currentOptions = optionsContainer.querySelectorAll('.gem-c-reorderable-list__item');
-			const newIndex = currentOptions.length;
+			if (editIndex) {
+				// Edit existing item
+				const listItem = document.querySelector(`.gem-c-reorderable-list__item[data-index="${editIndex}"]`);
+				if (listItem) {
+					listItem.querySelector('.option-label-display').textContent = labelValue;
+					listItem.querySelector('.option-label-input-hidden').value = labelValue;
+					listItem.querySelector('.option-hint-input').value = hintValue;
 
-			const newOptionHTML = `
-				<li class="gem-c-reorderable-list__item" draggable="true" data-index="${newIndex + 1}">
-					<div class="gem-c-reorderable-list__wrapper">
-						<div class="gem-c-reorderable-list__content">
-							<p class="govuk-body fauxlabel option-label-display" id="option-${newIndex + 1}-label-display">
-								${labelValue}
-							</p>
-							<input type="hidden" id="option-${newIndex + 1}-label" class="option-label-input-hidden" 
-								name="option[${newIndex + 1}][option_label]" value="${labelValue}">
-							<input type="hidden" id="option-${newIndex + 1}-hint" class="option-hint-input"
-								name="option[${newIndex + 1}][option_hint]" value="${newOptionHint.value}">
-						</div>
-						<div class="gem-c-reorderable-list__actions">
-							<button class="gem-c-button govuk-button govuk-button--secondary js-reorderable-list-up"
-								type="button" aria-label="Move option up">Up</button>
-							<button class="gem-c-button govuk-button govuk-button--secondary js-reorderable-list-down"
-								type="button" aria-label="Move option down">Down</button>
-						</div>
-						<div class="edit-item">
-							<ul class="govuk-summary-list__actions-list">
-								<li class="govuk-summary-list__actions-list-item">
-									<a class="govuk-link govuk-link--no-visited-state" href="editoption.html?index=${newIndex + 1}">
-										Edit<span class="govuk-visually-hidden">option ${newIndex + 1}</span>
-									</a>
-								</li>
-								<li class="govuk-summary-list__actions-list-item">
-									<a class="govuk-link govuk-link--destructive delete-option-link" href="delete-option.html?index=${newIndex + 1}&text=${encodeURIComponent(labelValue)}" onclick="return true;">
-										Delete<span class="govuk-visually-hidden"> list item</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</li>
-			`;
+					// Update the delete link with the new text
+					const deleteLink = listItem.querySelector('.delete-option-link');
+					if (deleteLink) {
+						deleteLink.href = `delete-option.html?index=${editIndex}&text=${encodeURIComponent(labelValue)}`;
+					}
+				}
+				// Reset edit mode
+				addOptionForm.dataset.editIndex = '';
+				document.getElementById('save-new-option').textContent = 'Save item';
+			} else {
+				// Add new item
+				const currentOptions = optionsContainer.querySelectorAll('.gem-c-reorderable-list__item');
+				const newIndex = currentOptions.length;
 
-			optionsContainer.insertAdjacentHTML('beforeend', newOptionHTML);
+				const newOptionHTML = `
+					<li class="gem-c-reorderable-list__item" draggable="true" data-index="${newIndex + 1}">
+						<div class="gem-c-reorderable-list__wrapper">
+							<div class="gem-c-reorderable-list__content">
+								<p class="govuk-body fauxlabel option-label-display" id="option-${newIndex + 1}-label-display">
+									${labelValue}
+								</p>
+								<input type="hidden" id="option-${newIndex + 1}-label" class="option-label-input-hidden" 
+									name="option[${newIndex + 1}][option_label]" value="${labelValue}">
+								<input type="hidden" id="option-${newIndex + 1}-hint" class="option-hint-input"
+									name="option[${newIndex + 1}][option_hint]" value="${hintValue}">
+							</div>
+							<div class="gem-c-reorderable-list__actions">
+								<button class="gem-c-button govuk-button govuk-button--secondary js-reorderable-list-up"
+									type="button" aria-label="Move option up">Up</button>
+								<button class="gem-c-button govuk-button govuk-button--secondary js-reorderable-list-down"
+									type="button" aria-label="Move option down">Down</button>
+							</div>
+							<div class="edit-item">
+								<ul class="govuk-summary-list__actions-list">
+									<li class="govuk-summary-list__actions-list-item">
+										<a class="govuk-link govuk-link--no-visited-state" href="editoption.html?index=${newIndex + 1}">
+											Edit<span class="govuk-visually-hidden">option ${newIndex + 1}</span>
+										</a>
+									</li>
+									<li class="govuk-summary-list__actions-list-item">
+										<a class="govuk-link govuk-link--destructive delete-option-link" href="delete-option.html?index=${newIndex + 1}&text=${encodeURIComponent(labelValue)}" onclick="return true;">
+											Delete<span class="govuk-visually-hidden"> list item</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</li>
+				`;
+
+				optionsContainer.insertAdjacentHTML('beforeend', newOptionHTML);
+			}
+
 			hideForm();
 			updateAllOptionsPreview();
 			updateHiddenOptionsData();
@@ -1219,6 +1240,223 @@ activeLinkId: "nav-editor"
 				}
 			});
 		}
+
+		// Add click handler for edit links
+		document.addEventListener('click', function (e) {
+			const editLink = e.target.closest('a[href*="editoption.html"]');
+			if (editLink) {
+				e.preventDefault();
+				console.log('Edit link clicked'); // Debug log
+
+				// Find the parent list item that contains the option data
+				const listItem = editLink.closest('.gem-c-reorderable-list__item');
+				if (!listItem) {
+					console.error('List item not found'); // Debug log
+					return;
+				}
+
+				// Hide the edit and delete links
+				const editItem = listItem.querySelector('.edit-item');
+				if (editItem) {
+					editItem.style.display = 'none';
+				}
+
+				const index = listItem.dataset.index;
+				const labelDisplay = listItem.querySelector('.option-label-display');
+				const labelInput = listItem.querySelector('.option-label-input-hidden');
+				const hintInput = listItem.querySelector('.option-hint-input');
+
+				if (!labelDisplay || !labelInput || !hintInput) {
+					console.error('Required elements not found'); // Debug log
+					return;
+				}
+
+				// Store the original content structure
+				const originalContent = `
+					<p class="govuk-body fauxlabel option-label-display" id="option-${index}-label-display">${labelInput.value}</p>
+					<input type="hidden" id="option-${index}-label" class="option-label-input-hidden" name="option[${index}][option_label]" value="${labelInput.value}">
+					<input type="hidden" id="option-${index}-hint" class="option-hint-input" name="option[${index}][option_hint]" value="${hintInput.value}">
+				`;
+
+				// Create edit form HTML using the same structure as add-option-form
+				const editFormHTML = `
+					<div class="govuk-form-group">
+						<label class="govuk-label govuk-label--m" for="edit-option-label-${index}">Item</label>
+						<input class="govuk-input" id="edit-option-label-${index}" type="text" value="${labelInput.value}">
+					</div>
+					<div class="govuk-form-group">
+						<label class="govuk-label govuk-label--m" for="edit-option-hint-${index}">Hint text (optional)</label>
+						<div class="govuk-hint">Add a hint to help users understand what to select</div>
+						<input class="govuk-input" id="edit-option-hint-${index}" type="text" value="${hintInput.value}">
+					</div>
+					<details class="govuk-details" data-module="govuk-details">
+						<summary class="govuk-details__summary">
+							<span class="govuk-details__summary-text">Advanced features</span>
+						</summary>
+						<div class="govuk-details__text">
+							<div class="govuk-form-group">
+								<label class="govuk-label govuk-label--m" for="edit-option-value-${index}">Unique identifier (optional)</label>
+								<div class="govuk-hint">Used in databases to identify the item</div>
+								<input class="govuk-input" id="edit-option-value-${index}" type="text" value="${listItem.querySelector('.option-value-input')?.value || ''}">
+							</div>
+						</div>
+					</details>
+					<div class="govuk-button-group">
+						<button type="button" class="govuk-button" id="save-edit-${index}">Save changes</button>
+						<a class="govuk-link" href="#" id="cancel-edit-${index}">Cancel</a>
+					</div>
+				`;
+
+				// Replace the display content with the edit form
+				const contentDiv = listItem.querySelector('.gem-c-reorderable-list__content');
+				if (!contentDiv) {
+					console.error('Content div not found'); // Debug log
+					return;
+				}
+
+				contentDiv.innerHTML = editFormHTML;
+
+				// Add event listeners for the edit form
+				const saveButton = document.getElementById(`save-edit-${index}`);
+				const cancelButton = document.getElementById(`cancel-edit-${index}`);
+				const newLabelInput = document.getElementById(`edit-option-label-${index}`);
+				const newHintInput = document.getElementById(`edit-option-hint-${index}`);
+				const newValueInput = document.getElementById(`edit-option-value-${index}`);
+
+				if (!saveButton || !cancelButton || !newLabelInput || !newHintInput || !newValueInput) {
+					console.error('Form elements not found'); // Debug log
+					return;
+				}
+
+				// Function to update preview for the edited item
+				function updateEditPreview() {
+					const checkboxList = document.querySelector('#checkbox-list .govuk-checkboxes');
+					if (!checkboxList) return;
+
+					const labelValue = newLabelInput.value.trim();
+					const hintValue = newHintInput.value.trim();
+
+					// Update the preview item
+					const previewItem = checkboxList.querySelector(`#listPreview-option${index - 1}`).closest('.govuk-checkboxes__item');
+					if (previewItem) {
+						const labelElement = previewItem.querySelector('.govuk-checkboxes__label');
+						const hintElement = previewItem.querySelector('.govuk-checkboxes__hint');
+
+						if (labelElement) {
+							labelElement.textContent = labelValue || 'Option text';
+						}
+
+						if (hintValue || document.activeElement === newHintInput) {
+							if (!hintElement) {
+								const newHintElement = document.createElement('div');
+								newHintElement.className = 'govuk-hint govuk-checkboxes__hint';
+								newHintElement.textContent = hintValue || 'Hint text';
+								previewItem.appendChild(newHintElement);
+							} else {
+								hintElement.textContent = hintValue || 'Hint text';
+							}
+						} else if (hintElement) {
+							hintElement.remove();
+						}
+					}
+				}
+
+				// Add live preview event listeners
+				newLabelInput.addEventListener('input', updateEditPreview);
+				newHintInput.addEventListener('input', updateEditPreview);
+
+				// Add focus/blur event listeners for highlighting
+				newLabelInput.addEventListener('focus', () => {
+					const previewItem = document.querySelector(`#listPreview-option${index - 1}`).closest('.govuk-checkboxes__item');
+					if (previewItem) {
+						const labelElement = previewItem.querySelector('.govuk-checkboxes__label');
+						if (labelElement) {
+							labelElement.classList.add('highlight');
+						}
+					}
+				});
+
+				newLabelInput.addEventListener('blur', () => {
+					const previewItem = document.querySelector(`#listPreview-option${index - 1}`).closest('.govuk-checkboxes__item');
+					if (previewItem) {
+						const labelElement = previewItem.querySelector('.govuk-checkboxes__label');
+						if (labelElement) {
+							labelElement.classList.remove('highlight');
+						}
+					}
+				});
+
+				newHintInput.addEventListener('focus', () => {
+					const previewItem = document.querySelector(`#listPreview-option${index - 1}`).closest('.govuk-checkboxes__item');
+					if (previewItem) {
+						let hintElement = previewItem.querySelector('.govuk-checkboxes__hint');
+						if (!hintElement) {
+							hintElement = document.createElement('div');
+							hintElement.className = 'govuk-hint govuk-checkboxes__hint';
+							hintElement.textContent = 'Hint text';
+							previewItem.appendChild(hintElement);
+						}
+						hintElement.classList.add('highlight');
+					}
+				});
+
+				newHintInput.addEventListener('blur', () => {
+					const previewItem = document.querySelector(`#listPreview-option${index - 1}`).closest('.govuk-checkboxes__item');
+					if (previewItem) {
+						const hintElement = previewItem.querySelector('.govuk-checkboxes__hint');
+						if (hintElement) {
+							hintElement.classList.remove('highlight');
+							if (!newHintInput.value.trim() && hintElement.textContent === 'Hint text') {
+								hintElement.remove();
+							}
+						}
+					}
+				});
+
+				// Save changes
+				saveButton.addEventListener('click', function () {
+					const newLabel = newLabelInput.value.trim();
+					const newHint = newHintInput.value.trim();
+					const newValue = newValueInput.value.trim();
+
+					// Update the display and hidden inputs
+					contentDiv.innerHTML = `
+						<p class="govuk-body fauxlabel option-label-display" id="option-${index}-label-display">${newLabel}</p>
+						<input type="hidden" id="option-${index}-label" class="option-label-input-hidden" name="option[${index}][option_label]" value="${newLabel}">
+						<input type="hidden" id="option-${index}-hint" class="option-hint-input" name="option[${index}][option_hint]" value="${newHint}">
+						<input type="hidden" id="option-${index}-value" class="option-value-input" name="option[${index}][option_value]" value="${newValue}">
+					`;
+
+					// Update the delete link with the new text
+					const deleteLink = listItem.querySelector('.delete-option-link');
+					if (deleteLink) {
+						deleteLink.href = `delete-option.html?index=${index}&text=${encodeURIComponent(newLabel)}`;
+					}
+
+					// Show the edit and delete links again
+					if (editItem) {
+						editItem.style.display = 'block';
+					}
+
+					// Update preview and data
+					updateAllOptionsPreview();
+					updateHiddenOptionsData();
+				});
+
+				// Cancel edit
+				cancelButton.addEventListener('click', function () {
+					contentDiv.innerHTML = originalContent;
+					// Show the edit and delete links again
+					if (editItem) {
+						editItem.style.display = 'block';
+					}
+					updateAllOptionsPreview(); // Restore the original preview state
+				});
+
+				// Focus on the label input
+				newLabelInput.focus();
+			}
+		});
 	});
 </script>
 

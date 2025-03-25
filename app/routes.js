@@ -286,7 +286,7 @@ router.get("/question-configuration", function (req, res) {
   // Render the template with both page and question numbers
   res.render(templateToRender, {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
     pageNumber: pageNumber,
     questionNumber: questionNumber,
@@ -495,7 +495,7 @@ router.get("/page-overview", function (req, res) {
 
   res.render("form-editor/page-overview.html", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
     pageNumber: pageNumber,
     currentPage: currentPage,
@@ -805,7 +805,10 @@ router.get("/form-editor/question-type/checkboxes/edit", (req, res) => {
     pageNumber: pageNumber,
     questionNumber: questionNumber,
     form: {
-      name: formData.formName || "Form name",
+      name:
+        formData.formDetails?.name ||
+        formData.formName ||
+        "Food takeaway (user research)",
     },
   });
 });
@@ -1034,19 +1037,20 @@ router.get("/form-editor/question-type/radios-nf/edit", (req, res) => {
     radioList = req.session.data?.radioList || [];
   }
 
-  // Debug logging
-  console.log("Current page index:", pageIndex);
-  console.log("Current radio options:", radioList);
-  console.log("Radio list length:", radioList.length);
-
   // Render the edit page with the radioList
+  console.log("Current radio options:", radioList);
+
   res.render("form-editor/question-type/radios-nf/edit.html", {
     radioList: radioList,
     pageNumber: pageNumber,
     questionNumber: questionNumber,
     form: {
-      name: formData.formName || "Form name",
+      name:
+        formData.formDetails?.name ||
+        formData.formName ||
+        "Food takeaway (user research)",
     },
+    commonTerms: terms,
   });
 });
 
@@ -1151,7 +1155,7 @@ router.get("/form-editor/conditions/:pageId", function (req, res) {
 
   res.render("form-editor/conditions.html", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
     pageNumber: pageNumber,
     currentPage: currentPage,
@@ -1335,7 +1339,7 @@ router.get("/form-editor/reorder/main.html", function (req, res) {
   res.render("form-editor/reorder/main.html", {
     formPages: formPages,
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
   });
 });
@@ -1377,15 +1381,35 @@ router.post("/update-page-order", function (req, res) {
 // Update the delete page route
 router.get("/form-editor/delete/:pageId", function (req, res) {
   const formData = req.session.data || {};
+  const pageId = req.params.pageId;
   const pageIndex = req.session.data["currentPageIndex"] || 0;
   const pageNumber = pageIndex + 1;
 
   res.render("form-editor/delete.html", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
     pageNumber: pageNumber,
+    pageId: pageId,
   });
+});
+
+// Delete page route
+router.post("/delete-page", function (req, res) {
+  const pageId = req.body.pageId;
+  const formPages = req.session.data["formPages"] || [];
+
+  // Find and remove the page
+  const pageIndex = formPages.findIndex(
+    (page) => String(page.pageId) === String(pageId)
+  );
+  if (pageIndex !== -1) {
+    formPages.splice(pageIndex, 1);
+    req.session.data["formPages"] = formPages;
+  }
+
+  // Redirect back to the listing page
+  res.redirect("/form-editor/listing.html");
 });
 
 // Update the guidance overview route
@@ -1451,7 +1475,7 @@ router.get(
       currentPage: currentPage,
       data: req.session.data,
       form: {
-        name: formData.formName || "Form name",
+        name: formData.formName || "Food takeaway (user research)",
       },
       pageNumber: pageNumber,
     });
@@ -1518,7 +1542,7 @@ router.get("/form-editor/preview", function (req, res) {
       formPages: formPages,
     },
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
   });
 });
@@ -1683,7 +1707,7 @@ router.get("/form-overview/draft/overview", (req, res) => {
 
   // Create the form object that the templates expect
   const form = {
-    name: formData.formName || "Form name",
+    name: formData.formName || "Food takeaway (user research)",
     status: {
       text: status,
       color: statusColor,
@@ -1719,7 +1743,7 @@ router.get("/form-overview/draft/support/phone", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/draft/support/phone", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
       support: {
         phone: formData.formDetails?.support?.phone || "",
       },
@@ -1750,7 +1774,7 @@ router.get("/form-overview/draft/support/email", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/draft/support/email", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
       support: {
         email: formData.formDetails?.support?.email || "",
       },
@@ -1781,7 +1805,7 @@ router.get("/form-overview/draft/support/link", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/draft/support/link", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
       support: {
         link: formData.formDetails?.support?.link || "",
       },
@@ -1812,7 +1836,7 @@ router.get("/form-overview/draft/support/address", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/support/add-address", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
       support: {
         address: formData.formDetails?.support?.address || {
           line1: "",
@@ -1856,7 +1880,7 @@ router.get("/form-overview/draft/support/next-steps", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/support/next-steps", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
       nextSteps: formData.formDetails?.nextSteps || "",
     },
     pageName: "What happens next",
@@ -1868,7 +1892,7 @@ router.get("/form-overview/draft/support/privacy-notice", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/support/privacy-notice", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
       privacyNotice: formData.formDetails?.privacyNotice || "",
     },
     pageName: "Add privacy notice link",
@@ -1895,7 +1919,7 @@ router.get("/form-overview/draft/support/notification-email", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/support/notification-email", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
       notificationEmail: formData.formDetails?.notificationEmail || "",
     },
     pageName: "Email address for submitted forms",
@@ -1933,7 +1957,7 @@ router.get("/form-editor/information-type-nf.html", function (req, res) {
 
   res.render("form-editor/information-type-nf.html", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
     pageNumber: pageNumber,
     questionNumber: questionNumber,
@@ -1947,7 +1971,7 @@ router.get("/form-editor/errors/info-type-lower.html", function (req, res) {
 
   res.render("form-editor/errors/info-type-lower.html", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
     pageNumber: pageNumber,
   });
@@ -1960,7 +1984,7 @@ router.get("/form-editor/errors/information-type.html", function (req, res) {
 
   res.render("form-editor/errors/information-type.html", {
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Food takeaway (user research)",
     },
     pageNumber: pageNumber,
   });

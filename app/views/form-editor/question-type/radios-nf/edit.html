@@ -132,6 +132,23 @@ activeLinkId: "nav-editor"
 														</div>
 													</div>
 
+													<!-- Error Message Input -->
+													{{ govukInput({
+													label: {
+													text:
+													commonTerms.form_editor.question_settings.short_description.title,
+													classes: "govuk-label--m",
+													isPageHeading: false
+													},
+													hint: {
+													text:
+													commonTerms.form_editor.question_settings.short_description.hint
+													},
+													id: "error-message-input",
+													name: "errorMessageInput"
+													}) }}
+
+
 													<!-- Hidden input for hint text -->
 													<input type="hidden" name="hintText"
 														value="{{ data['question-hint-text-input-radios'] }}">
@@ -139,9 +156,21 @@ activeLinkId: "nav-editor"
 													<!-- Radio Options List -->
 													<div class="govuk-form-group">
 														<h2 class="govuk-heading-m moj-add-another__heading"
-															tabindex="-1">{{
+															tabindex="-1">
+															<svg class="govuk-!-margin-right-1"
+																style="position: relative; top: -1px; vertical-align: middle;"
+																width="28" height="28" viewBox="0 0 24 24" fill="none"
+																xmlns="http://www.w3.org/2000/svg">
+																<circle cx="12" cy="12" r="11" fill="currentColor" />
+																<path d="M6 8h12M6 12h12M6 16h12" stroke="white"
+																	stroke-width="2" stroke-linecap="round" />
+															</svg>
+															{{
 															commonTerms.form_editor.information_type.list.types.radios.edit_title
-															}}</h2>
+															}}
+														</h2>
+														<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
+															style="border-color:black; border-width: 3px;">
 														<ol class="gem-c-reorderable-list js-enabled"
 															id="options-container" data-module="reorderable-list">
 															{% for radio in radioList %}
@@ -268,24 +297,6 @@ activeLinkId: "nav-editor"
 															{{ commonTerms.form_editor.common.edit_list }}
 														</button>
 													</div>
-
-
-
-													<!-- Error Message Input -->
-													{{ govukInput({
-													label: {
-													text:
-													commonTerms.form_editor.question_settings.short_description.title,
-													classes: "govuk-label--m",
-													isPageHeading: false
-													},
-													hint: {
-													text:
-													commonTerms.form_editor.question_settings.short_description.hint
-													},
-													id: "error-message-input",
-													name: "errorMessageInput"
-													}) }}
 
 													<!-- Hidden input for radio options -->
 													<input type="hidden" name="radioOptions" id="radio-options-data"

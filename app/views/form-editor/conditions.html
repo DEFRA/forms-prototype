@@ -78,8 +78,6 @@ activeLinkId: "nav-editor"
                         <div class="govuk-summary-card__title-wrapper govuk-!-padding-top-0"></div>
 
                         <span class="govuk-caption-l">{{ question.label }}</span>
-                        <h2 class="govuk-heading-l">Control who can see this page based on previous answers
-                        </h2>
 
                         <!-- Notification Banner (Hidden by Default) -->
                         <div id="success-banner" class="govuk-visually-hidden">
@@ -90,13 +88,16 @@ activeLinkId: "nav-editor"
                           {{ govukNotificationBanner({ html: html, type: "success" }) }}
                         </div>
 
-                        <p class="govuk-body">Set the conditions for when this page is shown to users.</p>
-
                         <!-- Display added conditions here -->
                         <div id="conditions-list-container"
                           class="{% if conditions and conditions | length %}govuk-!-margin-top-4{% else %}govuk-visually-hidden{% endif %}"
                           style="background-color: white; padding: 15px; border-left: #008938 solid 5px; margin-bottom: 30px !important;">
                           <h2 class="govuk-heading-m">
+                            <svg class="govuk-!-margin-right-2" style="position: relative; top: 2px" width="24"
+                              height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+                              <circle cx="12" cy="12" r="4" fill="currentColor" />
+                            </svg>
                             <span id="condition-counter">{{ conditions | length }}</span> Added conditions
                           </h2>
                           <dl id="conditions-list" class="govuk-summary-list">
@@ -261,10 +262,13 @@ activeLinkId: "nav-editor"
                           name: "conditionType",
                           fieldset: {
                           legend: {
-                          text: "Create or use existing conditions",
+                          text: "Control who can see this page based on previous answers",
                           isPageHeading: true,
-                          classes: "govuk-fieldset__legend--m"
+                          classes: "govuk-fieldset__legend--l"
                           }
+                          },
+                          hint: {
+                          text: "Set the conditions for when this page is shown to users"
                           },
                           items: radioItems
                           }) }}

@@ -1,15 +1,20 @@
-{% set labelSize = labelSize or "m" %}
+{% from "./_label_size_macro.html" import get_label_size -%}
+
+{%- set page_heading = data['pageHeadingAddress'] if data is defined and data['pageHeadingAddress'] else false -%}
+{%- set question_count = currentPage.questions | length if currentPage and currentPage.questions else 1 -%}
+{%- set labelSize = get_label_size(page_heading, question_count, true) -%}
+
+<!-- Debug info -->
+<!-- Page heading: {{ page_heading }} -->
+<!-- Question count: {{ question_count }} -->
+<!-- Label size: {{ labelSize }} -->
 
 <div class="govuk-form-group">
     <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--{{ labelSize }}">
-            {{ question.label }}
-        </legend>
-        {% if question.hint %}
-        <div id="address-hint" class="govuk-hint">
-            {{ question.hint }}
-        </div>
-        {% endif %}
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--{{ labelSize }}">{{ question.label }}</legend>
+        {%- if question.hint -%}
+        <div id="address-hint" class="govuk-hint">{{ question.hint }}</div>
+        {%- endif -%}
 
         <div class="govuk-form-group">
             <label class="govuk-label" for="address-line-1">

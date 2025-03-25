@@ -1,24 +1,22 @@
-{# {% if currentPage.questions.length == 0 %}
-<p>No questions have been added yet.</p>
-{% else %}
-{% for question in currentPage.questions %} #}
+{% from "./_label_size_macro.html" import get_label_size -%}
 
-{% set labelSize = labelSize or "m" %}
+{%- set page_heading = data['pageHeadingPhone'] if data is defined and data['pageHeadingPhone'] else false -%}
+{%- set question_count = currentPage.questions | length if currentPage and currentPage.questions else 1 -%}
+{%- set labelSize = get_label_size(page_heading, question_count, true) -%}
+
+<!-- Debug info -->
+<!-- Page heading: {{ page_heading }} -->
+<!-- Question count: {{ question_count }} -->
+<!-- Label size: {{ labelSize }} -->
 
 <div class="govuk-form-group">
-    <label class="govuk-label govuk-label--{{ labelSize }}" for="phone">
-        {{ question.label }}
-    </label>
-    {% if question.hint %}
-    <div id="phone-hint" class="govuk-hint">
-        {{ question.hint }}
-    </div>
-    {% endif %}
+    <label class="govuk-label govuk-label--{{ labelSize }}" for="phone">{{ question.label }}</label>
+    {%- if question.hint -%}
+    <div id="phone-hint" class="govuk-hint">{{ question.hint }}</div>
+    {%- endif -%}
     <input class="govuk-input govuk-input--width-20" id="phone" name="phone" type="tel" autocomplete="tel"
         aria-describedby="phone-hint">
 </div>
-{# {% endfor %}
-{% endif %} #}
 
 {# {% if overview0 == "morethan1" %}
 {{ govukButton({

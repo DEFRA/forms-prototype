@@ -61,7 +61,7 @@ activeLinkId: "nav-editor"
     <p class="govuk-body govuk-!-margin-bottom-6">You cannot recover deleted pages.</p>
 
     <form action="/delete-page" method="POST" novalidate>
-      <input type="hidden" name="pageId" value="{{ currentPage.pageId }}">
+      <input type="hidden" name="pageId" value="{{ pageId }}">
       <input type="hidden" name="confirmDelete" id="confirmDelete" value="yes">
 
       <div class="govuk-button-group">

@@ -60,16 +60,6 @@ activeLinkId: "nav-editor"
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-full">
-        <div id="selected-filters" class="govuk-inset-text govuk-!-margin-top-2" style="display: none;">
-            <h3 id="applied-filters-heading" class="govuk-heading-s">Applied filters:</h3>
-            <ul class="govuk-list govuk-list--bullet govuk-list--spaced" id="filter-summary">
-            </ul>
-        </div>
-    </div>
-</div>
-
 <style>
     .guidance-card {
         border-left: 10px solid #b1b4b6;
@@ -84,21 +74,20 @@ activeLinkId: "nav-editor"
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const filterButton = document.getElementById('apply-filter');
-        const checkboxes = document.querySelectorAll('input[name="condition-filter"]');
-        const filterSummary = document.getElementById('filter-summary');
+        const applyFiltersButton = document.getElementById('apply-filters');
         const selectedFilters = document.getElementById('selected-filters');
+        const filterSummary = document.getElementById('filter-summary');
         const pageCards = document.querySelectorAll('.app-page-card');
 
-        if (!filterButton) {
+        if (!applyFiltersButton) {
             console.error('Filter button not found');
             return;
         }
 
         function updatePages() {
-            const selectedConditions = Array.from(checkboxes)
-                .filter(cb => cb.checked)
-                .map(cb => cb.value);
+            // Get all checked checkboxes
+            const checkedFilters = document.querySelectorAll('input[name="condition-filter"]:checked');
+            const selectedConditions = Array.from(checkedFilters).map(cb => cb.value);
 
             // Show/hide the filter summary
             if (selectedConditions.length > 0) {
@@ -111,7 +100,8 @@ activeLinkId: "nav-editor"
                 filterSummary.innerHTML = '';
             }
 
-            // Update page visibility
+            // Update visibility of page cards
+            let visiblePages = 0;
             pageCards.forEach(card => {
                 const cardConditions = (card.dataset.conditions || '').split(',').filter(Boolean);
 
@@ -124,27 +114,39 @@ activeLinkId: "nav-editor"
                     selectedConditions.some(condition => cardConditions.includes(condition));
 
                 card.style.display = shouldShow ? 'block' : 'none';
+                if (shouldShow) visiblePages++;
             });
 
             // Update counter
-            const totalPages = pageCards.length;
-            const visiblePages = Array.from(pageCards).filter(card => card.style.display !== 'none').length;
-
             const counterElement = document.getElementById('visible-pages-counter') ||
                 document.createElement('p');
             counterElement.id = 'visible-pages-counter';
             counterElement.className = 'govuk-body';
             counterElement.innerHTML = selectedConditions.length > 0 ?
-                `Showing ${visiblePages} of ${totalPages} pages with selected conditions` :
-                `Showing all ${totalPages} pages`;
+                `Showing ${visiblePages} of ${pageCards.length} pages with selected conditions` :
+                `Showing all ${pageCards.length} pages`;
 
             if (!document.getElementById('visible-pages-counter')) {
                 document.querySelector('.govuk-form-group').after(counterElement);
             }
         }
 
-        // Only handle filter button click
-        filterButton.addEventListener('click', updatePages);
+        // Handle filter button click
+        applyFiltersButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            updatePages();
+        });
+
+        // Add event listener for clear filters button
+        const clearFiltersButton = document.querySelector('.govuk-button--secondary');
+        if (clearFiltersButton) {
+            clearFiltersButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                // Uncheck all checkboxes
+                document.querySelectorAll('input[name="condition-filter"]').forEach(cb => cb.checked = false);
+                updatePages();
+            });
+        }
 
         // Initial update to show all pages
         updatePages();
@@ -153,7 +155,12 @@ activeLinkId: "nav-editor"
 
 <div class="govuk-grid-row">
     <!-- Left column for filters -->
-    <div class="govuk-grid-column-one-quarter">
+    <div class="govuk-grid-column-one-quarter" style="position: sticky; top: 0; height: fit-content;">
+        <div id="selected-filters" class="govuk-inset-text govuk-!-margin-top-2" style="display: none;">
+            <h3 id="applied-filters-heading" class="govuk-heading-s">Applied filters:</h3>
+            <ul class="govuk-list govuk-list--bullet govuk-list--spaced" id="filter-summary">
+            </ul>
+        </div>
 
         <aside id="search-filters" aria-describedby="search-filters-heading" class="app-search__filters">
             {% set uniqueConditions = [] %}
@@ -192,7 +199,7 @@ activeLinkId: "nav-editor"
             </div>
 
             <div id="search-buttons--header" class="govuk-button-group govuk-!-margin-bottom-4">
-                {{ govukButton({ text: "Apply filters", id: "apply-filter" }) }}
+                {{ govukButton({ text: "Apply filters", id: "apply-filters" }) }}
                 {{ govukButton({
                 text: "Clear filters",
                 href: "?page=1&name=&author=&organisation=&status=&sort=updated-newest",
@@ -208,7 +215,7 @@ activeLinkId: "nav-editor"
         {% if formPages.length %}
         {% for page in formPages %}
         {% if page.questions and page.questions.length > 0 or page.pageType == 'guidance' %}
-        <div class="app-page-card govuk-!-margin-bottom-0"
+        <div class="app-page-card"
             data-conditions="{% for condition in page.conditions %}{{ condition.conditionName }}{% if not loop.last %},{% endif %}{% endfor %}">
             <div class="govuk-grid-row">
                 <!-- Left Column: Summary Card -->
@@ -463,6 +470,9 @@ activeLinkId: "nav-editor"
                                                     '/form-editor/question-type/questions/previews/default-preview.html'
                                                     %}
                                                     {% endif %}
+                                                    {% set total_questions = page.questions | length %}
+                                                    {% set question_count = total_questions %}
+                                                    {% set currentPage = { questions: page.questions } %}
                                                     {% include previewTemplate %}
                                                 </div>
                                                 {% endfor %}
@@ -838,66 +848,6 @@ activeLinkId: "nav-editor"
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const filterButton = document.getElementById('apply-filter');
-
-        filterButton.addEventListener('click', function () {
-            const selectedCondition = document.getElementById('condition-filter').value;
-            const pageRows = document.querySelectorAll('.page-row');
-
-            console.log('Selected condition:', selectedCondition);
-            console.log('Found page rows:', pageRows.length);
-
-            pageRows.forEach((row, index) => {
-                console.log(`\nChecking row ${index + 1}:`);
-
-                if (!selectedCondition) {
-                    row.style.display = '';
-                    return;
-                }
-
-                // First, check if this page has a conditions section
-                const conditionsSection = row.querySelector('.govuk-summary-list__row dt.govuk-summary-list__key');
-                let hasCondition = false;
-
-                if (conditionsSection && conditionsSection.textContent.trim() === 'Page shown when') {
-                    const conditions = row.querySelectorAll('.govuk-summary-list__value .govuk-!-font-weight-bold');
-                    console.log('Number of conditions found:', conditions.length);
-
-                    conditions.forEach(condition => {
-                        const conditionText = condition.textContent.trim();
-                        console.log('Found condition:', conditionText);
-                        if (conditionText === selectedCondition) {
-                            hasCondition = true;
-                        }
-                    });
-                }
-
-                console.log('Has matching condition:', hasCondition);
-                row.style.display = hasCondition ? '' : 'none';
-            });
-
-            // Update the count of visible pages
-            const visiblePages = Array.from(pageRows).filter(row => row.style.display !== 'none').length;
-            const totalPages = pageRows.length;
-
-            // Add or update the counter
-            const counterElement = document.getElementById('visible-pages-counter') ||
-                document.createElement('p');
-            counterElement.id = 'visible-pages-counter';
-            counterElement.className = 'govuk-body';
-            counterElement.innerHTML = selectedCondition ?
-                `Showing ${visiblePages} of ${totalPages} pages with condition "${selectedCondition}"` :
-                `Showing all ${totalPages} pages`;
-
-            if (!document.getElementById('visible-pages-counter')) {
-                document.querySelector('.govuk-form-group').after(counterElement);
-            }
-        });
-    });
-</script>
-
-<script>
     document.addEventListener("DOMContentLoaded", function () {
         const dynamicCaption = document.getElementById("dynamic-caption");
         const setName = dynamicCaption ? dynamicCaption.getAttribute("data-setname") : null;
@@ -1103,5 +1053,124 @@ activeLinkId: "nav-editor"
             window.location.href = '/form-editor/preview';
         };
     })();
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const applyFiltersButton = document.getElementById('apply-filters');
+        const selectedFilters = document.getElementById('selected-filters');
+        const filterSummary = document.getElementById('filter-summary');
+        const pageCards = document.querySelectorAll('.app-page-card');
+
+        // Handle edit option clicks
+        document.addEventListener('click', function (e) {
+            if (e.target.closest('.govuk-link') && e.target.closest('.govuk-link').href.includes('editoption.html')) {
+                e.preventDefault();
+                const listItem = e.target.closest('.gem-c-reorderable-list__item');
+                const index = listItem.dataset.index;
+                const label = listItem.querySelector('.option-label-display').textContent.trim();
+                const hint = listItem.querySelector('.option-hint-input').value;
+
+                // Show the add option form
+                const addOptionForm = document.getElementById('add-option-form');
+                const addOptionButton = document.getElementById('add-option-button');
+                const newOptionLabel = document.getElementById('new-option-label');
+                const newOptionHint = document.getElementById('new-option-hint');
+                const saveItemButton = document.getElementById('save-new-option');
+
+                addOptionForm.style.display = 'block';
+                addOptionButton.style.display = 'none';
+
+                // Populate the form with existing values
+                newOptionLabel.value = label;
+                newOptionHint.value = hint;
+
+                // Update the heading
+                document.getElementById('add-option-heading').textContent = `Edit item ${index}`;
+
+                // Store the index being edited
+                addOptionForm.dataset.editIndex = index;
+
+                // Change save button text
+                saveItemButton.textContent = 'Save changes';
+
+                // Focus on the label input
+                newOptionLabel.focus();
+
+                // Update preview to highlight the edited item
+                updatePreview();
+                applyHighlight('label');
+            }
+        });
+
+        // Update save functionality to handle both new and edit cases
+        document.getElementById('save-new-option').addEventListener('click', function (e) {
+            e.preventDefault();
+            const addOptionForm = document.getElementById('add-option-form');
+            const editIndex = addOptionForm.dataset.editIndex;
+            const labelValue = document.getElementById('new-option-label').value.trim();
+            const hintValue = document.getElementById('new-option-hint').value.trim();
+
+            if (editIndex) {
+                // Edit existing item
+                const listItem = document.querySelector(`.gem-c-reorderable-list__item[data-index="${editIndex}"]`);
+                if (listItem) {
+                    listItem.querySelector('.option-label-display').textContent = labelValue;
+                    listItem.querySelector('.option-label-input-hidden').value = labelValue;
+                    listItem.querySelector('.option-hint-input').value = hintValue;
+                }
+                // Reset edit mode
+                addOptionForm.dataset.editIndex = '';
+                document.getElementById('save-new-option').textContent = 'Save item';
+            } else {
+                // Add new item (existing code)
+                const currentOptions = optionsContainer.querySelectorAll('.gem-c-reorderable-list__item');
+                const newIndex = currentOptions.length;
+
+                const newOptionHTML = `
+                    <li class="gem-c-reorderable-list__item" draggable="true" data-index="${newIndex + 1}">
+                        <div class="gem-c-reorderable-list__wrapper">
+                            <div class="gem-c-reorderable-list__content">
+                                <p class="govuk-body fauxlabel option-label-display" id="option-${newIndex + 1}-label-display">
+                                    ${labelValue}
+                                </p>
+                                <input type="hidden" id="option-${newIndex + 1}-label" class="option-label-input-hidden" 
+                                    name="option[${newIndex + 1}][option_label]" value="${labelValue}">
+                                <input type="hidden" id="option-${newIndex + 1}-hint" class="option-hint-input"
+                                    name="option[${newIndex + 1}][option_hint]" value="${hintValue}">
+                            </div>
+                            <div class="gem-c-reorderable-list__actions">
+                                <button class="gem-c-button govuk-button govuk-button--secondary js-reorderable-list-up"
+                                    type="button" aria-label="Move option up">Up</button>
+                                <button class="gem-c-button govuk-button govuk-button--secondary js-reorderable-list-down"
+                                    type="button" aria-label="Move option down">Down</button>
+                            </div>
+                            <div class="edit-item">
+                                <ul class="govuk-summary-list__actions-list">
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link govuk-link--no-visited-state" href="editoption.html?index=${newIndex + 1}">
+                                            Edit<span class="govuk-visually-hidden">option ${newIndex + 1}</span>
+                                        </a>
+                                    </li>
+                                    <li class="govuk-summary-list__actions-list-item">
+                                        <a class="govuk-link govuk-link--destructive delete-option-link" href="delete-option.html?index=${newIndex + 1}&text=${encodeURIComponent(labelValue)}" onclick="return true;">
+                                            Delete<span class="govuk-visually-hidden"> list item</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                `;
+                optionsContainer.insertAdjacentHTML('beforeend', newOptionHTML);
+            }
+
+            hideForm();
+            updateAllOptionsPreview();
+            updateHiddenOptionsData();
+            updateEditButtonVisibility();
+            updateMoveButtons();
+        });
+    });
 </script>
 {% endblock %}
