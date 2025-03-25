@@ -7,21 +7,24 @@ Preview form - Forms Designer
 {% block header %}
 {{ govukHeader({
 homepageUrl: "#",
-serviceName: "Forms Designer",
+serviceName: form.name,
 serviceUrl: "#",
-navigation: []
+navigation: [],
+containerClasses: "govuk-width-container--default"
 }) }}
 {% endblock %}
 
-{% block beforeContent %}
+{% block footer %}{% endblock %}
+
+{# {% block beforeContent %}
 {{ govukBackLink({
 text: "Back to form editor",
 href: "/form-editor/listing"
 }) }}
-{% endblock %}
+{% endblock %} #}
 
 {% block content %}
-<div class="govuk-grid-row">
+<div class="govuk-grid-row govuk-width-container--default">
     <div class="govuk-grid-column-two-thirds">
         <div id="form-preview-container">
             <h1 class="govuk-heading-l">Loading preview...</h1>

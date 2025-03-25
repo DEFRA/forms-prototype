@@ -205,6 +205,7 @@ activeLinkId: "nav-editor"
 
     <!-- Right column for pages -->
     <div class="govuk-grid-column-three-quarters">
+        {% if formPages.length %}
         <h2 class="govuk-heading-m" id="pages-count-heading">
             <span class="govuk-visually-hidden">Pages</span>
             <span id="pages-count">{{ formPages.length }}</span>
@@ -212,6 +213,7 @@ activeLinkId: "nav-editor"
         </h2>
 
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+        {% endif %}
 
         {% if formPages.length %}
         {% for page in formPages %}

@@ -13,6 +13,15 @@ class FormPreview {
       try {
         this.formPages = JSON.parse(pagesData);
         console.log("Loaded form pages:", this.formPages);
+
+        // Check if we're returning from check answers to a specific page
+        const storedPageIndex = sessionStorage.getItem("currentPageIndex");
+        if (storedPageIndex !== null) {
+          this.currentPageIndex = parseInt(storedPageIndex, 10);
+          // Clear the stored page index
+          sessionStorage.removeItem("currentPageIndex");
+        }
+
         this.renderCurrentPage();
       } catch (error) {
         console.error("Error parsing form pages:", error);
@@ -35,28 +44,85 @@ class FormPreview {
     // Clear existing content
     this.mainContainer.innerHTML = "";
 
-    // Create page container
-    const pageContainer = document.createElement("div");
-    pageContainer.className = "govuk-width-container";
+    // Create form
+    const form = document.createElement("form");
+    form.setAttribute("action", "#");
+    form.setAttribute("method", "post");
+    form.setAttribute("novalidate", "");
 
-    // Add back link if not on first page
+    // Only show back link after first page
     if (this.currentPageIndex > 0) {
       const backLink = document.createElement("a");
-      backLink.href = "#";
-      backLink.className = "govuk-back-link";
+      backLink.href = "javascript:window.history.back()";
+      backLink.className =
+        "govuk-back-link govuk-!-margin-bottom-8 govuk-!-margin-top-0 govuk-!-padding-top-0";
       backLink.textContent = "Back";
-      backLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        this.goToPreviousPage();
-      });
-      pageContainer.appendChild(backLink);
+      form.appendChild(backLink);
     }
+
+    // Add notification banner
+    const notificationBanner = document.createElement("div");
+    notificationBanner.className = "govuk-notification-banner";
+    notificationBanner.setAttribute("role", "region");
+    notificationBanner.setAttribute(
+      "aria-labelledby",
+      "govuk-notification-banner-title"
+    );
+    notificationBanner.setAttribute("data-module", "govuk-notification-banner");
+    notificationBanner.setAttribute("data-govuk-notification-banner-init", "");
+
+    const notificationBannerHeader = document.createElement("div");
+    notificationBannerHeader.className = "govuk-notification-banner__header";
+
+    const notificationBannerTitle = document.createElement("h2");
+    notificationBannerTitle.className = "govuk-notification-banner__title";
+    notificationBannerTitle.setAttribute(
+      "id",
+      "govuk-notification-banner-title"
+    );
+    notificationBannerTitle.textContent = "Important";
+
+    const notificationBannerContent = document.createElement("div");
+    notificationBannerContent.className = "govuk-notification-banner__content";
+
+    const notificationBannerHeading = document.createElement("p");
+    notificationBannerHeading.className =
+      "govuk-notification-banner__heading govuk-!-margin-bottom-0";
+    notificationBannerHeading.textContent =
+      "This is a preview of a draft form page you are editing";
+
+    const notificationBannerLinkContainer = document.createElement("p");
+    notificationBannerLinkContainer.className =
+      "govuk-notification-banner__heading govuk-!-margin-top-1 js-preview-banner-close";
+
+    const notificationBannerLink = document.createElement("a");
+    notificationBannerLink.className = "govuk-link--no-visited-state";
+    notificationBannerLink.href = "/form-editor/listing";
+    notificationBannerLink.textContent = "Go back to the editor";
+
+    const notificationBannerText = document.createElement("p");
+    notificationBannerText.className = "govuk-body govuk-!-margin-top-2";
+    notificationBannerText.textContent =
+      "It depends on answers from earlier pages in the form. In the live version, users will need to complete those questions first.";
+
+    notificationBannerHeader.appendChild(notificationBannerTitle);
+
+    notificationBannerLinkContainer.appendChild(notificationBannerLink);
+
+    notificationBannerContent.appendChild(notificationBannerHeading);
+    notificationBannerContent.appendChild(notificationBannerLinkContainer);
+    notificationBannerContent.appendChild(notificationBannerText);
+
+    notificationBanner.appendChild(notificationBannerHeader);
+    notificationBanner.appendChild(notificationBannerContent);
+
+    form.appendChild(notificationBanner);
 
     // Add page heading
     const heading = document.createElement("h1");
     heading.className = "govuk-heading-l";
     heading.textContent = currentPage.pageHeading || currentPage.title || "";
-    pageContainer.appendChild(heading);
+    form.appendChild(heading);
 
     // Add guidance text if it exists
     if (
@@ -66,20 +132,15 @@ class FormPreview {
       const guidance = document.createElement("div");
       guidance.className = "govuk-body";
       guidance.innerHTML = currentPage.guidanceOnlyGuidanceTextInput;
-      pageContainer.appendChild(guidance);
+      form.appendChild(guidance);
     }
 
     // Render questions if they exist
     if (currentPage.questions && currentPage.questions.length > 0) {
-      const formGroup = document.createElement("div");
-      formGroup.className = "govuk-form-group";
-
       currentPage.questions.forEach((question) => {
         const questionHtml = this.renderQuestion(question);
-        formGroup.innerHTML += questionHtml;
+        form.innerHTML += questionHtml;
       });
-
-      pageContainer.appendChild(formGroup);
     }
 
     // Add continue button if not on last page
@@ -90,23 +151,24 @@ class FormPreview {
       button.textContent = "Continue";
       button.addEventListener("click", (e) => {
         e.preventDefault();
-        this.goToNextPage();
+        this.handleContinue();
       });
-      pageContainer.appendChild(button);
+      form.appendChild(button);
     } else {
       // Add a "Check your answers" button on the last page
       const button = document.createElement("button");
       button.className = "govuk-button";
       button.setAttribute("data-module", "govuk-button");
-      button.textContent = "Check your answers";
+      button.textContent = "Continue";
       button.addEventListener("click", (e) => {
         e.preventDefault();
-        this.showCheckYourAnswers();
+        this.handleContinue();
       });
-      pageContainer.appendChild(button);
+      form.appendChild(button);
     }
 
-    this.mainContainer.appendChild(pageContainer);
+    // Add the form directly to the container
+    this.mainContainer.appendChild(form);
   }
 
   renderQuestion(question) {
@@ -392,6 +454,74 @@ class FormPreview {
         `;
   }
 
+  handleContinue() {
+    // Store the current answers before moving to next page
+    const answers = {};
+    const form = this.mainContainer.querySelector("form");
+
+    // First, handle date inputs by combining their parts
+    const currentPage = this.formPages[this.currentPageIndex];
+    if (currentPage.questions) {
+      currentPage.questions.forEach((question) => {
+        if (question.type === "date") {
+          const questionId = `question-${question.questionId}`;
+          const day =
+            form.querySelector(`[name="${questionId}-day"]`)?.value || "";
+          const month =
+            form.querySelector(`[name="${questionId}-month"]`)?.value || "";
+          const year =
+            form.querySelector(`[name="${questionId}-year"]`)?.value || "";
+
+          if (day && month && year) {
+            answers[questionId] = `${day} ${month} ${year}`;
+          }
+        }
+      });
+    }
+
+    // Then handle all other inputs
+    const inputs = form.querySelectorAll("input, select, textarea");
+    inputs.forEach((input) => {
+      // Skip the hidden input for answers-checked and date parts (already handled)
+      if (
+        input.name === "answers-checked" ||
+        input.name.endsWith("-day") ||
+        input.name.endsWith("-month") ||
+        input.name.endsWith("-year")
+      )
+        return;
+
+      if (input.type === "radio" || input.type === "checkbox") {
+        if (input.checked) {
+          answers[input.name] = input.value;
+        }
+      } else {
+        // Only store if there's a value
+        if (input.value.trim()) {
+          answers[input.name] = input.value.trim();
+        }
+      }
+    });
+
+    // Get existing answers or initialize empty object
+    const storedAnswers = JSON.parse(
+      sessionStorage.getItem("formAnswers") || "{}"
+    );
+    // Update with new answers
+    Object.assign(storedAnswers, answers);
+    // Store back in session storage
+    sessionStorage.setItem("formAnswers", JSON.stringify(storedAnswers));
+    console.log("Stored answers:", storedAnswers);
+
+    if (this.currentPageIndex < this.formPages.length - 1) {
+      this.currentPageIndex++;
+      this.renderCurrentPage();
+      window.scrollTo(0, 0);
+    } else {
+      this.showCheckYourAnswers();
+    }
+  }
+
   goToNextPage() {
     if (this.currentPageIndex < this.formPages.length - 1) {
       this.currentPageIndex++;
@@ -409,8 +539,8 @@ class FormPreview {
   }
 
   showCheckYourAnswers() {
-    // Implementation for check your answers page
-    console.log("Show check your answers page");
+    // Redirect to the check answers page
+    window.location.href = "/form-editor/check-answers";
   }
 
   showError(message) {
