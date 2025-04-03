@@ -289,7 +289,7 @@
     },
     "create_new_form": {
       "form_name": {
-        "title": "Enter name of your form please",
+        "title": "Enter name of your form",
         "hint": "Use an appropriate name for your form. You cannot change the form name once your form is live",
         "back": "Back",
         "continue": "Save and continue",

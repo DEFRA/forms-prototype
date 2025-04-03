@@ -189,6 +189,30 @@ activeLinkId: "nav-editor"
 																				{{ radio.hint }}
 																			</p>
 																			{% endif %}
+																			{% if radio.condition %}
+																			<p class="govuk-body-s govuk-!-margin-top-2"
+																				style="color: #505a5f;">
+																				<span
+																					class="govuk-!-font-weight-bold">Shown
+																					if:</span> {{
+																				radio.condition.conditionName }}
+																				{% for rule in radio.condition.rules %}
+																				{% if loop.first %}
+																				'{{ rule.questionText }}' {{
+																				rule.operator | replace("-", " ") }} '{{
+																				rule.value }}'
+																				{% else %}
+																				<span
+																					class="govuk-!-font-weight-bold">{{
+																					rule.logicalOperator |
+																					default('AND') }}</span>
+																				'{{ rule.questionText }}' {{
+																				rule.operator | replace("-", " ") }} '{{
+																				rule.value }}'
+																				{% endif %}
+																				{% endfor %}
+																			</p>
+																			{% endif %}
 																		</div>
 																		<input type="hidden"
 																			id="option-{{ loop.index }}-label"
@@ -280,6 +304,114 @@ activeLinkId: "nav-editor"
 																		}}</div>
 																	<input class="govuk-input" id="new-option-value"
 																		name="value" type="text" value="">
+																</div>
+
+																<!-- Conditions Section -->
+																<div class="govuk-form-group">
+																	<h3 class="govuk-heading-s">Show this option if</h3>
+
+																	<!-- New Condition Markup -->
+																	{% set newConditionMarkup %}
+																	<div class="govuk-form-group">
+																		<label class="govuk-label"
+																			for="condition-name">Condition name</label>
+																		<div class="govuk-hint">Names help you identify
+																			conditions in your form. Users will not see
+																			condition names.</div>
+																		<input class="govuk-input" id="condition-name"
+																			name="conditionName" type="text">
+																	</div>
+
+																	<div class="govuk-form-group">
+																		<label class="govuk-label"
+																			for="condition-question">Select a
+																			question</label>
+																		<select class="govuk-select"
+																			id="condition-question" name="question">
+																			<option value="" selected>Select a question
+																			</option>
+																			{% for question in availableQuestions %}
+																			<option value="{{ question.value }}"
+																				data-type="{{ question.type }}"
+																				data-options="{{ question.options | dump | e }}">
+																				{{ question.text }}
+																			</option>
+																			{% endfor %}
+																		</select>
+																	</div>
+
+																	<div class="govuk-form-group">
+																		{{ govukSelect({
+																		label: { text: "Condition type" },
+																		items: [
+																		{ value: "", text: "Select a condition type",
+																		selected: true },
+																		{ value: "is", text: "is", selected: true },
+																		{ value: "is-not", text: "is not" }
+																		]
+																		}) }}
+																	</div>
+
+																	<div class="govuk-form-group"
+																		id="condition-value-container">
+																		<label class="govuk-label"
+																			for="condition-value">Select a value</label>
+																		<select class="govuk-select"
+																			id="condition-value" name="value">
+																			<option value="">Select a value</option>
+																		</select>
+																	</div>
+
+																	<!-- Additional conditions container -->
+																	<div id="additional-conditions"></div>
+
+																	<!-- Add another condition button -->
+																	<div class="govuk-form-group">
+																		<button
+																			class="govuk-button govuk-button--inverse"
+																			id="add-condition-link">
+																			<svg class="govuk-!-margin-right-1"
+																				style="position: relative; top: 2px"
+																				width="12" height="12"
+																				viewBox="0 0 12 12" fill="none"
+																				xmlns="http://www.w3.org/2000/svg">
+																				<path d="M6 1V11" stroke="currentColor"
+																					stroke-width="2" />
+																				<path d="M1 6H11" stroke="currentColor"
+																					stroke-width="2" />
+																			</svg>
+																			Add another condition
+																		</button>
+																	</div>
+																	{% endset %}
+
+																	<!-- Condition Type Selection -->
+																	<div class="govuk-form-group">
+																		{{ govukRadios({
+																		name: "conditionType",
+																		fieldset: {
+																		legend: {
+																		text: "Control who can see this option based on
+																		previous answers",
+																		isPageHeading: false,
+																		classes: "govuk-fieldset__legend--s"
+																		}
+																		},
+																		hint: {
+																		text: "Set the conditions for when this option
+																		is shown to users"
+																		},
+																		items: [
+																		{
+																		value: "new",
+																		text: "Create a new condition",
+																		conditional: {
+																		html: newConditionMarkup | safe
+																		}
+																		}
+																		]
+																		}) }}
+																	</div>
 																</div>
 															</div>
 														</details>
@@ -728,7 +860,75 @@ activeLinkId: "nav-editor"
 			e.preventDefault();
 			const labelValue = newOptionLabel.value.trim();
 
-			// Add the new option
+			// Get conditions data
+			const conditions = [];
+			const conditionName = document.getElementById('condition-name')?.value.trim();
+			const questionSelect = document.getElementById('condition-question');
+			const operatorSelect = document.getElementById('condition-operator');
+			const valueContainer = document.getElementById('condition-value-container');
+
+			if (conditionName && questionSelect && operatorSelect && valueContainer) {
+				// Add first condition
+				const firstQuestionText = questionSelect.options[questionSelect.selectedIndex].text.replace(/\s*\([^)]*\)/, '').trim();
+				const firstQuestionType = questionSelect.options[questionSelect.selectedIndex].getAttribute("data-type");
+				let firstValue = "";
+
+				if (firstQuestionType === "radios") {
+					const selectedRadio = valueContainer.querySelector('input[type="radio"]:checked');
+					firstValue = selectedRadio ? selectedRadio.value : "";
+				} else if (firstQuestionType === "checkboxes") {
+					const checkedBoxes = valueContainer.querySelectorAll('input[type="checkbox"]:checked');
+					firstValue = Array.from(checkedBoxes).map(cb => cb.value);
+				} else {
+					const selectElement = valueContainer.querySelector('select');
+					firstValue = selectElement ? selectElement.value : "";
+				}
+
+				conditions.push({
+					conditionName: conditionName,
+					rules: [{
+						questionText: firstQuestionText,
+						operator: operatorSelect.value,
+						value: firstValue,
+						logicalOperator: null
+					}]
+				});
+
+				// Get additional conditions
+				const additionalConditions = document.querySelectorAll('#additional-conditions .condition-item');
+				additionalConditions.forEach((condition) => {
+					const logicalOperator = condition.querySelector('select[name^="logical-operator"]')?.value || 'AND';
+					const questionSelect = condition.querySelector('.condition-question');
+					const operatorSelect = condition.querySelector('select[id^="condition-operator"]');
+					const valueContainer = condition.querySelector('.condition-value-container');
+
+					if (questionSelect && operatorSelect && valueContainer) {
+						const questionText = questionSelect.options[questionSelect.selectedIndex].text.replace(/\s*\([^)]*\)/, '').trim();
+						const questionType = questionSelect.options[questionSelect.selectedIndex].getAttribute("data-type");
+						let value = '';
+
+						if (questionType === "radios") {
+							const selectedRadio = valueContainer.querySelector('input[type="radio"]:checked');
+							value = selectedRadio ? selectedRadio.value : "";
+						} else if (questionType === "checkboxes") {
+							const checkedBoxes = valueContainer.querySelectorAll('input[type="checkbox"]:checked');
+							value = Array.from(checkedBoxes).map(cb => cb.value);
+						} else {
+							const selectElement = valueContainer.querySelector('select');
+							value = selectElement ? selectElement.value : "";
+						}
+
+						conditions[0].rules.push({
+							questionText: questionText,
+							operator: operatorSelect.value,
+							value: value,
+							logicalOperator: logicalOperator
+						});
+					}
+				});
+			}
+
+			// Add the new option with conditions
 			const currentOptions = optionsContainer.querySelectorAll('.gem-c-reorderable-list__item');
 			const newIndex = currentOptions.length;
 
@@ -748,6 +948,10 @@ activeLinkId: "nav-editor"
 								name="option[${newIndex + 1}][option_label]" value="${labelValue}">
 							<input type="hidden" id="option-${newIndex + 1}-hint" class="option-hint-input"
 								name="option[${newIndex + 1}][option_hint]" value="${newOptionHint.value}">
+							${conditions.length > 0 ? `
+							<input type="hidden" id="option-${newIndex + 1}-conditions" class="option-conditions-input"
+								name="option[${newIndex + 1}][conditions]" value='${JSON.stringify(conditions)}'>
+							` : ''}
 						</div>
 						<div class="gem-c-reorderable-list__actions">
 							<button class="gem-c-button govuk-button govuk-button--secondary js-reorderable-list-up"
@@ -777,7 +981,7 @@ activeLinkId: "nav-editor"
 			hideForm();
 			updateAllOptionsPreview();
 			updateHiddenOptionsData();
-			updateEditButtonVisibility(); // Update edit button visibility after adding the new option
+			updateEditButtonVisibility();
 		});
 
 		// Function to update the edit button visibility
@@ -1366,33 +1570,6 @@ activeLinkId: "nav-editor"
 				}
 			});
 
-			editHintInput.addEventListener('focus', () => {
-				const previewItem = document.querySelector(`#listPreview-option${listItem.dataset.index - 1}`).closest('.govuk-radios__item');
-				if (previewItem) {
-					let hintElement = previewItem.querySelector('.govuk-radios__hint');
-					if (!hintElement) {
-						hintElement = document.createElement('div');
-						hintElement.className = 'govuk-hint govuk-radios__hint';
-						hintElement.textContent = editHintInput.value || 'Hint text';
-						previewItem.appendChild(hintElement);
-					}
-					hintElement.classList.add('highlight');
-				}
-			});
-
-			editHintInput.addEventListener('blur', () => {
-				const previewItem = document.querySelector(`#listPreview-option${listItem.dataset.index - 1}`).closest('.govuk-radios__item');
-				if (previewItem) {
-					const hintElement = previewItem.querySelector('.govuk-radios__hint');
-					if (hintElement) {
-						hintElement.classList.remove('highlight');
-						if (!editHintInput.value.trim() && hintElement.textContent === 'Hint text') {
-							hintElement.remove();
-						}
-					}
-				}
-			});
-
 			// Update preview immediately to show current state
 			updateEditPreview(listItem, editLabelInput.value, editHintInput.value);
 
@@ -1494,23 +1671,480 @@ activeLinkId: "nav-editor"
 				window.history.replaceState({}, document.title, newUrl);
 			}
 		});
+
+		// Conditions functionality
+		const questionSelect = document.getElementById('condition-question');
+		const valueContainer = document.getElementById('condition-value-container');
+		const addConditionLink = document.getElementById('add-condition-link');
+		const additionalConditions = document.getElementById('additional-conditions');
+		let conditionCount = 1;
+
+		// Function to update value options based on selected question
+		function updateValueOptions(questionSelect, valueSelect) {
+			const selectedOption = questionSelect.options[questionSelect.selectedIndex];
+			const questionType = selectedOption.getAttribute('data-type');
+			const rawOptions = selectedOption.getAttribute('data-options');
+
+			// Clear existing options
+			valueSelect.innerHTML = '<option value="">Select a value</option>';
+
+			try {
+				if (questionType === 'yes-no') {
+					valueSelect.innerHTML += `
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					`;
+				} else if (['radios', 'checkboxes', 'select'].includes(questionType)) {
+					const options = JSON.parse(rawOptions);
+					options.forEach(option => {
+						const value = option.value || option.text;
+						valueSelect.innerHTML += `
+							<option value="${value}">${option.text}</option>
+						`;
+					});
+				}
+			} catch (e) {
+				console.error('Error parsing options:', e);
+			}
+		}
+
+		// Add event listener to first question select
+		if (questionSelect) {
+			questionSelect.addEventListener('change', () => {
+				const valueSelect = document.getElementById('condition-value');
+				updateValueOptions(questionSelect, valueSelect);
+			});
+		}
+
+		// Handle adding new conditions
+		if (addConditionLink) {
+			addConditionLink.addEventListener('click', function (e) {
+				e.preventDefault();
+
+				const newCondition = document.createElement('div');
+				newCondition.className = 'condition-item govuk-!-margin-top-4 govuk-!-padding-4';
+				newCondition.style.position = 'relative';
+				newCondition.style.background = '#f3f2f1';
+
+				newCondition.innerHTML = `
+					<!-- Remove link positioned absolutely in top right -->
+					<a href="#" class="govuk-link govuk-link--no-visited-state govuk-link--destructive govuk-!-font-size-16" 
+						onclick="event.preventDefault(); removeCondition(this);"
+						style="position: absolute; top: 15px; right: 15px;">
+							<svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="2"/>
+								<path d="M1.5 1.5L10.5 10.5" stroke="currentColor" stroke-width="2"/>
+							</svg>
+							Remove this condition
+					</a>
+
+					<div class="govuk-form-group">
+						<label class="govuk-label">Combine with</label>
+						<select class="govuk-select" name="logical-operator-${conditionCount}">
+							<option value="AND">AND</option>
+							<option value="OR">OR</option>
+						</select>
+					</div>
+					
+					<div class="govuk-form-group">
+						<label class="govuk-label" for="condition-question-${conditionCount}">Select a question</label>
+						<select class="govuk-select condition-question" 
+								id="condition-question-${conditionCount}" 
+								name="question-${conditionCount}">
+							${questionSelect.innerHTML}
+						</select>
+					</div>
+
+					<div class="govuk-form-group">
+						<label class="govuk-label" for="condition-operator-${conditionCount}">Condition type</label>
+						<select class="govuk-select" id="condition-operator-${conditionCount}" name="operator-${conditionCount}">
+							<option value="">Select a condition type</option>
+							<option value="is" selected>is</option>
+							<option value="is-not">is not</option>
+						</select>
+					</div>
+
+					<div class="govuk-form-group">
+						<label class="govuk-label" for="condition-value-${conditionCount}">Select a value</label>
+						<div class="condition-value-container">
+							<select class="govuk-select condition-value" 
+									id="condition-value-${conditionCount}" 
+									name="value-${conditionCount}">
+								<option value="">Select a value</option>
+							</select>
+						</div>
+					</div>
+				`;
+
+				// Add event listener to new question select
+				const newQuestionSelect = newCondition.querySelector('.condition-question');
+				const newValueContainer = newCondition.querySelector('.condition-value-container');
+				newQuestionSelect.addEventListener('change', () => {
+					const selectedOption = newQuestionSelect.options[newQuestionSelect.selectedIndex];
+					const questionType = selectedOption.getAttribute("data-type") || "";
+					const rawOptions = selectedOption.getAttribute("data-options");
+
+					// Clear existing options
+					newValueContainer.innerHTML = ''; // Clear the entire container
+
+					try {
+						// Handle yes/no questions with dropdown
+						if (questionType === "yes-no") {
+							const select = document.createElement("select");
+							select.classList.add("govuk-select");
+							select.id = `condition-value-${conditionCount}`;
+							select.name = `value-${conditionCount}`;
+
+							select.innerHTML = `
+								<option value="">Select yes or no</option>
+								<option value="yes">Yes</option>
+								<option value="no">No</option>
+							`;
+
+							const label = document.createElement("label");
+							label.classList.add("govuk-label");
+							label.setAttribute("for", `condition-value-${conditionCount}`);
+							label.textContent = "Select yes or no";
+
+							newValueContainer.appendChild(label);
+							newValueContainer.appendChild(select);
+							newValueContainer.style.display = "block";
+							return;
+						}
+
+						// Handle radio questions with radio buttons
+						if (questionType === "radios") {
+							const options = rawOptions ? JSON.parse(rawOptions) : [];
+
+							if (Array.isArray(options) && options.length > 0) {
+								const fieldset = document.createElement("fieldset");
+								fieldset.classList.add("govuk-fieldset");
+
+								const legend = document.createElement("legend");
+								legend.classList.add("govuk-fieldset__legend", "govuk-fieldset__legend--s");
+								legend.textContent = "Select an option";
+								fieldset.appendChild(legend);
+
+								const radiosDiv = document.createElement("div");
+								radiosDiv.classList.add("govuk-radios", "govuk-radios--small");
+								radiosDiv.setAttribute("data-module", "govuk-radios");
+
+								options.forEach((option, index) => {
+									const itemDiv = document.createElement("div");
+									itemDiv.classList.add("govuk-radios__item");
+
+									const radio = document.createElement("input");
+									radio.classList.add("govuk-radios__input");
+									radio.type = "radio";
+									radio.id = `radio-${index}`;
+									radio.name = "value";
+									radio.value = option.value || option.label;
+
+									const label = document.createElement("label");
+									label.classList.add("govuk-label", "govuk-radios__label");
+									label.setAttribute("for", `radio-${index}`);
+									label.textContent = option.label;
+
+									itemDiv.appendChild(radio);
+									itemDiv.appendChild(label);
+
+									radiosDiv.appendChild(itemDiv);
+								});
+
+								fieldset.appendChild(radiosDiv);
+								valueContainer.appendChild(fieldset);
+								valueContainer.style.display = "block";
+								return;
+							}
+						}
+
+						// Handle checkbox questions with actual checkboxes
+						if (questionType === "checkboxes") {
+							const options = rawOptions ? JSON.parse(rawOptions) : [];
+
+							if (Array.isArray(options) && options.length > 0) {
+								const fieldset = document.createElement("fieldset");
+								fieldset.classList.add("govuk-fieldset");
+
+								const legend = document.createElement("legend");
+								legend.classList.add("govuk-fieldset__legend", "govuk-fieldset__legend--s");
+								legend.textContent = "Select all that apply";
+								fieldset.appendChild(legend);
+
+								const checkboxesDiv = document.createElement("div");
+								checkboxesDiv.classList.add("govuk-checkboxes", "govuk-checkboxes--small");
+								checkboxesDiv.setAttribute("data-module", "govuk-checkboxes");
+
+								options.forEach((option, index) => {
+									const itemDiv = document.createElement("div");
+									itemDiv.classList.add("govuk-checkboxes__item");
+
+									const checkbox = document.createElement("input");
+									checkbox.classList.add("govuk-checkboxes__input");
+									checkbox.type = "checkbox";
+									checkbox.id = `checkbox-${index}`;
+									checkbox.name = "value";
+									checkbox.value = option.value || option.label;
+
+									const label = document.createElement("label");
+									label.classList.add("govuk-label", "govuk-checkboxes__label");
+									label.setAttribute("for", `checkbox-${index}`);
+									label.textContent = option.label;
+
+									itemDiv.appendChild(checkbox);
+									itemDiv.appendChild(label);
+									checkboxesDiv.appendChild(itemDiv);
+								});
+
+								fieldset.appendChild(checkboxesDiv);
+								valueContainer.appendChild(fieldset);
+								valueContainer.style.display = "block";
+								return;
+							}
+						}
+
+						// Handle select questions with dropdown
+						if (questionType === "select") {
+							const select = document.createElement("select");
+							select.classList.add("govuk-select");
+							select.id = `condition-value-${conditionCount}`;
+							select.name = `value-${conditionCount}`;
+
+							const defaultOption = document.createElement("option");
+							defaultOption.value = "";
+							defaultOption.textContent = "Select from the list";
+							select.appendChild(defaultOption);
+
+							const options = rawOptions ? JSON.parse(rawOptions) : [];
+
+							if (Array.isArray(options) && options.length > 0) {
+								options.forEach(option => {
+									const newOption = document.createElement("option");
+									newOption.value = option.value || option.label;
+									newOption.textContent = option.label;
+									select.appendChild(newOption);
+								});
+
+								const label = document.createElement("label");
+								label.classList.add("govuk-label");
+								label.setAttribute("for", `condition-value-${conditionCount}`);
+								label.textContent = "Select from the list";
+
+								valueContainer.appendChild(label);
+								valueContainer.appendChild(select);
+								valueContainer.style.display = "block";
+							}
+						}
+					} catch (e) {
+						console.error("Error parsing options:", e);
+					}
+				});
+
+				additionalConditions.appendChild(newCondition);
+				conditionCount++;
+			});
+		}
+
+		function removeCondition(element) {
+			// Find the closest parent condition-item div and remove it
+			const conditionItem = element.closest('.condition-item');
+			if (conditionItem) {
+				conditionItem.remove();
+			}
+		}
+
+		// Add click handlers to all remove condition links
+		document.addEventListener('click', function (event) {
+			const removeLink = event.target.closest('.govuk-link--destructive');
+			if (removeLink && removeLink.textContent.trim() === 'Remove this condition') {
+				event.preventDefault();
+				const conditionItem = removeLink.closest('.condition-item');
+				if (conditionItem) {
+					conditionItem.remove();
+				}
+			}
+		});
 	});
 </script>
 
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
-		var secondContainer = document.getElementById("second-container");
-		var borderLeftContainerRadios = document.getElementById("border-left-container-radios");
+		// Get all radio buttons with name "conditionType"
+		const conditionTypeRadios = document.querySelectorAll('input[name="conditionType"]');
+		const newConditionContent = document.querySelector('[value="new"]')?.closest('.govuk-radios__item')?.querySelector('.govuk-radios__conditional');
 
-		if (secondContainer && borderLeftContainerRadios) {
-			// Scroll the `borderLeftContainerRadios` element into view within `second-container`
-			borderLeftContainerRadios.scrollIntoView({
-				behavior: "smooth",
-				block: "nearest"
+		// Initially hide all conditional content
+		if (newConditionContent) {
+			newConditionContent.classList.add('govuk-radios__conditional--hidden');
+		}
+
+		// Add event listeners to radio buttons
+		conditionTypeRadios.forEach(radio => {
+			radio.addEventListener('change', function () {
+				if (this.value === 'new' && newConditionContent) {
+					newConditionContent.classList.remove('govuk-radios__conditional--hidden');
+				} else if (newConditionContent) {
+					newConditionContent.classList.add('govuk-radios__conditional--hidden');
+				}
 			});
-			console.log("Scrolled to border-left-container-textarea within second-container");
-		} else {
-			console.log("second-container or border-left-container-textarea not found");
+		});
+
+		// Function to update value options based on selected question
+		function updateValueOptions(questionSelect, valueContainer) {
+			const selectedOption = questionSelect.options[questionSelect.selectedIndex];
+			const questionType = selectedOption.getAttribute('data-type');
+			const rawOptions = selectedOption.getAttribute('data-options');
+
+			// Clear existing options
+			valueContainer.innerHTML = '';
+
+			try {
+				if (questionType === 'yes-no') {
+					const select = document.createElement('select');
+					select.classList.add('govuk-select');
+					select.id = 'condition-value';
+					select.name = 'value';
+
+					select.innerHTML = `
+						<option value="">Select yes or no</option>
+						<option value="yes">Yes</option>
+						<option value="no">No</option>
+					`;
+
+					const label = document.createElement('label');
+					label.classList.add('govuk-label');
+					label.setAttribute('for', 'condition-value');
+					label.textContent = 'Select yes or no';
+
+					valueContainer.appendChild(label);
+					valueContainer.appendChild(select);
+					return;
+				}
+
+				if (['radios', 'checkboxes', 'select'].includes(questionType)) {
+					const options = JSON.parse(rawOptions);
+					if (Array.isArray(options) && options.length > 0) {
+						const select = document.createElement('select');
+						select.classList.add('govuk-select');
+						select.id = 'condition-value';
+						select.name = 'value';
+
+						const defaultOption = document.createElement('option');
+						defaultOption.value = '';
+						defaultOption.textContent = 'Select from the list';
+						select.appendChild(defaultOption);
+
+						options.forEach(option => {
+							const newOption = document.createElement('option');
+							newOption.value = option.value || option.label;
+							newOption.textContent = option.label;
+							select.appendChild(newOption);
+						});
+
+						const label = document.createElement('label');
+						label.classList.add('govuk-label');
+						label.setAttribute('for', 'condition-value');
+						label.textContent = 'Select from the list';
+
+						valueContainer.appendChild(label);
+						valueContainer.appendChild(select);
+					}
+				}
+			} catch (e) {
+				console.error('Error parsing options:', e);
+			}
+		}
+
+		// Add event listener to question select
+		const questionSelect = document.getElementById('condition-question');
+		const valueContainer = document.getElementById('condition-value-container');
+
+		if (questionSelect && valueContainer) {
+			questionSelect.addEventListener('change', () => {
+				updateValueOptions(questionSelect, valueContainer);
+			});
+		}
+
+		// Handle adding new conditions
+		const addConditionLink = document.getElementById('add-condition-link');
+		const additionalConditions = document.getElementById('additional-conditions');
+		let conditionCount = 1;
+
+		if (addConditionLink && additionalConditions) {
+			addConditionLink.addEventListener('click', function (e) {
+				e.preventDefault();
+
+				const newCondition = document.createElement('div');
+				newCondition.className = 'condition-item govuk-!-margin-top-4 govuk-!-padding-4';
+				newCondition.style.position = 'relative';
+				newCondition.style.background = '#f3f2f1';
+
+				newCondition.innerHTML = `
+					<a href="#" class="govuk-link govuk-link--no-visited-state govuk-link--destructive govuk-!-font-size-16" 
+						onclick="event.preventDefault(); removeCondition(this);"
+						style="position: absolute; top: 15px; right: 15px;">
+						<svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="2"/>
+							<path d="M1.5 1.5L10.5 10.5" stroke="currentColor" stroke-width="2"/>
+						</svg>
+						Remove this condition
+					</a>
+
+					<div class="govuk-form-group">
+						<label class="govuk-label">Combine with</label>
+						<select class="govuk-select" name="logical-operator-${conditionCount}">
+							<option value="AND">AND</option>
+							<option value="OR">OR</option>
+						</select>
+					</div>
+					
+					<div class="govuk-form-group">
+						<label class="govuk-label" for="condition-question-${conditionCount}">Select a question</label>
+						<select class="govuk-select condition-question" 
+								id="condition-question-${conditionCount}" 
+								name="question-${conditionCount}">
+							${questionSelect.innerHTML}
+						</select>
+					</div>
+
+					<div class="govuk-form-group">
+						<label class="govuk-label" for="condition-operator-${conditionCount}">Condition type</label>
+						<select class="govuk-select" id="condition-operator-${conditionCount}" name="operator-${conditionCount}">
+							<option value="">Select a condition type</option>
+							<option value="is" selected>is</option>
+							<option value="is-not">is not</option>
+						</select>
+					</div>
+
+					<div class="govuk-form-group">
+						<label class="govuk-label" for="condition-value-${conditionCount}">Select a value</label>
+						<div class="condition-value-container">
+							<select class="govuk-select condition-value" 
+									id="condition-value-${conditionCount}" 
+									name="value-${conditionCount}">
+								<option value="">Select a value</option>
+							</select>
+						</div>
+					</div>
+				`;
+
+				// Add event listener to new question select
+				const newQuestionSelect = newCondition.querySelector('.condition-question');
+				const newValueContainer = newCondition.querySelector('.condition-value-container');
+				newQuestionSelect.addEventListener('change', () => {
+					updateValueOptions(newQuestionSelect, newValueContainer);
+				});
+
+				additionalConditions.appendChild(newCondition);
+				conditionCount++;
+			});
+		}
+
+		function removeCondition(element) {
+			const conditionItem = element.closest('.condition-item');
+			if (conditionItem) {
+				conditionItem.remove();
+			}
 		}
 	});
 </script>

@@ -6,10 +6,23 @@
 const govukPrototypeKit = require("govuk-prototype-kit");
 const router = govukPrototypeKit.requests.setupRouter();
 const terms = require("./data/dictionary.json");
+const fs = require("fs");
+const path = require("path");
 
 // Add middleware to make terms available to all templates
 router.use((req, res, next) => {
   res.locals.commonTerms = terms;
+  next();
+});
+
+// Add middleware to initialize form name in session data
+router.use((req, res, next) => {
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+  if (!req.session.data.formName) {
+    req.session.data.formName = "Food takeaway (user research)";
+  }
   next();
 });
 
@@ -1048,6 +1061,38 @@ router.get("/form-editor/question-type/radios-nf/edit", (req, res) => {
     radioList = req.session.data?.radioList || [];
   }
 
+  // Get all available questions for conditions
+  const availableQuestions = formPages
+    .flatMap((page) => page.questions)
+    .filter((question) => {
+      const type = question.subType || question.type;
+      return ["radios", "checkboxes", "yes-no"].includes(type);
+    })
+    .map((question) => ({
+      value: question.questionId,
+      text: question.label,
+      type: question.subType || question.type,
+      options: question.options,
+    }));
+
+  // Collect all existing conditions
+  const existingConditions = formPages
+    .flatMap((page) => page.conditions || [])
+    .map((condition) => ({
+      value: condition.id.toString(),
+      text: condition.conditionName,
+      hint: {
+        text: condition.rules
+          .map(
+            (rule) =>
+              `${rule.questionText} ${rule.operator} ${
+                Array.isArray(rule.value) ? rule.value.join(" or ") : rule.value
+              }`
+          )
+          .join(" AND "),
+      },
+    }));
+
   // Render the edit page with the radioList
   console.log("Current radio options:", radioList);
 
@@ -1062,6 +1107,8 @@ router.get("/form-editor/question-type/radios-nf/edit", (req, res) => {
         "Food takeaway (user research)",
     },
     commonTerms: terms,
+    availableQuestions: availableQuestions,
+    existingConditions: existingConditions,
   });
 });
 
@@ -1689,6 +1736,36 @@ router.post("/create-new-form/policy-sme", (req, res) => {
     },
   };
 
+  // Add form to library
+  try {
+    const libraryPath = path.join(__dirname, "data", "form-library.json");
+    const libraryData = JSON.parse(fs.readFileSync(libraryPath, "utf8"));
+
+    // Create new form entry
+    const newForm = {
+      name: req.session.data.formName,
+      path: "forms/form-home/report-a-dead-wild-bird-published", // Default path
+      organisation: req.session.data.organisationName,
+      status: "draft",
+      created: {
+        date: new Date().toISOString().split("T")[0],
+        name: "Chris Smith", // Current user
+      },
+      updated: {
+        date: new Date().toISOString().split("T")[0],
+        name: "Chris Smith", // Current user
+      },
+    };
+
+    // Add to library
+    libraryData.push(newForm);
+
+    // Write back to file
+    fs.writeFileSync(libraryPath, JSON.stringify(libraryData, null, 2));
+  } catch (error) {
+    console.error("Error updating form library:", error);
+  }
+
   // Log the final session data
   console.log("Final session data:", req.session.data);
 
@@ -1799,7 +1876,7 @@ router.post("/form-overview/index", (req, res) => {
 // Support pages routes
 router.get("/form-overview/index/support/phone", (req, res) => {
   const formData = req.session.data || {};
-  res.render("form-overview/support/phone", {
+  res.render("form-overview/support/add-telephone", {
     form: {
       name: formData.formName || "Food takeaway (user research)",
       support: {
@@ -1830,7 +1907,7 @@ router.post("/form-overview/index/support/phone", (req, res) => {
 
 router.get("/form-overview/index/support/email", (req, res) => {
   const formData = req.session.data || {};
-  res.render("form-overview/support/email", {
+  res.render("form-overview/support/add-email", {
     form: {
       name: formData.formName || "Food takeaway (user research)",
       support: {
@@ -1844,13 +1921,15 @@ router.get("/form-overview/index/support/email", (req, res) => {
 router.post("/form-overview/index/support/email", (req, res) => {
   const formData = req.session.data || {};
   const emailAddress = req.body.emailAddress;
+  const responseTime = req.body.responseTime;
 
-  // Update the form details with the email address
+  // Update the form details with the email and response time
   formData.formDetails = {
     ...formData.formDetails,
     support: {
       ...formData.formDetails?.support,
       email: emailAddress,
+      responseTime: responseTime,
     },
     lastUpdated: new Date().toISOString(),
   };
@@ -1861,27 +1940,29 @@ router.post("/form-overview/index/support/email", (req, res) => {
 
 router.get("/form-overview/index/support/link", (req, res) => {
   const formData = req.session.data || {};
-  res.render("form-overview/support/link", {
+  res.render("form-overview/support/add-contact-link", {
     form: {
       name: formData.formName || "Food takeaway (user research)",
       support: {
         link: formData.formDetails?.support?.link || "",
       },
     },
-    pageName: "Add online contact link for support",
+    pageName: "Add contact link for support",
   });
 });
 
 router.post("/form-overview/index/support/link", (req, res) => {
   const formData = req.session.data || {};
   const contactLink = req.body.contactLink;
+  const contactLinkDescription = req.body.contactLinkDescription;
 
-  // Update the form details with the contact link
+  // Update the form details with the contact link and description
   formData.formDetails = {
     ...formData.formDetails,
     support: {
       ...formData.formDetails?.support,
       link: contactLink,
+      linkDescription: contactLinkDescription,
     },
     lastUpdated: new Date().toISOString(),
   };
@@ -1890,112 +1971,16 @@ router.post("/form-overview/index/support/link", (req, res) => {
   res.redirect("/form-overview/index");
 });
 
-router.get("/form-overview/index/support/address", (req, res) => {
-  const formData = req.session.data || {};
-  res.render("form-overview/support/add-address", {
-    form: {
-      name: formData.formName || "Food takeaway (user research)",
-      support: {
-        address: formData.formDetails?.support?.address || {
-          line1: "",
-          line2: "",
-          town: "",
-          county: "",
-          postcode: "",
-        },
-      },
-    },
-    pageName: "Add address for support",
-  });
-});
-
-router.post("/form-overview/index/support/address", (req, res) => {
-  const formData = req.session.data || {};
-  const addressDetails = {
-    line1: req.body.addressLine1,
-    line2: req.body.addressLine2,
-    town: req.body.addressTown,
-    county: req.body.addressCounty,
-    postcode: req.body.addressPostcode,
-  };
-
-  // Update the form details with the address
-  formData.formDetails = {
-    ...formData.formDetails,
-    support: {
-      ...formData.formDetails?.support,
-      address: addressDetails,
-    },
-    lastUpdated: new Date().toISOString(),
-  };
-
-  req.session.data = formData;
-  res.redirect("/form-overview/index");
-});
-
-// Next steps support
-router.get("/form-overview/index/support/next-steps", (req, res) => {
-  const formData = req.session.data || {};
-  res.render("form-overview/support/next-steps", {
-    form: {
-      name: formData.formName || "Food takeaway (user research)",
-      nextSteps: formData.formDetails?.nextSteps || "",
-    },
-    pageName: "What happens next",
-  });
-});
-
-router.post("/form-overview/index/support/next-steps", (req, res) => {
-  const formData = req.session.data || {};
-  const nextSteps = req.body.nextSteps;
-
-  // Update the form details with the next steps
-  formData.formDetails = {
-    ...formData.formDetails,
-    nextSteps: nextSteps,
-    lastUpdated: new Date().toISOString(),
-  };
-
-  req.session.data = formData;
-  res.redirect("/form-overview/index");
-});
-
-// Privacy notice support
-router.get("/form-overview/index/support/privacy-notice", (req, res) => {
-  const formData = req.session.data || {};
-  res.render("form-overview/support/privacy-notice", {
-    form: {
-      name: formData.formName || "Food takeaway (user research)",
-      privacyNotice: formData.formDetails?.privacyNotice || "",
-    },
-    pageName: "Add privacy notice link",
-  });
-});
-
-router.post("/form-overview/index/support/privacy-notice", (req, res) => {
-  const formData = req.session.data || {};
-  const privacyLink = req.body.privacyLink;
-
-  // Update the form details with the privacy notice link
-  formData.formDetails = {
-    ...formData.formDetails,
-    privacyNotice: privacyLink,
-    lastUpdated: new Date().toISOString(),
-  };
-
-  req.session.data = formData;
-  res.redirect("/form-overview/index");
-});
-
-// Notification email routes
 router.get("/form-overview/index/support/notification-email", (req, res) => {
   const formData = req.session.data || {};
   res.render("form-overview/support/notification-email", {
     form: {
       name: formData.formName || "Food takeaway (user research)",
+    },
+    data: {
       notificationEmail: formData.formDetails?.notificationEmail || "",
     },
-    pageName: "Email address for submitted forms",
+    pageName: "Add notification email",
   });
 });
 
@@ -2014,129 +1999,228 @@ router.post("/form-overview/index/support/notification-email", (req, res) => {
   res.redirect("/form-overview/index");
 });
 
-/* dictionary stuff */
-
-const path = require("path");
-
-// Finally, export the router
-module.exports = router;
-
-router.get("/form-editor/information-type-nf.html", function (req, res) {
+router.get("/form-overview/index/support/next-steps", (req, res) => {
   const formData = req.session.data || {};
-  const pageIndex = req.session.data["currentPageIndex"] || 0;
-  const pageNumber = pageIndex + 1; // Convert 0-based index to 1-based page number
-  const questionIndex = req.session.data["currentQuestionIndex"] || 0;
-  const questionNumber = questionIndex + 1; // Convert 0-based index to 1-based question number
-
-  res.render("form-editor/information-type-nf.html", {
+  res.render("form-overview/support/next-steps", {
     form: {
       name: formData.formName || "Food takeaway (user research)",
+      nextSteps: formData.formDetails?.nextSteps || "",
     },
-    pageNumber: pageNumber,
-    questionNumber: questionNumber,
+    pageName: "Add next steps",
   });
 });
 
-router.get("/form-editor/errors/info-type-lower.html", function (req, res) {
+router.post("/form-overview/index/support/next-steps", (req, res) => {
   const formData = req.session.data || {};
-  const pageIndex = req.session.data["currentPageIndex"] || 0;
-  const pageNumber = pageIndex + 1;
+  const nextSteps = req.body.nextSteps;
 
-  res.render("form-editor/errors/info-type-lower.html", {
-    form: {
-      name: formData.formName || "Food takeaway (user research)",
-    },
-    pageNumber: pageNumber,
-  });
-});
-
-router.get("/form-editor/errors/information-type.html", function (req, res) {
-  const formData = req.session.data || {};
-  const pageIndex = req.session.data["currentPageIndex"] || 0;
-  const pageNumber = pageIndex + 1;
-
-  res.render("form-editor/errors/information-type.html", {
-    form: {
-      name: formData.formName || "Food takeaway (user research)",
-    },
-    pageNumber: pageNumber,
-  });
-});
-
-// Add route for inline radio option addition
-router.post("/form-editor/question-type/radios-nf/add-inline", (req, res) => {
-  const { label, hint, value } = req.body;
-  const formPages = req.session.formPages;
-  const currentPageIndex = req.session.currentPageIndex;
-  const currentQuestionIndex = req.session.currentQuestionIndex;
-
-  if (!formPages || !formPages[currentPageIndex]) {
-    return res.status(400).json({ error: "Invalid page or question" });
-  }
-
-  const currentPage = formPages[currentPageIndex];
-  const currentQuestion = currentPage.questions[currentQuestionIndex];
-
-  // Initialize radioList if it doesn't exist
-  if (!currentQuestion.radioList) {
-    currentQuestion.radioList = [];
-  }
-
-  // Add new radio option
-  currentQuestion.radioList.push({
-    label: label,
-    hint: hint || "",
-    value: value || label.toLowerCase().replace(/\s+/g, "-"),
-  });
-
-  // Save to session
-  req.session.formPages = formPages;
-
-  // Return success response
-  res.json({ success: true });
-});
-
-router.post("/form-editor/question-type/radios-nf/add", function (req, res) {
-  const formPages = req.session.data["formPages"] || [];
-  const pageIndex = req.session.data["currentPageIndex"];
-
-  // Get the current page
-  const currentPage = formPages[pageIndex];
-
-  // Initialize radioList if it doesn't exist
-  if (!currentPage.radioList) {
-    currentPage.radioList = [];
-  }
-
-  // Create new radio option
-  const radioOption = {
-    label: req.body.label,
-    value: req.body.value || req.body.label.toLowerCase().replace(/\s+/g, "-"),
-    hint: req.body.hint || "",
+  // Update the form details with the next steps
+  formData.formDetails = {
+    ...formData.formDetails,
+    nextSteps: nextSteps,
+    lastUpdated: new Date().toISOString(),
   };
 
-  // Add to radioList
-  currentPage.radioList.push(radioOption);
-
-  // Save back to session
-  formPages[pageIndex] = currentPage;
-  req.session.data["formPages"] = formPages;
-
-  // Log the state after adding option
-  console.log("✅ Added radio option:", {
-    radioOption,
-    currentPage,
-    radioList: currentPage.radioList,
-  });
-
-  res.redirect("/form-editor/question-type/radios-nf/edit");
+  req.session.data = formData;
+  res.redirect("/form-overview/index");
 });
 
-// Add upload success route
-router.post("/form-editor/upload-success", (req, res) => {
-  // Set the success flag in the session
-  req.session.data.showUploadSuccess = true;
+router.get("/form-overview/index/support/privacy-notice", (req, res) => {
+  const formData = req.session.data || {};
+  res.render("form-overview/support/privacy-notice", {
+    form: {
+      name: formData.formName || "Food takeaway (user research)",
+      privacyNotice: formData.formDetails?.privacyNotice || "",
+    },
+    pageName: "Add privacy notice",
+  });
+});
 
-  // Redirect to the listing page
-  res.redirect("/form-editor/listing");
+router.post("/form-overview/index/support/privacy-notice", (req, res) => {
+  const formData = req.session.data || {};
+  const privacyLink = req.body.privacyLink;
+
+  // Update the form details with the privacy notice link
+  formData.formDetails = {
+    ...formData.formDetails,
+    privacyNotice: privacyLink,
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+  res.redirect("/form-overview/index");
+});
+
+// Live-draft overview page route
+router.get("/form-overview/live-draft", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+
+  // Create a URL-friendly version of the form name
+  const urlFriendlyName = (formData.formName || "Food takeaway (user research)")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  // Create the preview URL and live URL
+  const previewUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/preview/draft/${urlFriendlyName}`;
+  const liveUrl = `https://submit-form-to-defra.service.gov.uk/${urlFriendlyName}`;
+
+  // Create the form object that the templates expect
+  const form = {
+    name: formData.formName || "Food takeaway (user research)",
+    status: {
+      text: "Draft-Live",
+      color: "blue",
+    },
+    previewUrl: previewUrl,
+    liveUrl: liveUrl,
+    createdAt: formData.formDetails?.createdAt || new Date().toISOString(),
+    updatedAt: formData.formDetails?.lastUpdated || new Date().toISOString(),
+    updatedBy: formData.formDetails?.updatedBy || "Chris Smith",
+    draftCreatedAt:
+      formData.formDetails?.draftCreatedAt || new Date().toISOString(),
+    draftCreatedBy: formData.formDetails?.draftCreatedBy || "Chris Smith",
+    publishedAt: formData.formDetails?.publishedAt || new Date().toISOString(),
+    publishedBy: formData.formDetails?.publishedBy || "Chris Smith",
+    organisation: {
+      name: formData.formDetails?.organisation || "Not set",
+    },
+    team: {
+      name: formData.formDetails?.teamName || "Not set",
+      email: formData.formDetails?.email || "Not set",
+    },
+    support: {
+      phone: formData.formDetails?.support?.phone,
+      email: formData.formDetails?.support?.email,
+      link: formData.formDetails?.support?.link,
+    },
+    nextSteps: formData.formDetails?.nextSteps,
+    privacyNotice: formData.formDetails?.privacyNotice,
+    notificationEmail: formData.formDetails?.notificationEmail,
+  };
+
+  res.render("form-overview/live-draft/index", {
+    form: form,
+    pageName: `Overview - ${form.name}`,
+  });
+});
+
+// Make draft live routes
+router.get("/form-overview/manage-form/make-draft-live", (req, res) => {
+  const formData = req.session.data || {};
+
+  res.render("form-overview/manage-form/make-draft-live/index", {
+    form: {
+      name: formData.formName || "Food takeaway (user research)",
+      status: {
+        text: "Draft-Live",
+        color: "blue",
+      },
+    },
+  });
+});
+
+router.post("/form-overview/make-draft-live", (req, res) => {
+  // Update form status in session
+  const formData = req.session.data || {};
+
+  formData.formDetails = {
+    ...formData.formDetails,
+    status: "Live",
+    publishedAt: new Date().toISOString(),
+    publishedBy: "Chris Smith", // This would normally come from the logged-in user
+    lastUpdated: new Date().toISOString(),
+  };
+
+  req.session.data = formData;
+
+  // Redirect to passed validation page
+  res.redirect("/form-overview/manage-form/make-draft-live/passed-validation");
+});
+
+router.get(
+  "/form-overview/manage-form/make-draft-live/passed-validation",
+  (req, res) => {
+    const formData = req.session.data || {};
+
+    res.render("form-overview/manage-form/make-draft-live/passed-validation", {
+      form: {
+        name: formData.formName || "Food takeaway (user research)",
+        status: {
+          text: "Live",
+          color: "green",
+        },
+      },
+      actions: {
+        continue: "/form-overview/live/index",
+      },
+    });
+  }
+);
+
+// Live form overview route
+router.get("/form-overview/live/index", (req, res) => {
+  const formData = req.session.data || {};
+  const urlFriendlyName = (formData.formName || "untitled-form")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  const form = {
+    name: formData.formName || "Food takeaway (user research)",
+    status: {
+      text: "Live",
+      color: "green",
+    },
+    previewUrl: `https://forms-runner.prototype.cdp-int.defra.cloud/preview/draft/${urlFriendlyName}`,
+    liveUrl: `https://forms-runner.prototype.cdp-int.defra.cloud/forms/${urlFriendlyName}`,
+    publishedAt: formData.formDetails?.publishedAt || new Date().toISOString(),
+    publishedBy: formData.formDetails?.publishedBy || "Chris Smith",
+    organisation: formData.formDetails?.organisation || { name: "Not set" },
+    team: {
+      name: formData.formDetails?.teamName || "Not set",
+      email: formData.formDetails?.email || "Not set",
+    },
+    support: formData.formDetails?.support || {},
+    nextSteps: formData.formDetails?.nextSteps,
+    privacyNotice: formData.formDetails?.privacyNotice,
+  };
+
+  res.render("form-overview/live/index", {
+    form: form,
+    pageName: `Overview - ${form.name}`,
+  });
+});
+
+// Delete draft confirmation page
+router.get("/form-overview/manage-form/delete-draft", (req, res) => {
+  const formData = req.session.data || {};
+
+  res.render("form-overview/manage-form/delete-draft/index", {
+    form: {
+      name: formData.formName || "Food takeaway (user research)",
+      status: formData.formDetails?.status || {
+        text: "Draft",
+        color: "orange",
+      },
+    },
+    actions: {
+      continue: "/form-overview/manage-form/delete-draft/confirm",
+      cancel: "/form-overview/index",
+    },
+  });
+});
+
+// Handle delete draft confirmation
+router.post("/form-overview/manage-form/delete-draft/confirm", (req, res) => {
+  // Clear the draft from session
+  if (req.session.data) {
+    delete req.session.data.formName;
+    delete req.session.data.formDetails;
+    delete req.session.data.formPages;
+  }
+
+  // Redirect to library
+  res.redirect("/library");
 });

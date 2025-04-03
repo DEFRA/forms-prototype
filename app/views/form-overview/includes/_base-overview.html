@@ -13,20 +13,20 @@ signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
 {
 href: "/library.html",
-text: commonTerms.form_editor.navigation.forms_library,
-id: "nav-library"
+text: "Forms library",
+id: "library"
 },
 {
-href: "/form-overview/index",
-text: commonTerms.form_editor.navigation.overview,
-id: "nav-overview"
+href: "/form-overview/{{ form.id }}",
+text: "Overview",
+id: "overview"
 },
 {
 href: "/form-editor/listing",
-text: commonTerms.form_editor.navigation.editor,
-id: "nav-editor"
+text: "Editor",
+id: "editor"
 }],
-activeLinkId: "nav-overview"
+activeLinkId: "overview"
 }) }}
 {% endblock %}
 
@@ -71,9 +71,11 @@ href: "/library.html"
                 </button>
             </a>
 
-            <a href="#" class="govuk-link">{{ commonTerms.form_editor.overview.manage_form.delete_draft }}</a>
+            <a href="/form-overview/manage-form/delete-draft" class="govuk-link">{{
+                commonTerms.form_editor.overview.manage_form.delete_draft }}</a>
         </div>
 
+        {#
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
         <h2 class="govuk-heading-m">{{ commonTerms.form_editor.overview.internal_notes.title }}</h2>
         {{ govukButton({
@@ -98,7 +100,7 @@ href: "/library.html"
         }
         }
         ]
-        }) }}
+        }) }} #}
     </div>
 </div>
 {% endblock %}
