@@ -1156,7 +1156,7 @@ function findQuestionById(formPages, questionId) {
   return null;
 }
 
-router.get("/form-editor/conditions/:pageId", function (req, res) {
+router.get("/form-editor/conditions/page-level/:pageId", function (req, res) {
   const formData = req.session.data || {};
   const formPages = req.session.data.formPages || [];
   const pageId = req.params.pageId;
@@ -1236,7 +1236,7 @@ router.get("/form-editor/conditions/:pageId", function (req, res) {
       }
     });
 
-  res.render("form-editor/conditions.html", {
+  res.render("form-editor/conditions/page-level.html", {
     form: {
       name: formData.formName || "Food takeaway (user research)",
     },
@@ -1395,7 +1395,7 @@ router.post("/conditions-add", function (req, res) {
   req.session.data.formPages = formPages;
 
   // Fix the redirect URL to include the form-editor prefix
-  const returnUrl = `/form-editor/conditions/${currentPageId}`;
+  const returnUrl = `/form-editor/conditions/page-level/${currentPageId}`;
   console.log("Redirecting to:", returnUrl);
   return res.redirect(returnUrl);
 });
@@ -2270,7 +2270,7 @@ router.post("/form-overview/manage-form/delete-draft/confirm", (req, res) => {
 //--------------------------------------
 // Form-level conditions management
 //--------------------------------------
-router.get("/form-editor/conditions-manager", function (req, res) {
+router.get("/form-editor/conditions/manager", function (req, res) {
   const formData = req.session.data || {};
   const formPages = req.session.data["formPages"] || [];
   const conditions = formData.conditions || [];
@@ -2289,7 +2289,7 @@ router.get("/form-editor/conditions-manager", function (req, res) {
       options: question.options,
     }));
 
-  res.render("form-editor/conditions-manager.html", {
+  res.render("form-editor/conditions/manager.html", {
     form: {
       name: formData.formName || "Food takeaway (user research)",
     },
@@ -2354,7 +2354,7 @@ router.post("/form-editor/conditions-manager/add", function (req, res) {
   // Save back to session
   req.session.data = formData;
 
-  res.redirect("/form-editor/conditions-manager");
+  res.redirect("/form-editor/conditions/manager");
 });
 
 //--------------------------------------
@@ -2406,7 +2406,7 @@ router.post("/form-editor/conditions-manager/remove", function (req, res) {
   // Save back to session
   req.session.data = formData;
 
-  res.redirect("/form-editor/conditions-manager");
+  res.redirect("/form-editor/conditions/manager");
 });
 
 //--------------------------------------
@@ -2518,7 +2518,7 @@ router.post("/form-editor/conditions-manager/join", function (req, res) {
   // Save back to session
   req.session.data = formData;
 
-  res.redirect("/form-editor/conditions-manager");
+  res.redirect("/form-editor/conditions/manager");
 });
 
 // Handle adding conditions to a page
@@ -2648,7 +2648,7 @@ router.post("/conditions-add", function (req, res) {
 });
 
 // Edit condition page
-router.get("/form-editor/edit-condition/:id", function (req, res) {
+router.get("/form-editor/conditions/edit/:id", function (req, res) {
   const formData = req.session.data || {};
   const formPages = req.session.data.formPages || [];
   const conditionId = req.params.id;
@@ -2683,7 +2683,7 @@ router.get("/form-editor/edit-condition/:id", function (req, res) {
 
   if (!condition) {
     console.error("Condition not found:", conditionId);
-    return res.redirect("/form-editor/conditions-manager");
+    return res.redirect("/form-editor/conditions/manager");
   }
 
   // Get all available questions for conditions
@@ -2702,7 +2702,7 @@ router.get("/form-editor/edit-condition/:id", function (req, res) {
 
   if (!availableQuestions || availableQuestions.length === 0) {
     console.error("No available questions found for condition editing");
-    return res.redirect("/form-editor/conditions-manager");
+    return res.redirect("/form-editor/conditions/manager");
   }
 
   // Calculate pagesWithCondition with pageNumber
@@ -2715,7 +2715,7 @@ router.get("/form-editor/edit-condition/:id", function (req, res) {
     .map((page, index) => ({ ...page, pageNumber: index + 1 }));
 
   // Render the template with pagesWithCondition
-  res.render("form-editor/edit-condition.html", {
+  res.render("form-editor/conditions/edit.html", {
     condition,
     availableQuestions,
     pageName: foundInPage ? foundInPage.pageHeading : null,
@@ -2762,7 +2762,7 @@ router.post("/form-editor/conditions-manager/edit", function (req, res) {
 
   if (!originalCondition) {
     console.error("Condition not found:", conditionId);
-    return res.redirect("/form-editor/conditions-manager");
+    return res.redirect("/form-editor/conditions/manager");
   }
 
   // Parse rules if it's a string, or use directly if it's already an object
@@ -2838,11 +2838,11 @@ router.post("/form-editor/conditions-manager/edit", function (req, res) {
   req.session.data = formData;
 
   // Redirect to the success page
-  res.redirect("/form-editor/edit-condition-success");
+  res.redirect("/form-editor/conditions/edit-success");
 });
 
 // Add route for the success page
-router.get("/form-editor/edit-condition-success", function (req, res) {
+router.get("/form-editor/conditions/edit-success", function (req, res) {
   const originalCondition = req.session.data.originalCondition;
   const updatedCondition = req.session.data.updatedCondition;
 
@@ -2850,7 +2850,7 @@ router.get("/form-editor/edit-condition-success", function (req, res) {
     return res.redirect("/form-editor/conditions-manager");
   }
 
-  res.render("form-editor/edit-condition-success", {
+  res.render("form-editor/conditions/edit-success", {
     originalCondition,
     updatedCondition,
   });
@@ -2861,7 +2861,7 @@ router.get("/form-editor/edit-condition-success", function (req, res) {
 });
 
 // Add this route to handle the delete condition page
-router.get("/form-editor/delete-condition/:conditionId", (req, res) => {
+router.get("/form-editor/conditions/delete/:conditionId", (req, res) => {
   console.log("Delete condition page accessed");
   const conditionId = req.params.conditionId;
   const formData = req.session.data || {};
@@ -2877,7 +2877,7 @@ router.get("/form-editor/delete-condition/:conditionId", (req, res) => {
       .find((c) => c.id.toString() === conditionId.toString());
 
   if (!condition) {
-    return res.redirect("/form-editor/conditions-manager");
+    return res.redirect("/form-editor/conditions/manager");
   }
 
   // Find all pages that use this condition
@@ -2897,7 +2897,7 @@ router.get("/form-editor/delete-condition/:conditionId", (req, res) => {
   });
 
   // Render the delete condition page
-  res.render("form-editor/delete-condition", {
+  res.render("form-editor/conditions/delete", {
     form: formData,
     conditionName: condition.conditionName,
     conditionId: conditionId,
