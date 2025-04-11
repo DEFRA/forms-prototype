@@ -113,6 +113,7 @@ activeLinkId: "nav-editor"
                     <span class="govuk-caption-m">Page {{pageNumber}}: {{question.label}}</span>
                     <h2 class="govuk-heading-m">Control who can see this page based on previous answers</h2>
 
+                    {% if existingConditions | length > 0 %}
                     {{ govukSelect({
                     label: {
                     text: "Use existing condition",
@@ -123,21 +124,34 @@ activeLinkId: "nav-editor"
                     { value: "", text: "Select existing condition" }
                     ].concat(existingConditions)
                     }) }}
+                    {% endif %}
 
                     <div class="govuk-button-group">
+                      {% if existingConditions | length > 0 %}
 
                       {{ govukButton({
                       text: "Use existing condition",
                       id: "add-existing-condition",
                       classes: "govuk-button"
                       }) }}
+                      {% endif %}
 
+                      {% if existingConditions | length == 0 %}
+
+                      {{ govukButton({
+                      text: "Create new condition",
+                      href: "/form-editor/conditions/manager",
+                      id: "create-new-condition",
+                      classes: "govuk-button govuk-button"
+                      }) }}
+                      {% else %}
                       {{ govukButton({
                       text: "Create new condition",
                       href: "/form-editor/conditions/manager",
                       id: "create-new-condition",
                       classes: "govuk-button govuk-button--inverse"
                       }) }}
+                      {% endif %}
                     </div>
                   </div>
 
