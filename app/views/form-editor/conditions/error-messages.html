@@ -25,7 +25,13 @@
                                 <a href="#operatorSelect">Select a condition type</a>
                             </li>
                             <li>
-                                <a href="#valueContainer">Select a value</a>
+                                <a href="#value-yes-no">Select a value</a>
+                            </li>
+                            <li>
+                                <a href="#value-radios">Select a value</a>
+                            </li>
+                            <li>
+                                <a href="#value-checkboxes">Select a value</a>
                             </li>
                             <li>
                                 <a href="#conditionName">Enter condition name</a>
@@ -70,22 +76,86 @@
                 </select>
             </div>
 
-            <!-- Empty Condition Value -->
+            <!-- Empty Condition Value - Yes/No Question -->
             <div class="govuk-form-group govuk-form-group--error">
-                <label class="govuk-label" for="condition-value">
+                <label class="govuk-label" for="value-yes-no">
                     Select a value
                 </label>
-                <p id="value-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> Select a value
+                <p id="value-error-yes-no" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> Select yes or no
                 </p>
-                <div class="govuk-radios">
+                <div class="govuk-radios" data-module="govuk-radios">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" type="radio" name="value" id="value-yes" value="Yes">
+                        <input class="govuk-radios__input" type="radio" name="value-yes-no" id="value-yes" value="Yes">
                         <label class="govuk-label govuk-radios__label" for="value-yes">Yes</label>
                     </div>
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" type="radio" name="value" id="value-no" value="No">
+                        <input class="govuk-radios__input" type="radio" name="value-yes-no" id="value-no" value="No">
                         <label class="govuk-label govuk-radios__label" for="value-no">No</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty Condition Value - Radio Options -->
+            <div class="govuk-form-group govuk-form-group--error">
+                <label class="govuk-label" for="value-radios">
+                    Select a value
+                </label>
+                <p id="value-error-radios" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> Select a value
+                </p>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" type="radio" name="value-radios" id="value-arable"
+                            value="arable">
+                        <label class="govuk-label govuk-radios__label" for="value-arable">Arable farm</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" type="radio" name="value-radios" id="value-livestock"
+                            value="livestock">
+                        <label class="govuk-label govuk-radios__label" for="value-livestock">Livestock farm</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" type="radio" name="value-radios" id="value-mixed"
+                            value="mixed">
+                        <label class="govuk-label govuk-radios__label" for="value-mixed">Mixed farm</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" type="radio" name="value-radios" id="value-other"
+                            value="other">
+                        <label class="govuk-label govuk-radios__label" for="value-other">Other</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty Condition Value - Checkboxes -->
+            <div class="govuk-form-group govuk-form-group--error">
+                <label class="govuk-label" for="value-checkboxes">
+                    Select a value
+                </label>
+                <p id="value-error-checkboxes" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> Select a value
+                </p>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" type="checkbox" name="value-checkboxes" id="value-cattle"
+                            value="cattle">
+                        <label class="govuk-label govuk-checkboxes__label" for="value-cattle">Cattle</label>
+                    </div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" type="checkbox" name="value-checkboxes" id="value-sheep"
+                            value="sheep">
+                        <label class="govuk-label govuk-checkboxes__label" for="value-sheep">Sheep</label>
+                    </div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" type="checkbox" name="value-checkboxes" id="value-pigs"
+                            value="pigs">
+                        <label class="govuk-label govuk-checkboxes__label" for="value-pigs">Pigs</label>
+                    </div>
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" type="checkbox" name="value-checkboxes"
+                            id="value-poultry" value="poultry">
+                        <label class="govuk-label govuk-checkboxes__label" for="value-poultry">Poultry</label>
                     </div>
                 </div>
             </div>
@@ -157,6 +227,12 @@
                     <p id="additional-question-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> Select a question for the additional condition
                     </p>
+                    <select class="govuk-select govuk-select--error" id="additional-question"
+                        name="additional-question">
+                        <option value="">Choose a question</option>
+                        <option value="1">Are you a farmer?</option>
+                        <option value="2">What type of livestock do you have?</option>
+                    </select>
                 </div>
 
                 <!-- Additional Condition - Empty Type -->
@@ -166,6 +242,34 @@
                         <span class="govuk-visually-hidden">Error:</span> Select a condition type for the additional
                         condition
                     </p>
+                    <select class="govuk-select govuk-select--error" id="additional-operator"
+                        name="additional-operator">
+                        <option value="">Select a condition type</option>
+                        <option value="is">is</option>
+                        <option value="is-not">is not</option>
+                    </select>
+                </div>
+
+                <!-- Additional Condition Value - Yes/No Question -->
+                <div class="govuk-form-group govuk-form-group--error">
+                    <label class="govuk-label" for="additional-value-yes-no">
+                        Select a value
+                    </label>
+                    <p id="additional-value-error-yes-no" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> Select a value
+                    </p>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" type="radio" name="additional-value-yes-no"
+                                id="additional-value-yes" value="Yes">
+                            <label class="govuk-label govuk-radios__label" for="additional-value-yes">Yes</label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" type="radio" name="additional-value-yes-no"
+                                id="additional-value-no" value="No">
+                            <label class="govuk-label govuk-radios__label" for="additional-value-no">No</label>
+                        </div>
+                    </div>
                 </div>
 
                 <button class="govuk-button govuk-button--secondary govuk-button--warning remove-condition-link"
@@ -177,6 +281,34 @@
                     </svg>
                     Remove condition
                 </button>
+            </div>
+
+            <!-- Combining Conditions -->
+            <div class="govuk-form-group govuk-form-group--error">
+                <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        How do you want to combine these conditions?
+                    </legend>
+                    <p id="combine-conditions-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> Choose how you want to combine conditions
+                    </p>
+                    <div class="govuk-radios" data-module="govuk-radios">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="logical-operator-and" name="logicalOperator"
+                                type="radio" value="AND">
+                            <label class="govuk-label govuk-radios__label" for="logical-operator-and">
+                                All conditions must be met (AND)
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="logical-operator-or" name="logicalOperator"
+                                type="radio" value="OR">
+                            <label class="govuk-label govuk-radios__label" for="logical-operator-or">
+                                Any condition can be met (OR)
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
@@ -199,8 +331,8 @@
                 </ul>
             </nav>
 
-            {# <!-- Error Summary for Review Page -->
-            <div class="govuk-error-summary" data-module="govuk-error-summary">
+            <!-- Error Summary for Review Page -->
+            {# <div class="govuk-error-summary" data-module="govuk-error-summary">
                 <div role="alert">
                     <h2 class="govuk-error-summary__title">
                         There is a problem
