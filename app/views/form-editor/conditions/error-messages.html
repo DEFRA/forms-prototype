@@ -1,4 +1,5 @@
 {% extends "layouts/main.html" %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% block content %}
 <div class="govuk-width-container">
@@ -6,9 +7,10 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">Edit condition errors</h2>
+            <h2 class="govuk-heading-m">Common form field errors</h2>
+            <p class="govuk-body">These error states are shared between the manager and edit pages.</p>
 
-            <h3 class="govuk-heading-s">Error summary</h3>
+            <!-- Error Summary - Appears directly below sub-navigation -->
             <div class="govuk-error-summary" data-module="govuk-error-summary">
                 <div role="alert">
                     <h2 class="govuk-error-summary__title">
@@ -30,9 +32,6 @@
                             </li>
                             <li>
                                 <a href="#conditionName">Condition name already exists - use a unique condition name</a>
-                            </li>
-                            <li>
-                                <a href="#existingCondition">Select existing condition</a>
                             </li>
                         </ul>
                     </div>
@@ -106,44 +105,51 @@
                 <input class="govuk-input govuk-input--error" id="conditionName" name="conditionName" type="text">
             </div>
 
-            <!-- Duplicate Condition Name -->
-            <div class="govuk-form-group govuk-form-group--error">
-                <label class="govuk-label" for="conditionName-duplicate">
-                    Condition name
-                </label>
-                <div class="govuk-hint">
-                    Condition names help you to identify conditions in your form, for example, 'Not a farmer'.
-                    Users will not see condition names.
-                </div>
-                <p id="conditionName-duplicate-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> Condition name already exists - use a unique
-                    condition name
-                </p>
-                <input class="govuk-input govuk-input--error" id="conditionName-duplicate" name="conditionName"
-                    type="text" value="Is a farmer">
-            </div>
-
-            <!-- No Conditions Selected -->
-            <div class="govuk-form-group govuk-form-group--error">
-                <label class="govuk-label" for="existingCondition">
-                    Select existing condition
-                </label>
-                <p id="existingCondition-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> Select existing condition
-                </p>
-                <select class="govuk-select govuk-select--error" id="existingCondition" name="existingCondition">
-                    <option value="">Choose an existing condition</option>
-                    <option value="1">Is a farmer</option>
-                    <option value="2">Has livestock</option>
-                </select>
-            </div>
-
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-            <h2 class="govuk-heading-m">Additional conditions errors</h2>
+            <h2 class="govuk-heading-m">Page specific contexts</h2>
 
+            <!-- Manager page context -->
+            <h3 class="govuk-heading-s">Conditions manager page</h3>
+            <nav class="moj-sub-navigation govuk-!-padding-top-0 govuk-!-margin-bottom-2" aria-label="Sub navigation">
+                <ul class="moj-sub-navigation__list">
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" aria-current="page" href="#">
+                            All conditions
+                        </a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" href="#">
+                            Add condition
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <p class="govuk-body">Uses the common form fields above when adding a new condition.</p>
+
+            <!-- Edit page context -->
+            <h3 class="govuk-heading-s">Edit condition page</h3>
+            <nav class="moj-sub-navigation govuk-!-padding-top-0 govuk-!-margin-bottom-2" aria-label="Sub navigation">
+                <ul class="moj-sub-navigation__list">
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" href="/form-editor/conditions/manager">
+                            All conditions
+                        </a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" aria-current="page" href="#">
+                            Edit condition
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <p class="govuk-body">Uses the common form fields above when editing an existing condition.</p>
+
+            <h3 class="govuk-heading-s">Additional conditions</h3>
             <div class="condition-item app-form-container">
-                <h3 class="govuk-heading-s">Additional condition</h3>
+                <h4 class="govuk-heading-s">Additional condition</h4>
+                <p class="govuk-body">Uses the same question, operator, and value fields as above, with slightly
+                    modified error messages:</p>
 
                 <!-- Additional Condition - Empty Question -->
                 <div class="govuk-form-group govuk-form-group--error">
@@ -151,12 +157,6 @@
                     <p id="additional-question-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> Select a question for the additional condition
                     </p>
-                    <select class="govuk-select govuk-select--error" id="additional-question"
-                        name="additional-question">
-                        <option value="">Choose a question</option>
-                        <option value="1">Are you a farmer?</option>
-                        <option value="2">What type of livestock do you have?</option>
-                    </select>
                 </div>
 
                 <!-- Additional Condition - Empty Type -->
@@ -166,12 +166,6 @@
                         <span class="govuk-visually-hidden">Error:</span> Select a condition type for the additional
                         condition
                     </p>
-                    <select class="govuk-select govuk-select--error" id="additional-operator"
-                        name="additional-operator">
-                        <option value="">Select a condition type</option>
-                        <option value="is">is</option>
-                        <option value="is-not">is not</option>
-                    </select>
                 </div>
 
                 <button class="govuk-button govuk-button--secondary govuk-button--warning remove-condition-link"
@@ -187,35 +181,67 @@
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-            <h2 class="govuk-heading-m">Combining conditions error</h2>
+            <h2 class="govuk-heading-m">Review page errors</h2>
 
-            <!-- Combining Conditions -->
-            <div class="govuk-form-group govuk-form-group--error">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend">
-                        How do you want to combine these conditions?
-                    </legend>
-                    <p id="combine-conditions-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> Choose how you want to combine conditions
-                    </p>
-                    <div class="govuk-radios">
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="logical-operator-and" name="logicalOperator"
-                                type="radio" value="AND">
-                            <label class="govuk-label govuk-radios__label" for="logical-operator-and">
-                                All conditions must be met (AND)
-                            </label>
-                        </div>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="logical-operator-or" name="logicalOperator"
-                                type="radio" value="OR">
-                            <label class="govuk-label govuk-radios__label" for="logical-operator-or">
-                                Any condition can be met (OR)
-                            </label>
-                        </div>
+            <!-- Sub Navigation for Review -->
+            <nav class="moj-sub-navigation govuk-!-padding-top-0 govuk-!-margin-bottom-2" aria-label="Sub navigation">
+                <ul class="moj-sub-navigation__list">
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" href="/form-editor/conditions/manager">
+                            Conditions
+                        </a>
+                    </li>
+                    <li class="moj-sub-navigation__item">
+                        <a class="moj-sub-navigation__link" aria-current="page" href="#">
+                            Check changes
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            {# <!-- Error Summary for Review Page -->
+            <div class="govuk-error-summary" data-module="govuk-error-summary">
+                <div role="alert">
+                    <h2 class="govuk-error-summary__title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            <li>
+                                <a href="#save-changes-form">Unable to save changes - please try again</a>
+                            </li>
+                        </ul>
                     </div>
-                </fieldset>
+                </div>
+            </div> #}
+
+            <!-- Error Notification Banner -->
+            {# {{ govukNotificationBanner({
+            type: "error",
+            titleText: "Error",
+            text: "There was a problem saving your changes. Please try again."
+            }) }} #}
+
+            <!-- Warning About Affected Pages -->
+            <div class="govuk-warning-text govuk-!-margin-bottom-2">
+                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                <strong class="govuk-warning-text__text">
+                    <span class="govuk-visually-hidden">Warning</span>
+                    Changes to this condition will affect the following pages:
+                    <ul class="govuk-list govuk-list--bullet govuk-!-font-weight-bold govuk-!-margin-top-2">
+                        <li>Page 1</li>
+                        <li>Page 2</li>
+                        <li>Page 3</li>
+                    </ul>
+                </strong>
             </div>
+
+            <!-- Success Notification Banner -->
+            {{ govukNotificationBanner({
+            type: "success",
+            titleText: "Success",
+            text: "Changes saved"
+            }) }}
 
         </div>
     </div>
