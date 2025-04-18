@@ -68,6 +68,48 @@ activeLinkId: "nav-editor"
                 </div>
 
                 {% if conditions | length > 0 %}
+                <div class="moj-button-group moj-button-group--inline">
+
+                    <button class="govuk-button" id="add-new-condition">
+                        Create new condition
+                    </button>
+
+                    {{ mojButtonMenu({
+                    button: {
+                    text: "Manage selected conditions",
+                    classes: "govuk-button--secondary"
+                    },
+                    items: [
+                    {
+                    text: "Add to pages",
+                    href: "#",
+                    attributes: {
+                    id: "add-condition-to-pages",
+                    "data-action": "show-form",
+                    "data-form-id": "add-condition-to-pages-form"
+                    }
+                    },
+                    {
+                    text: "Remove from pages",
+                    href: "#",
+                    attributes: {
+                    id: "remove-condition-from-pages",
+                    "data-action": "show-form",
+                    "data-form-id": "remove-condition-from-pages-form"
+                    }
+                    },
+                    {
+                    text: "Join selected conditions",
+                    href: "#",
+                    attributes: {
+                    id: "join-conditions-button",
+                    "data-action": "show-form",
+                    "data-form-id": "join-conditions-form-container"
+                    }
+                    }
+                    ]
+                    }) }}
+                </div>
                 <!-- Conditions Table -->
                 <table class="govuk-table" data-module="moj-multi-select" data-id-prefix="conditions-">
                     <thead class="govuk-table__head">
@@ -174,19 +216,6 @@ activeLinkId: "nav-editor"
                             Create new condition
                         </button>
 
-                        {% if conditions | length > 1 %}
-                        <button class="govuk-button govuk-button--secondary" id="join-conditions-button">
-                            <svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="16"
-                                height="16" viewBox="0 0 16 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect x="1" y="2" width="4" height="8" stroke="currentColor" stroke-width="2" />
-                                <rect x="11" y="2" width="4" height="8" stroke="currentColor" stroke-width="2" />
-                                <path d="M5 6H11" stroke="currentColor" stroke-width="2" />
-                            </svg>
-                            Join selected conditions
-                        </button>
-                        {% endif %}
-
-
                         {{ mojButtonMenu({
                         button: {
                         text: "Manage selected conditions",
@@ -201,7 +230,6 @@ activeLinkId: "nav-editor"
                         "data-action": "show-form",
                         "data-form-id": "add-condition-to-pages-form"
                         }
-
                         },
                         {
                         text: "Remove from pages",
@@ -210,6 +238,15 @@ activeLinkId: "nav-editor"
                         id: "remove-condition-from-pages",
                         "data-action": "show-form",
                         "data-form-id": "remove-condition-from-pages-form"
+                        }
+                        },
+                        {
+                        text: "Join selected conditions",
+                        href: "#",
+                        attributes: {
+                        id: "join-conditions-button",
+                        "data-action": "show-form",
+                        "data-form-id": "join-conditions-form-container"
                         }
                         }
                         ]
