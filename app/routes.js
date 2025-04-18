@@ -2452,30 +2452,30 @@ router.post("/form-editor/conditions-manager/join", function (req, res) {
   const newCondition = {
     id: Date.now(),
     conditionName: newConditionName,
+    logicalOperator: operator,
     rules: [],
   };
 
-  // Add rules from all conditions with the specified operator
-  conditionsToJoin.forEach((condition, index) => {
+  // Add rules from all conditions without logical operators
+  conditionsToJoin.forEach((condition, conditionIndex) => {
     condition.rules.forEach((rule, ruleIndex) => {
+      // Only add logical operator for the first rule of each condition after the first condition
+      const logicalOperator = conditionIndex === 0 ? null : operator;
       newCondition.rules.push({
         ...rule,
-        // First rule of first condition doesn't need an operator
-        logicalOperator: index === 0 && ruleIndex === 0 ? null : operator,
+        logicalOperator: logicalOperator,
       });
     });
   });
 
   // Create the text representation of the joined condition
   newCondition.text = newCondition.rules
-    .map((rule, index) => {
+    .map((rule) => {
       const valueText = Array.isArray(rule.value)
         ? rule.value.map((v) => `'${v}'`).join(" or ")
         : `'${rule.value}'`;
 
-      return index === 0
-        ? `${rule.questionText} ${rule.operator} ${valueText}`
-        : `${rule.logicalOperator} ${rule.questionText} ${rule.operator} ${valueText}`;
+      return `'${rule.questionText}' ${rule.operator} ${valueText}`;
     })
     .join(" ");
 
@@ -2967,4 +2967,100 @@ router.post("/form-editor/conditions/page-level/:pageId", function (req, res) {
 
   // Redirect back to the conditions page
   res.redirect(`/form-editor/conditions/page-level/${pageId}`);
+});
+
+// Apply condition to pages
+router.post("/form-editor/conditions/apply", function (req, res) {
+  console.log("Received request body:", req.body);
+
+  const formData = req.session.data;
+  const formPages = req.session.data["formPages"] || [];
+
+  // Parse condition IDs - handle both string and array formats
+  const conditionIds =
+    typeof req.body.conditionIds === "string"
+      ? JSON.parse(req.body.conditionIds)
+      : Array.isArray(req.body.conditionIds)
+      ? req.body.conditionIds
+      : [];
+
+  // Clean up the pages array - remove any non-page IDs and parse JSON strings
+  const selectedPages = (
+    Array.isArray(req.body.pages) ? req.body.pages : JSON.parse(req.body.pages)
+  )
+    .filter((pageId) => pageId !== "_unchecked" && !pageId.startsWith("["))
+    .map((pageId) => String(pageId));
+
+  console.log("Parsed data:", {
+    conditionIds,
+    selectedPages,
+    formPages: formPages.map((p) => ({
+      id: p.pageId,
+      conditions: p.conditions,
+    })),
+  });
+
+  if (!formData || !conditionIds.length || !selectedPages.length) {
+    console.log("Missing required data:", {
+      formData,
+      conditionIds,
+      selectedPages,
+    });
+    return res.redirect("/form-editor/conditions/manager");
+  }
+
+  // Get all selected conditions
+  const conditions = conditionIds
+    .map((conditionId) => {
+      return formData.conditions.find(
+        (condition) => String(condition.id) === String(conditionId)
+      );
+    })
+    .filter(Boolean);
+
+  console.log("Found conditions:", conditions);
+
+  if (conditions.length === 0) {
+    console.log("No conditions found");
+    return res.redirect("/form-editor/conditions/manager");
+  }
+
+  // Apply each condition to the selected pages
+  conditions.forEach((condition) => {
+    selectedPages.forEach((pageId) => {
+      const page = formPages.find((p) => String(p.pageId) === pageId);
+      if (page) {
+        // Initialize conditions array if it doesn't exist
+        if (!page.conditions) {
+          page.conditions = [];
+        }
+
+        // Check if condition is already applied
+        const conditionExists = page.conditions.some(
+          (c) => String(c.id) === String(condition.id)
+        );
+        if (!conditionExists) {
+          // Add the full condition object to the page
+          page.conditions.push({
+            id: condition.id,
+            conditionName: condition.conditionName,
+            rules: condition.rules,
+            text: condition.text,
+          });
+          console.log(`Added condition ${condition.id} to page ${page.pageId}`);
+        }
+      } else {
+        console.log(`Page not found: ${pageId}`);
+      }
+    });
+  });
+
+  // Save updated pages back to session
+  req.session.data["formPages"] = formPages;
+  console.log(
+    "Updated form pages:",
+    formPages.map((p) => ({ id: p.pageId, conditions: p.conditions }))
+  );
+
+  res.redirect("/form-editor/conditions/manager");
 });

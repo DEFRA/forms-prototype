@@ -1,5 +1,6 @@
 {% extends "layouts/main.html" %}
 {% from "components/service-header/macro.njk" import serviceHeader %}
+{% from "moj/components/button-menu/macro.njk" import mojButtonMenu %}
 {% set pageName %}Manage conditions - {{ form.name }}{% endset %}
 
 {% block header %}
@@ -71,6 +72,12 @@ activeLinkId: "nav-editor"
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th class="govuk-table__header" scope="col" id="conditions-select-all">
+                                <div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
+                                    <input type="checkbox" class="govuk-checkboxes__input" id="select-all-conditions">
+                                    <label class="govuk-label govuk-checkboxes__label" for="select-all-conditions">
+                                        <span class="govuk-visually-hidden">Select all conditions</span>
+                                    </label>
+                                </div>
                             </th>
                             <th class="govuk-table__header govuk-!-width-one-third" scope="col">
                                 Condition</th>
@@ -85,8 +92,9 @@ activeLinkId: "nav-editor"
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
                                 <div class="govuk-checkboxes__item govuk-checkboxes--small moj-multi-select__checkbox">
-                                    <input type="checkbox" class="govuk-checkboxes__input"
-                                        id="condition-{{ condition.id }}" value="{{ condition.id }}">
+                                    <input type="checkbox" class="govuk-checkboxes__input condition-checkbox"
+                                        id="condition-{{ condition.id }}" value="{{ condition.id }}"
+                                        data-condition-name="{{ condition.conditionName }}">
                                     <label class="govuk-label govuk-checkboxes__label"
                                         for="condition-{{ condition.id }}">
                                         <span class="govuk-visually-hidden">Select {{
@@ -100,15 +108,11 @@ activeLinkId: "nav-editor"
                                     condition.conditionName }}</p>
                                 <p class="govuk-body govuk-!-margin-bottom-0">
                                     {% for rule in condition.rules %}
-                                    {% if loop.first %}
-                                    '{{ rule.questionText }}' {{ rule.operator | replace("-", " ") }} {% if rule.value |
-                                    isArray %}'{{ rule.value | join("' or '") }}'{% else %}'{{ rule.value }}'{% endif %}
-                                    {% else %}
-                                    <span class="govuk-!-font-weight-bold">{{ rule.logicalOperator | default('AND')
-                                        }}</span>
-                                    '{{ rule.questionText }}' {{ rule.operator | replace("-", " ") }} {% if rule.value |
-                                    isArray %}'{{ rule.value | join("' or '") }}'{% else %}'{{ rule.value }}'{% endif %}
+                                    {% if not loop.first %}
+                                    <span class="govuk-!-font-weight-bold">{{ condition.logicalOperator }}</span>
                                     {% endif %}
+                                    '{{ rule.questionText }}' {{ rule.operator | replace("-", " ") }} {% if rule.value |
+                                    isArray %}'{{ rule.value | join("' or '") }}'{% else %}'{{ rule.value }}'{% endif %}
                                     {% endfor %}
                                 </p>
                             </td>
@@ -158,8 +162,10 @@ activeLinkId: "nav-editor"
                     class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
                     {% endif %}
 
+
                     <!-- Add New Condition Button -->
-                    <div class="govuk-button-group govuk-!-margin-top-6">
+                    <div class="moj-button-group moj-button-group--inline">
+
                         <button class="govuk-button" id="add-new-condition">
                             Create new condition
                         </button>
@@ -175,178 +181,452 @@ activeLinkId: "nav-editor"
                             Join selected conditions
                         </button>
                         {% endif %}
+
+
+                        {{ mojButtonMenu({
+                        button: {
+                        text: "Manage selected conditions",
+                        classes: "govuk-button--secondary"
+                        },
+                        items: [
+                        {
+                        text: "Add to pages",
+                        href: "/form-editor/conditions/apply",
+                        attributes: {
+                        "data-action": "show-form",
+                        "data-form-id": "add-condition-to-pages-form"
+                        }
+                        },
+                        {
+                        text: "Remove from pages",
+                        href: "/form-editor/conditions/remove",
+                        attributes: {
+                        "data-action": "show-form",
+                        "data-form-id": "remove-condition-from-pages-form"
+                        }
+                        }
+                        ]
+                        }) }}
                     </div>
-
-                    <!-- Add New Condition Form (Hidden by Default) -->
-                    <div id="new-condition-form" style="display: none;">
-                        <form id="condition-form" method="post" action="/form-editor/conditions-manager/add">
-                            <div class="govuk-form-group app-form-container">
-                                <h2 class="govuk-heading-m app-form-container__title">Create new
-                                    condition</h2>
-
-                                <div class="govuk-form-group" id="conditions-container">
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label" for="questionSelect">
-                                            Select a question
-                                        </label>
-                                        <select class="govuk-select" id="questionSelect" name="question" required
-                                            data-available-questions='{{ availableQuestions | dump | safe }}'>
-                                            <option value="">Choose a question</option>
-                                            {% for question in availableQuestions %}
-                                            <option value="{{ question.value }}" data-type="{{ question.type }}"
-                                                data-options='{{ question.options | dump | safe }}'>
-                                                {{ question.text }}
-                                            </option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-
-                                    <div class="govuk-form-group">
-                                        <label class="govuk-label" for="operatorSelect">
-                                            Condition type
-                                        </label>
-                                        <select class="govuk-select" id="operatorSelect" name="operator" required>
-                                            <option value="">Select a condition type</option>
-                                            <option value="is" selected>is</option>
-                                            <option value="is-not">is not</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="govuk-form-group" id="valueContainer" style="display: none;">
-                                        <!-- Value inputs will be dynamically populated here -->
-                                    </div>
-                                </div>
+                    {#
+            </div> #}
 
 
+            <!-- Add New Condition Form (Hidden by Default) -->
+            <div id="new-condition-form" style="display: none;">
+                <form id="condition-form" method="post" action="/form-editor/conditions-manager/add">
+                    <div class="govuk-form-group app-form-container">
+                        <h2 class="govuk-heading-m app-form-container__title">Create new
+                            condition</h2>
 
-                                <div id="additional-conditions">
-                                    <!-- Additional conditions will be added here -->
-                                </div>
-
-
-
-                                <div class="govuk-button-group">
-                                    <button class="govuk-button govuk-button--inverse" id="add-condition-link">
-                                        <svg class="govuk-!-margin-right-1" style="position: relative; top: 2px"
-                                            width="12" height="12" viewBox="0 0 12 12" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M6 1V11" stroke="currentColor" stroke-width="2" />
-                                            <path d="M1 6H11" stroke="currentColor" stroke-width="2" />
-                                        </svg>
-                                        Add another condition
-                                    </button>
-                                </div>
-
-                                <div class="govuk-form-group" id="logicalOperatorGroup" style="display: none;">
-                                    <fieldset class="govuk-fieldset">
-                                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                            How do you want to combine these conditions?
-                                        </legend>
-                                        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                                            <div class="govuk-radios__item">
-                                                <input class="govuk-radios__input" id="logical-operator-and"
-                                                    name="logicalOperator" type="radio" value="AND" checked>
-                                                <label class="govuk-label govuk-radios__label"
-                                                    for="logical-operator-and">
-                                                    All conditions must be met (AND)
-                                                </label>
-                                            </div>
-                                            <div class="govuk-radios__item">
-                                                <input class="govuk-radios__input" id="logical-operator-or"
-                                                    name="logicalOperator" type="radio" value="OR">
-                                                <label class="govuk-label govuk-radios__label"
-                                                    for="logical-operator-or">
-                                                    Any condition can be met (OR)
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
-
-                                <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-
-                                <div class="govuk-form-group">
-                                    <label class="govuk-label govuk-label--m" for="conditionName">
-                                        Condition name
-                                    </label>
-                                    <div class="govuk-hint">
-                                        Condition names help you to identify conditions in your
-                                        form,
-                                        for example, 'Not a farmer'. Users will not see condition
-                                        names.
-                                    </div>
-                                    <input class="govuk-input" id="conditionName" name="conditionName" type="text"
-                                        required>
-                                </div>
-
-                                <div class="govuk-button-group">
-                                    <button type="submit" class="govuk-button">Save
-                                        condition</button>
-                                    <a href="#" class="govuk-link govuk-link--no-visited-state"
-                                        id="cancel-condition">Cancel</a>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Join Conditions Form (Hidden by Default) -->
-                    <div id="join-conditions-form-container" class="govuk-!-margin-top-6 app-form-container"
-                        style="display: none;">
-                        <form id="join-conditions-form" method="post" action="/form-editor/conditions-manager/join">
+                        <div class="govuk-form-group" id="conditions-container">
                             <div class="govuk-form-group">
-                                <fieldset class="govuk-fieldset">
-                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                        How do you want to combine these conditions?
-                                    </legend>
-                                    <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                                        <div class="govuk-radios__item">
-                                            <input class="govuk-radios__input" id="join-operator-and" name="operator"
-                                                type="radio" value="AND" checked>
-                                            <label class="govuk-label govuk-radios__label" for="join-operator-and">
-                                                All conditions must be met (AND)
-                                            </label>
-                                        </div>
-                                        <div class="govuk-radios__item">
-                                            <input class="govuk-radios__input" id="join-operator-or" name="operator"
-                                                type="radio" value="OR">
-                                            <label class="govuk-label govuk-radios__label" for="join-operator-or">
-                                                Any condition can be met (OR)
-                                            </label>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
-                            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-                            <div class="govuk-form-group">
-                                <label class="govuk-label govuk-label--m" for="joined-condition-name">
-                                    Name for joined condition
+                                <label class="govuk-label" for="questionSelect">
+                                    Select a question
                                 </label>
-                                <div class="govuk-hint">
-                                    Condition names help you to identify conditions in your
-                                    form,
-                                    for example, 'Not a farmer'. Users will not see condition
-                                    names.
-                                </div>
-                                <input class="govuk-input" id="joined-condition-name" name="joined-condition-name"
-                                    type="text" required>
+                                <select class="govuk-select" id="questionSelect" name="question" required
+                                    data-available-questions='{{ availableQuestions | dump | safe }}'>
+                                    <option value="">Choose a question</option>
+                                    {% for question in availableQuestions %}
+                                    <option value="{{ question.value }}" data-type="{{ question.type }}"
+                                        data-options='{{ question.options | dump | safe }}'>
+                                        {{ question.text }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
                             </div>
-                            <div class="govuk-button-group">
-                                <button type="submit" class="govuk-button">Save joined
-                                    condition</button>
 
-                                <a href="#" class="govuk-link govuk-link--no-visited-state" id="cancel-join">Cancel</a>
+                            <div class="govuk-form-group">
+                                <label class="govuk-label" for="operatorSelect">
+                                    Condition type
+                                </label>
+                                <select class="govuk-select" id="operatorSelect" name="operator" required>
+                                    <option value="">Select a condition type</option>
+                                    <option value="is" selected>is</option>
+                                    <option value="is-not">is not</option>
+                                </select>
                             </div>
-                        </form>
+
+                            <div class="govuk-form-group" id="valueContainer" style="display: none;">
+                                <!-- Value inputs will be dynamically populated here -->
+                            </div>
+                        </div>
+
+
+
+                        <div id="additional-conditions">
+                            <!-- Additional conditions will be added here -->
+                        </div>
+
+
+
+                        <div class="govuk-button-group">
+                            <button class="govuk-button govuk-button--inverse" id="add-condition-link">
+                                <svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12"
+                                    height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M6 1V11" stroke="currentColor" stroke-width="2" />
+                                    <path d="M1 6H11" stroke="currentColor" stroke-width="2" />
+                                </svg>
+                                Add another condition
+                            </button>
+                        </div>
+
+                        <div class="govuk-form-group" id="logicalOperatorGroup" style="display: none;">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                    How do you want to combine these conditions?
+                                </legend>
+                                <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="logical-operator-and"
+                                            name="logicalOperator" type="radio" value="AND" checked>
+                                        <label class="govuk-label govuk-radios__label" for="logical-operator-and">
+                                            All conditions must be met (AND)
+                                        </label>
+                                    </div>
+                                    <div class="govuk-radios__item">
+                                        <input class="govuk-radios__input" id="logical-operator-or"
+                                            name="logicalOperator" type="radio" value="OR">
+                                        <label class="govuk-label govuk-radios__label" for="logical-operator-or">
+                                            Any condition can be met (OR)
+                                        </label>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+                        <div class="govuk-form-group">
+                            <label class="govuk-label govuk-label--m" for="conditionName">
+                                Condition name
+                            </label>
+                            <div class="govuk-hint">
+                                Condition names help you to identify conditions in your
+                                form,
+                                for example, 'Not a farmer'. Users will not see condition
+                                names.
+                            </div>
+                            <input class="govuk-input" id="conditionName" name="conditionName" type="text" required>
+                        </div>
+
+                        <div class="govuk-button-group">
+                            <button type="submit" class="govuk-button">Save
+                                condition</button>
+                            <a href="#" class="govuk-link govuk-link--no-visited-state" id="cancel-condition">Cancel</a>
+                        </div>
                     </div>
-                    </dd>
+                </form>
             </div>
-            </dl>
+
+            <!-- Add Condition to Pages Form (Hidden by Default) -->
+            <div id="add-condition-to-pages-form" class="govuk-!-margin-top-6 app-form-container"
+                style="display: none;">
+                <form id="apply-condition-form" method="post" action="/form-editor/conditions/apply">
+                    <div class="govuk-form-group">
+                        <h2 class="govuk-heading-m app-form-container__title">Add condition to pages</h2>
+
+                        <div class="govuk-form-group">
+                            <h3 class="govuk-heading-s">Selected conditions</h3>
+                            <ul class="govuk-list govuk-list--bullet" id="selected-conditions-list">
+                                <!-- Selected conditions will be added here dynamically -->
+                            </ul>
+                        </div>
+
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                    Select pages to apply the condition to
+                                </legend>
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                                    {% for page in formPages %}
+                                    <div class="govuk-checkboxes__item">
+                                        <input class="govuk-checkboxes__input" id="page-{{ page.pageId }}" name="pages"
+                                            type="checkbox" value="{{ page.pageId }}">
+                                        <label class="govuk-label govuk-checkboxes__label" for="page-{{ page.pageId }}">
+                                            {{ page.pageHeading or 'Page ' + loop.index }}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div class="govuk-button-group">
+                            <button type="submit" class="govuk-button">Apply condition</button>
+                            <a href="#" class="govuk-link govuk-link--no-visited-state"
+                                id="cancel-add-condition-to-pages">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Join Conditions Form (Hidden by Default) -->
+            <div id="join-conditions-form-container" class="govuk-!-margin-top-6 app-form-container"
+                style="display: none;">
+                <form id="join-conditions-form" method="post" action="/form-editor/conditions-manager/join">
+                    <div class="govuk-form-group">
+                        <fieldset class="govuk-fieldset">
+                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                How do you want to combine these conditions?
+                            </legend>
+                            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="join-operator-and" name="operator"
+                                        type="radio" value="AND" checked>
+                                    <label class="govuk-label govuk-radios__label" for="join-operator-and">
+                                        All conditions must be met (AND)
+                                    </label>
+                                </div>
+                                <div class="govuk-radios__item">
+                                    <input class="govuk-radios__input" id="join-operator-or" name="operator"
+                                        type="radio" value="OR">
+                                    <label class="govuk-label govuk-radios__label" for="join-operator-or">
+                                        Any condition can be met (OR)
+                                    </label>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--m" for="joined-condition-name">
+                            Name for joined condition
+                        </label>
+                        <div class="govuk-hint">
+                            Condition names help you to identify conditions in your
+                            form,
+                            for example, 'Not a farmer'. Users will not see condition
+                            names.
+                        </div>
+                        <input class="govuk-input" id="joined-condition-name" name="joined-condition-name" type="text"
+                            required>
+                    </div>
+                    <div class="govuk-button-group">
+                        <button type="submit" class="govuk-button">Save joined
+                            condition</button>
+
+                        <a href="#" class="govuk-link govuk-link--no-visited-state" id="cancel-join">Cancel</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Remove Condition from Pages Form (Hidden by Default) -->
+            <div id="remove-condition-from-pages-form" class="govuk-!-margin-top-6 app-form-container"
+                style="display: none;">
+                <form id="remove-condition-form" method="post" action="/form-editor/conditions/remove">
+                    <div class="govuk-form-group">
+                        <h2 class="govuk-heading-m app-form-container__title">Remove conditions from pages</h2>
+
+                        <div class="govuk-form-group">
+                            <h3 class="govuk-heading-s">Selected conditions</h3>
+                            <ul class="govuk-list govuk-list--bullet" id="selected-conditions-to-remove-list">
+                                <!-- Selected conditions will be added here dynamically -->
+                            </ul>
+                        </div>
+
+                        <div class="govuk-form-group">
+                            <fieldset class="govuk-fieldset">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                                    Select pages to remove conditions from
+                                </legend>
+                                <div class="govuk-checkboxes" data-module="govuk-checkboxes" id="pages-with-conditions">
+                                    <!-- Pages with conditions will be added here dynamically -->
+                                </div>
+                            </fieldset>
+                        </div>
+
+                        <div class="govuk-button-group">
+                            <button type="submit" class="govuk-button govuk-button--warning">Remove conditions</button>
+                            <a href="#" class="govuk-link govuk-link--no-visited-state"
+                                id="cancel-remove-condition">Cancel</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            </dd>
         </div>
+        </dl>
     </div>
 </div>
 </div>
 </div>
 </div>
+</div>
+
+{# <div class="govuk-modal-dialog" id="apply-condition-dialog" style="display: none;">
+    <div class="govuk-modal-dialog__content">
+        <h2 class="govuk-heading-m" id="dialog-title">Add condition to pages</h2>
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Select a condition
+                </legend>
+                <div class="govuk-radios" data-module="govuk-radios">
+                    {% for condition in conditions %}
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="condition-{{ condition.id }}" name="condition"
+                            type="radio" value="{{ condition.id }}">
+                        <label class="govuk-label govuk-radios__label" for="condition-{{ condition.id }}">
+                            {{ condition.conditionName }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        </div>
+        <div class="govuk-form-group">
+            <fieldset class="govuk-fieldset">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Select pages to apply the condition to
+                </legend>
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    {% for page in formPages %}
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="page-{{ page.pageId }}" name="pages" type="checkbox"
+                            value="{{ page.pageId }}">
+                        <label class="govuk-label govuk-checkboxes__label" for="page-{{ page.pageId }}">
+                            {{ page.pageHeading or 'Page ' + loop.index }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </fieldset>
+        </div>
+        <div class="govuk-button-group">
+            <button class="govuk-button" id="apply-condition-submit">Apply condition</button>
+            <button class="govuk-button govuk-button--secondary" id="cancel-apply-condition">Cancel</button>
+        </div>
+    </div>
+</div> #}
+
+<style>
+    .highlight {
+        background-color: #ffe5cc;
+        border-bottom: 2px solid #ffb266;
+        color: black;
+    }
+
+    #before-content {
+        position: absolute;
+        top: 0;
+        left: 10 !important;
+        right: 0;
+        width: 100%;
+        padding: 10 !important;
+        box-sizing: border-box;
+        z-index: 1;
+        border-bottom: 1px solid #008938;
+        padding-left: 10px;
+    }
+
+    #second-container {
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    #second-container>* {
+        padding-left: 0px;
+        z-index: 2;
+    }
+
+    .with-arrow {
+        position: relative;
+        border: none;
+        height: 2px;
+        background-color: #b1b4b6;
+        margin: 1.5em 0;
+    }
+
+    .with-arrow::after {
+        content: "▼";
+        display: block;
+        position: absolute;
+        left: 2%;
+        transform: translateX(-50%);
+        top: -4px;
+        font-size: 18px;
+        color: #b1b4b6;
+        z-index: 10;
+    }
+
+    .govuk-summary-list__key p {
+        display: block !important;
+    }
+
+    .govuk-table__cell {
+        vertical-align: top;
+    }
+
+
+
+    /* New styles for the form container */
+    .app-form-container {
+        border-left: 4px solid #008938;
+        background-color: #f8f8f8;
+        outline: 1px solid #b1b4b6;
+        padding: 30px;
+        position: relative;
+    }
+
+    .app-form-container__title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        margin-top: 0;
+    }
+
+    #join-conditions-form-container {
+        outline: 1px solid #b1b4b6;
+        outline-offset: -1px;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .govuk-modal-dialog {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        padding: 2rem;
+        border: 1px solid #b1b4b6;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        max-width: 600px;
+        width: 90%;
+    }
+
+    .govuk-modal-dialog__content {
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .govuk-modal-dialog::backdrop {
+        background: rgba(0, 0, 0, 0.5);
+    }
+
+    /* Fix for mojButtonMenu dropdown */
+    .moj-button-menu__wrapper {
+        position: relative;
+        z-index: 100;
+    }
+
+    .moj-button-menu__items {
+        position: absolute;
+        z-index: 100;
+        margin-top: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .moj-button-menu__items--right {
+        right: 0;
+    }
+
+    .moj-button-menu__items--left {
+        left: 0;
+    }
+</style>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -868,8 +1148,7 @@ activeLinkId: "nav-editor"
                             rules.push({
                                 questionText: questionText,
                                 operator: operatorSelect.value,
-                                value: value,
-                                logicalOperator: document.querySelector('input[name="logicalOperator"]:checked')?.value || 'AND'
+                                value: value
                             });
                         }
                     }
@@ -893,13 +1172,24 @@ activeLinkId: "nav-editor"
                 e.preventDefault();
 
                 // Get all checked condition checkboxes
-                const selectedConditions = document.querySelectorAll('input[type="checkbox"]:checked');
+                const selectedConditions = document.querySelectorAll('.condition-checkbox:checked');
                 const conditionIds = Array.from(selectedConditions).map(checkbox => checkbox.value);
+                const conditionNames = Array.from(selectedConditions).map(checkbox => checkbox.dataset.conditionName);
 
                 if (conditionIds.length < 2) {
                     alert('Please select at least two conditions to join');
                     return;
                 }
+
+                // Get the joined condition name
+                const joinedConditionName = document.getElementById('joined-condition-name').value;
+                if (!joinedConditionName) {
+                    alert('Please provide a name for the joined condition');
+                    return;
+                }
+
+                // Get the operator (AND/OR)
+                const operator = document.querySelector('input[name="operator"]:checked').value;
 
                 // Add conditionIds to form
                 const conditionIdsInput = document.createElement('input');
@@ -908,94 +1198,336 @@ activeLinkId: "nav-editor"
                 conditionIdsInput.value = JSON.stringify(conditionIds);
                 joinForm.appendChild(conditionIdsInput);
 
+                // Add operator to form (not needed for now)
+                // const operatorInput = document.createElement('input');
+                // operatorInput.type = 'hidden';
+                // operatorInput.name = 'operator';
+                // operatorInput.value = operator;
+                // joinForm.appendChild(operatorInput);
+
+                // Add joined condition name to form
+                const joinedNameInput = document.createElement('input');
+                joinedNameInput.type = 'hidden';
+                joinedNameInput.name = 'newConditionName';
+                joinedNameInput.value = joinedConditionName;
+                joinForm.appendChild(joinedNameInput);
+
                 // Submit the form
                 joinForm.submit();
             });
         }
+
+        // Handle add condition to pages
+        const addConditionToPagesButton = document.getElementById('add-condition-to-pages');
+        const addConditionToPagesForm = document.getElementById('add-condition-to-pages-form');
+        const cancelAddConditionToPages = document.getElementById('cancel-add-condition-to-pages');
+        const applyConditionForm = document.getElementById('apply-condition-form');
+        const selectedConditionsList = document.getElementById('selected-conditions-list');
+        const selectAllCheckbox = document.getElementById('select-all-conditions');
+        const conditionCheckboxes = document.querySelectorAll('.condition-checkbox');
+
+        function updateSelectedConditionsList() {
+            const selectedCheckboxes = document.querySelectorAll('.condition-checkbox:checked');
+            selectedConditionsList.innerHTML = '';
+
+            selectedCheckboxes.forEach(checkbox => {
+                const conditionName = checkbox.dataset.conditionName;
+                if (conditionName) {
+                    const li = document.createElement('li');
+                    li.textContent = conditionName;
+                    selectedConditionsList.appendChild(li);
+                }
+            });
+        }
+
+        // Handle select all checkbox
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', function () {
+                conditionCheckboxes.forEach(checkbox => {
+                    checkbox.checked = this.checked;
+                });
+                updateSelectedConditionsList();
+            });
+        }
+
+        // Handle individual condition checkboxes
+        conditionCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const allChecked = document.querySelectorAll('.condition-checkbox:checked').length === conditionCheckboxes.length;
+                selectAllCheckbox.checked = allChecked;
+            });
+        });
+
+        if (addConditionToPagesButton && addConditionToPagesForm) {
+            addConditionToPagesButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                addConditionToPagesForm.style.display = 'block';
+                if (addNewButton) {
+                    addNewButton.style.display = 'none';
+                }
+                if (joinButton) {
+                    joinButton.style.display = 'none';
+                }
+                updateSelectedConditionsList();
+            });
+        }
+
+        if (cancelAddConditionToPages && addConditionToPagesForm) {
+            cancelAddConditionToPages.addEventListener('click', function (e) {
+                e.preventDefault();
+                addConditionToPagesForm.style.display = 'none';
+                addConditionToPagesButton.style.display = 'inline-flex';
+                if (addNewButton) {
+                    addNewButton.style.display = 'block';
+                }
+                if (joinButton) {
+                    joinButton.style.display = 'inline-flex';
+                }
+                // Clear all selections
+                conditionCheckboxes.forEach(checkbox => checkbox.checked = false);
+                selectAllCheckbox.checked = false;
+                selectedConditionsList.innerHTML = '';
+            });
+        }
+
+        if (applyConditionForm) {
+            applyConditionForm.addEventListener('submit', function (e) {
+                const selectedCheckboxes = document.querySelectorAll('.condition-checkbox:checked');
+                const selectedPages = Array.from(document.querySelectorAll('input[name="pages"]:checked'))
+                    .map(checkbox => checkbox.value);
+
+                if (selectedCheckboxes.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one condition to apply');
+                    return;
+                }
+
+                if (selectedPages.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one page to apply the condition to');
+                    return;
+                }
+
+                // Add selected condition IDs to form
+                const conditionIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+                const conditionIdsInput = document.createElement('input');
+                conditionIdsInput.type = 'hidden';
+                conditionIdsInput.name = 'conditionIds';
+                conditionIdsInput.value = JSON.stringify(conditionIds);
+                applyConditionForm.appendChild(conditionIdsInput);
+
+                // Add selected pages to form
+                const pagesInput = document.createElement('input');
+                pagesInput.type = 'hidden';
+                pagesInput.name = 'pages';
+                pagesInput.value = JSON.stringify(selectedPages);
+                applyConditionForm.appendChild(pagesInput);
+
+                // Log the data being sent
+                console.log('Submitting form with:', {
+                    conditionIds: conditionIds,
+                    pages: selectedPages
+                });
+            });
+        }
+
+        // Handle remove condition from pages
+        const removeConditionFromPagesButton = document.getElementById('remove-condition-from-pages');
+        const removeConditionFromPagesForm = document.getElementById('remove-condition-from-pages-form');
+        const cancelRemoveCondition = document.getElementById('cancel-remove-condition');
+        const removeConditionForm = document.getElementById('remove-condition-form');
+        const selectedConditionsToRemoveList = document.getElementById('selected-conditions-to-remove-list');
+
+        const formPagesData = JSON.parse('{{ formPages | dump | safe }}');
+
+        function updateSelectedConditionsToRemoveList() {
+            const selectedCheckboxes = document.querySelectorAll('.condition-checkbox:checked');
+            selectedConditionsToRemoveList.innerHTML = '';
+            const selectedConditionIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+            const pagesWithConditions = document.getElementById('pages-with-conditions');
+            pagesWithConditions.innerHTML = '';
+
+            // Create a map of conditions by page
+            const conditionsByPage = new Map();
+
+            selectedCheckboxes.forEach(checkbox => {
+                const conditionName = checkbox.dataset.conditionName;
+                if (conditionName) {
+                    const li = document.createElement('li');
+                    li.textContent = conditionName;
+                    selectedConditionsToRemoveList.appendChild(li);
+
+                    // Find pages that have this condition
+                    formPagesData.forEach(page => {
+                        if (page.conditions) {
+                            page.conditions.forEach(pageCondition => {
+                                if (pageCondition.id === checkbox.value) {
+                                    const pageId = page.pageId;
+                                    if (!conditionsByPage.has(pageId)) {
+                                        conditionsByPage.set(pageId, {
+                                            pageId: pageId,
+                                            pageHeading: page.pageHeading || `Page ${page.pageId}`,
+                                            conditions: []
+                                        });
+                                    }
+                                    conditionsByPage.get(pageId).conditions.push(pageCondition.conditionName);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Add only pages that have conditions to the form
+            conditionsByPage.forEach((pageData, pageId) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'govuk-checkboxes__item';
+
+                const input = document.createElement('input');
+                input.className = 'govuk-checkboxes__input';
+                input.id = `remove-page-${pageId}`;
+                input.name = 'pages';
+                input.type = 'checkbox';
+                input.value = pageId;
+                input.setAttribute('aria-describedby', `remove-page-${pageId}-hint`);
+
+                const label = document.createElement('label');
+                label.className = 'govuk-label govuk-checkboxes__label';
+                label.htmlFor = `remove-page-${pageId}`;
+                label.textContent = pageData.pageHeading;
+
+                const hint = document.createElement('div');
+                hint.id = `remove-page-${pageId}-hint`;
+                hint.className = 'govuk-hint govuk-checkboxes__hint';
+                if (pageData.conditions.length === 1) {
+                    hint.textContent = `Has condition: ${pageData.conditions[0]}`;
+                } else {
+                    hint.textContent = `Has ${pageData.conditions.length} selected conditions`;
+                }
+
+                itemDiv.appendChild(input);
+                itemDiv.appendChild(label);
+                itemDiv.appendChild(hint);
+                pagesWithConditions.appendChild(itemDiv);
+            });
+
+            // Show message if no pages have the selected conditions
+            if (conditionsByPage.size === 0) {
+                const noPagesMessage = document.createElement('p');
+                noPagesMessage.className = 'govuk-body';
+                noPagesMessage.textContent = 'None of the selected conditions are applied to any pages.';
+                pagesWithConditions.appendChild(noPagesMessage);
+            }
+        }
+
+        if (removeConditionFromPagesButton && removeConditionFromPagesForm) {
+            removeConditionFromPagesButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                removeConditionFromPagesForm.style.display = 'block';
+                if (addNewButton) {
+                    addNewButton.style.display = 'none';
+                }
+                if (joinButton) {
+                    joinButton.style.display = 'none';
+                }
+                if (addConditionToPagesButton) {
+                    addConditionToPagesButton.style.display = 'none';
+                }
+                updateSelectedConditionsToRemoveList();
+            });
+        }
+
+        if (cancelRemoveCondition && removeConditionFromPagesForm) {
+            cancelRemoveCondition.addEventListener('click', function (e) {
+                e.preventDefault();
+                removeConditionFromPagesForm.style.display = 'none';
+                removeConditionFromPagesButton.style.display = 'inline-flex';
+                if (addNewButton) {
+                    addNewButton.style.display = 'block';
+                }
+                if (joinButton) {
+                    joinButton.style.display = 'inline-flex';
+                }
+                if (addConditionToPagesButton) {
+                    addConditionToPagesButton.style.display = 'inline-flex';
+                }
+                // Clear all selections
+                conditionCheckboxes.forEach(checkbox => checkbox.checked = false);
+                selectAllCheckbox.checked = false;
+                selectedConditionsToRemoveList.innerHTML = '';
+            });
+        }
+
+        if (removeConditionForm) {
+            removeConditionForm.addEventListener('submit', function (e) {
+                const selectedCheckboxes = document.querySelectorAll('.condition-checkbox:checked');
+                const selectedPages = Array.from(document.querySelectorAll('#remove-condition-from-pages-form input[name="pages"]:checked'))
+                    .map(checkbox => checkbox.value);
+
+                if (selectedCheckboxes.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one condition to remove');
+                    return;
+                }
+
+                if (selectedPages.length === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one page to remove conditions from');
+                    return;
+                }
+
+                // Add selected condition IDs to form
+                const conditionIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
+                const conditionIdsInput = document.createElement('input');
+                conditionIdsInput.type = 'hidden';
+                conditionIdsInput.name = 'conditionIds';
+                conditionIdsInput.value = JSON.stringify(conditionIds);
+                removeConditionForm.appendChild(conditionIdsInput);
+
+                // Add selected pages to form
+                const pagesInput = document.createElement('input');
+                pagesInput.type = 'hidden';
+                pagesInput.name = 'pages';
+                pagesInput.value = JSON.stringify(selectedPages);
+                removeConditionForm.appendChild(pagesInput);
+
+                // Log the data being sent
+                console.log('Submitting remove form with:', {
+                    conditionIds: conditionIds,
+                    pages: selectedPages
+                });
+            });
+        }
+
+        // Handle menu item clicks
+        document.querySelectorAll('[data-action="show-form"]').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const formId = this.getAttribute('data-form-id');
+                const form = document.getElementById(formId);
+
+                if (form) {
+                    // Hide all forms first
+                    document.querySelectorAll('.app-form-container').forEach(f => {
+                        f.style.display = 'none';
+                    });
+
+                    // Show the selected form
+                    form.style.display = 'block';
+
+                    // Hide other buttons
+                    if (addNewButton) addNewButton.style.display = 'none';
+                    if (joinButton) joinButton.style.display = 'none';
+
+                    // Update selected conditions list if needed
+                    if (formId === 'add-condition-to-pages-form') {
+                        updateSelectedConditionsList();
+                    } else if (formId === 'remove-condition-from-pages-form') {
+                        updateSelectedConditionsToRemoveList();
+                    }
+                }
+            });
+        });
     });
 </script>
-
-<style>
-    .highlight {
-        background-color: #ffe5cc;
-        border-bottom: 2px solid #ffb266;
-        color: black;
-    }
-
-    #before-content {
-        position: absolute;
-        top: 0;
-        left: 10 !important;
-        right: 0;
-        width: 100%;
-        padding: 10px !important;
-        box-sizing: border-box;
-        z-index: 1;
-        border-bottom: 1px solid #008938;
-        padding-left: 10px;
-    }
-
-    #second-container {
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    #second-container>* {
-        padding-left: 0px;
-        z-index: 2;
-    }
-
-    .with-arrow {
-        position: relative;
-        border: none;
-        height: 2px;
-        background-color: #b1b4b6;
-        margin: 1.5em 0;
-    }
-
-    .with-arrow::after {
-        content: "▼";
-        display: block;
-        position: absolute;
-        left: 2%;
-        transform: translateX(-50%);
-        top: -4px;
-        font-size: 18px;
-        color: #b1b4b6;
-        z-index: 10;
-    }
-
-    .govuk-summary-list__key p {
-        display: block !important;
-    }
-
-    .govuk-table__cell {
-        vertical-align: top;
-    }
-
-
-
-    /* New styles for the form container */
-    .app-form-container {
-        border-left: 4px solid #008938;
-        background-color: #f8f8f8;
-        outline: 1px solid #b1b4b6;
-        padding: 30px;
-        position: relative;
-    }
-
-    .app-form-container__title {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        margin-top: 0;
-    }
-
-    #join-conditions-form-container {
-        outline: 1px solid #b1b4b6;
-        outline-offset: -1px;
-        padding: 20px;
-        margin: 0;
-    }
-</style>
 {% endblock %}
