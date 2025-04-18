@@ -43,7 +43,7 @@ activeLinkId: "nav-editor"
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
-        <div id="form-pages-data" data-form-pages='{{ formPages | dump | safe }}'></div>
+        <input type="hidden" id="form-pages-data" value="{{ formPages | dump | safe | replace('"', ' &quot;') }}" />
         <div class="govuk-grid-row">
             <!-- Left Column for Form Controls -->
             <div class="govuk-grid-column-two-thirds-from-desktop" id="container"
@@ -121,18 +121,19 @@ activeLinkId: "nav-editor"
                             </td>
                             <td class="govuk-table__cell">
                                 {% set pagesWithCondition = [] %}
+                                {% set pageCounter = 1 %}
                                 {% for page in formPages %}
                                 {% if page.conditions %}
                                 {% for pageCondition in page.conditions %}
                                 {% if pageCondition.id == condition.id %}
-                                {% set pageLabel = page.pageHeading or 'Page ' + loop.index %}
+                                {% set pageLabel = page.pageHeading or 'Page ' + pageCounter %}
                                 {% if pageLabel not in pagesWithCondition %}
-                                {% set pagesWithCondition = pagesWithCondition.concat([pageLabel])
-                                %}
+                                {% set pagesWithCondition = pagesWithCondition.concat([pageLabel]) %}
                                 {% endif %}
                                 {% endif %}
                                 {% endfor %}
                                 {% endif %}
+                                {% set pageCounter = pageCounter + 1 %}
                                 {% endfor %}
                                 {{ pagesWithCondition | join(', ') or 'Not used' }}
                             </td>
@@ -920,8 +921,8 @@ activeLinkId: "nav-editor"
 
                             <div class="govuk-form-group">
                                 <label class="govuk-label" for="condition-question-${conditionCount}">Select a question</label>
-                                <select class="govuk-select condition-question" 
-                                        id="condition-question-${conditionCount}" 
+                                <select class="govuk-select condition-question"
+                                        id="condition-question-${conditionCount}"
                                         name="question-${conditionCount}"
                                         data-available-questions='${questionSelect.getAttribute('data-available-questions')}'>
                                     ${questionSelect.innerHTML}
@@ -944,9 +945,9 @@ activeLinkId: "nav-editor"
                         </fieldset>
                     </div>
 
-                    <button class="govuk-button govuk-button--secondary govuk-button--warning remove-condition-link" 
+                    <button class="govuk-button govuk-button--secondary govuk-button--warning remove-condition-link"
                             style="position: absolute; top: 15px; right: 15px;">
-                        <svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12" height="12" 
+                        <svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12" height="12"
                             viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.5 1.5L1.5 10.5" stroke="currentColor" stroke-width="2"/>
                             <path d="M1.5 1.5L10.5 10.5" stroke="currentColor" stroke-width="2"/>
@@ -1396,8 +1397,6 @@ activeLinkId: "nav-editor"
         const removeConditionForm = document.getElementById('remove-condition-form');
         const selectedConditionsToRemoveList = document.getElementById('selected-conditions-to-remove-list');
 
-        const formPagesData = document.getElementById('form-pages-data').dataset.formPages ? JSON.parse(document.getElementById('form-pages-data').dataset.formPages) : [];
-
         function updateSelectedConditionsToRemoveList() {
             const selectedCheckboxes = document.querySelectorAll('.condition-checkbox:checked');
             selectedConditionsToRemoveList.innerHTML = '';
@@ -1405,72 +1404,148 @@ activeLinkId: "nav-editor"
             const pagesWithConditions = document.getElementById('pages-with-conditions');
             pagesWithConditions.innerHTML = '';
 
-            // Create a map of conditions by page
-            const conditionsByPage = new Map();
+            // Get form pages data
+            const formPagesDataElement = document.getElementById('form-pages-data');
+            let formPagesData = [];
+            try {
+                const rawValue = formPagesDataElement.value;
+                const decodedValue = rawValue
+                    .replace(/&quot;/g, '"')
+                    .replace(/&amp;/g, '&')
+                    .replace(/&lt;/g, '<')
+                    .replace(/&gt;/g, '>');
+
+                formPagesData = JSON.parse(decodedValue);
+
+                // Debug logging
+                console.log('Raw form pages data:', formPagesData);
+                console.log('Selected condition IDs:', selectedConditionIds);
+            } catch (e) {
+                console.error('Error parsing form pages data:', e);
+                return;
+            }
+
+            // Create a map of pages with conditions
+            const pagesWithSelectedConditions = new Map();
 
             selectedCheckboxes.forEach(checkbox => {
                 const conditionName = checkbox.dataset.conditionName;
+                const conditionId = checkbox.value;
+
+                console.log('Processing condition:', {
+                    name: conditionName,
+                    id: conditionId
+                });
+
                 if (conditionName) {
                     const li = document.createElement('li');
                     li.textContent = conditionName;
                     selectedConditionsToRemoveList.appendChild(li);
 
                     // Find pages that have this condition
-                    formPagesData.forEach(page => {
-                        if (page.conditions) {
-                            page.conditions.forEach(pageCondition => {
-                                if (pageCondition.id === checkbox.value) {
-                                    const pageId = page.pageId;
-                                    if (!conditionsByPage.has(pageId)) {
-                                        conditionsByPage.set(pageId, {
-                                            pageId: pageId,
-                                            pageHeading: page.pageHeading || `Page ${page.pageId}`,
-                                            conditions: []
-                                        });
-                                    }
-                                    conditionsByPage.get(pageId).conditions.push(pageCondition.conditionName);
-                                }
+                    formPagesData.forEach((page, index) => {
+                        console.log('Checking page:', {
+                            pageId: page['pageId '],
+                            conditions: page['conditions ']
+                        });
+
+                        if (page['conditions '] && Array.isArray(page['conditions '])) {
+                            const hasCondition = page['conditions '].some(condition => {
+                                const match = String(condition['id ']) === String(conditionId);
+                                console.log('Condition match:', {
+                                    pageConditionId: condition['id '],
+                                    selectedConditionId: conditionId,
+                                    match: match
+                                });
+                                return match;
                             });
+
+                            if (hasCondition) {
+                                const pageId = page['pageId '];
+                                if (!pagesWithSelectedConditions.has(pageId)) {
+                                    // Get the page heading, ensuring we handle the space in the property name
+                                    const pageHeading = page['pageHeading '] || `Page ${index + 1}`;
+                                    pagesWithSelectedConditions.set(pageId, {
+                                        pageId: pageId,
+                                        pageHeading: pageHeading.trim() || `Page ${index + 1}`,
+                                        pageIndex: index + 1,
+                                        conditions: []
+                                    });
+                                }
+                                pagesWithSelectedConditions.get(pageId).conditions.push(conditionName);
+                            }
                         }
                     });
                 }
             });
 
-            // Add only pages that have conditions to the form
-            conditionsByPage.forEach((pageData, pageId) => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = 'govuk-checkboxes__item';
+            console.log('Final pages with conditions:', Array.from(pagesWithSelectedConditions.entries()));
 
-                const input = document.createElement('input');
-                input.className = 'govuk-checkboxes__input';
-                input.id = `remove-page-${pageId}`;
-                input.name = 'pages';
-                input.type = 'checkbox';
-                input.value = pageId;
-                input.setAttribute('aria-describedby', `remove-page-${pageId}-hint`);
+            // Add pages with conditions to the form
+            if (pagesWithSelectedConditions.size > 0) {
+                const checkboxesContainer = document.createElement('div');
+                checkboxesContainer.className = 'govuk-checkboxes';
+                checkboxesContainer.setAttribute('data-module', 'govuk-checkboxes');
 
-                const label = document.createElement('label');
-                label.className = 'govuk-label govuk-checkboxes__label';
-                label.htmlFor = `remove-page-${pageId}`;
-                label.textContent = pageData.pageHeading;
+                // Sort pages by their index before creating checkboxes
+                const sortedPages = Array.from(pagesWithSelectedConditions.entries())
+                    .sort((a, b) => a[1].pageIndex - b[1].pageIndex);
 
-                const hint = document.createElement('div');
-                hint.id = `remove-page-${pageId}-hint`;
-                hint.className = 'govuk-hint govuk-checkboxes__hint';
-                if (pageData.conditions.length === 1) {
-                    hint.textContent = `Has condition: ${pageData.conditions[0]}`;
-                } else {
-                    hint.textContent = `Has ${pageData.conditions.length} selected conditions`;
+                sortedPages.forEach(([pageId, pageData]) => {
+                    console.log('Creating checkbox for page:', {
+                        pageId: pageId,
+                        pageHeading: pageData.pageHeading,
+                        pageIndex: pageData.pageIndex
+                    });
+
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'govuk-checkboxes__item';
+
+                    const input = document.createElement('input');
+                    input.className = 'govuk-checkboxes__input';
+                    input.id = `remove-page-${pageId}`;
+                    input.name = 'pages';
+                    input.type = 'checkbox';
+                    input.value = pageId;
+                    input.setAttribute('aria-describedby', `remove-page-${pageId}-hint`);
+
+                    const label = document.createElement('label');
+                    label.className = 'govuk-label govuk-checkboxes__label';
+                    label.htmlFor = `remove-page-${pageId}`;
+                    label.textContent = pageData.pageHeading && pageData.pageHeading.trim() ? pageData.pageHeading : `Page ${pageData.pageIndex}`;
+
+                    const hint = document.createElement('div');
+                    hint.id = `remove-page-${pageId}-hint`;
+                    hint.className = 'govuk-hint govuk-checkboxes__hint';
+                    if (pageData.conditions.length === 1) {
+                        hint.textContent = `Has condition: ${pageData.conditions[0]}`;
+                    } else {
+                        hint.textContent = `Has ${pageData.conditions.length} selected conditions`;
+                    }
+
+                    itemDiv.appendChild(input);
+                    itemDiv.appendChild(label);
+                    itemDiv.appendChild(hint);
+                    checkboxesContainer.appendChild(itemDiv);
+                });
+
+                pagesWithConditions.innerHTML = '';
+                pagesWithConditions.appendChild(checkboxesContainer);
+
+                // Initialize GOV.UK checkboxes only if we have checkboxes
+                if (checkboxesContainer.querySelectorAll('input[type="checkbox"]').length > 0) {
+                    if (window.GOVUKFrontend && window.GOVUKFrontend.Checkboxes) {
+                        try {
+                            const checkboxes = new window.GOVUKFrontend.Checkboxes(checkboxesContainer);
+                            if (checkboxes && typeof checkboxes.init === 'function') {
+                                checkboxes.init();
+                            }
+                        } catch (e) {
+                            console.error('Error initializing checkboxes:', e);
+                        }
+                    }
                 }
-
-                itemDiv.appendChild(input);
-                itemDiv.appendChild(label);
-                itemDiv.appendChild(hint);
-                pagesWithConditions.appendChild(itemDiv);
-            });
-
-            // Show message if no pages have the selected conditions
-            if (conditionsByPage.size === 0) {
+            } else {
                 const noPagesMessage = document.createElement('p');
                 noPagesMessage.className = 'govuk-body';
                 noPagesMessage.textContent = 'None of the selected conditions are applied to any pages.';
@@ -1519,11 +1594,8 @@ activeLinkId: "nav-editor"
         if (removeConditionForm) {
             removeConditionForm.addEventListener('submit', function (e) {
                 const selectedCheckboxes = document.querySelectorAll('.condition-checkbox:checked');
-                const selectedPages = Array.from(document.querySelectorAll('#remove-condition-from-pages-form input[name="pages"]:checked'))
+                const selectedPages = Array.from(document.querySelectorAll('#pages-with-conditions input[type="checkbox"]:checked'))
                     .map(checkbox => checkbox.value);
-
-                console.log('Selected checkboxes:', selectedCheckboxes);
-                console.log('Selected pages:', selectedPages);
 
                 if (selectedCheckboxes.length === 0) {
                     e.preventDefault();
@@ -1539,7 +1611,6 @@ activeLinkId: "nav-editor"
 
                 // Add selected condition IDs to form
                 const conditionIds = Array.from(selectedCheckboxes).map(checkbox => checkbox.value);
-                console.log('Condition IDs:', conditionIds);
                 const conditionIdsInput = document.createElement('input');
                 conditionIdsInput.type = 'hidden';
                 conditionIdsInput.name = 'conditionIds';
@@ -1551,11 +1622,7 @@ activeLinkId: "nav-editor"
                 pagesInput.type = 'hidden';
                 pagesInput.name = 'pages';
                 pagesInput.value = JSON.stringify(selectedPages);
-                console.log('Pages input value:', pagesInput.value);
                 removeConditionForm.appendChild(pagesInput);
-
-                // Allow the form to submit normally
-                return true;
             });
         }
     });

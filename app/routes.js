@@ -3022,9 +3022,27 @@ router.post("/form-editor/conditions/apply", function (req, res) {
   // Get all selected conditions
   const conditions = conditionIds
     .map((conditionId) => {
-      return formData.conditions.find(
+      // First check form-level conditions
+      let condition = formData.conditions?.find(
         (condition) => String(condition.id) === String(conditionId)
       );
+
+      // If not found in form-level, check page-level conditions
+      if (!condition) {
+        for (const page of formPages) {
+          if (page.conditions) {
+            const found = page.conditions.find(
+              (c) => String(c.id) === String(conditionId)
+            );
+            if (found) {
+              condition = found;
+              break;
+            }
+          }
+        }
+      }
+
+      return condition;
     })
     .filter(Boolean);
 
@@ -3050,13 +3068,8 @@ router.post("/form-editor/conditions/apply", function (req, res) {
           (c) => String(c.id) === String(condition.id)
         );
         if (!conditionExists) {
-          // Add the full condition object to the page
-          page.conditions.push({
-            id: condition.id,
-            conditionName: condition.conditionName,
-            rules: condition.rules,
-            text: condition.text,
-          });
+          // Add a deep copy of the condition to avoid reference issues
+          page.conditions.push(JSON.parse(JSON.stringify(condition)));
           console.log(`Added condition ${condition.id} to page ${page.pageId}`);
         }
       } else {
