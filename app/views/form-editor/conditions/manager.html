@@ -110,10 +110,12 @@ activeLinkId: "nav-editor"
                                 <p class="govuk-body govuk-!-margin-bottom-0">
                                     {% for rule in condition.rules %}
                                     {% if not loop.first %}
-                                    <span class="govuk-!-font-weight-bold">{{ condition.logicalOperator }}</span>
+                                    <span class="govuk-!-font-weight-bold"> {{ rule.logicalOperator | default('AND') }}
+                                    </span>
                                     {% endif %}
                                     '{{ rule.questionText }}' {{ rule.operator | replace("-", " ") }} {% if rule.value |
-                                    isArray %}'{{ rule.value | join("' or '") }}'{% else %}'{{ rule.value }}'{% endif %}
+                                    isArray %}'{{ rule.value | join("' or '") }}'{% else %}'{{ rule.value }}'{% endif
+                                    %}{% if not loop.last %}&nbsp;{% endif %}
                                     {% endfor %}
                                 </p>
                             </td>
