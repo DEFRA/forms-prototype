@@ -21,6 +21,50 @@ router.use((req, res, next) => {
   next();
 });
 
+// Add middleware to initialize users in session data
+router.use((req, res, next) => {
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+  if (!req.session.data.users) {
+    req.session.data.users = [
+      {
+        email: "chris.smith@defra.gov.uk",
+        role: "Admin",
+      },
+      {
+        email: "laura.parker@defra.gov.uk",
+        role: "Form creator",
+      },
+      {
+        email: "maria.garcia@defra.gov.uk",
+        role: "Form creator",
+      },
+      {
+        email: "james.wilson@defra.gov.uk",
+        role: "Form creator",
+      },
+      {
+        email: "sarah.johnson@defra.gov.uk",
+        role: "Form creator",
+      },
+      {
+        email: "michael.brown@defra.gov.uk",
+        role: "Form creator",
+      },
+      {
+        email: "emma.davis@defra.gov.uk",
+        role: "Form creator",
+      },
+      {
+        email: "david.miller@defra.gov.uk",
+        role: "Admin",
+      },
+    ];
+  }
+  next();
+});
+
 // import lists stuff
 
 router.get("/form-editor/new-list", (req, res) => {
@@ -3170,4 +3214,245 @@ router.post("/form-editor/conditions/remove", function (req, res) {
   );
 
   res.redirect("/form-editor/conditions/manager");
+});
+
+// Add route to handle saving users
+router.post("/save-user", function (req, res) {
+  // Initialize session data if it doesn't exist
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+
+  // Initialize users array if it doesn't exist
+  if (!req.session.data.users) {
+    req.session.data.users = [];
+  }
+
+  // Create new user object
+  const newUser = {
+    email: req.body.email,
+    role: req.body.role,
+  };
+
+  // Add the new user to the array
+  req.session.data.users.push(newUser);
+
+  // Add success message to session
+  req.session.data.successMessage =
+    "You added " +
+    emailToName(newUser.email) +
+    " and we've sent them an email to let them know.";
+
+  // Save the session
+  req.session.save(function (err) {
+    if (err) {
+      console.error("Error saving session:", err);
+    }
+    // Redirect to manage users page
+    res.redirect("/roles/manage-users.html");
+  });
+});
+
+// Add route to handle viewing the manage users page
+router.get("/roles/manage-users.html", function (req, res) {
+  // Initialize session data if it doesn't exist
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+
+  // Initialize users array if it doesn't exist
+  if (!req.session.data.users) {
+    req.session.data.users = [
+      {
+        email: "chris.smith@defra.gov.uk",
+        role: "admin",
+      },
+      {
+        email: "jane.doe@defra.gov.uk",
+        role: "creator",
+      },
+      {
+        email: "john.smith@defra.gov.uk",
+        role: "creator",
+      },
+    ];
+  }
+
+  // Add semantic name to each user
+  const usersWithNames = req.session.data.users.map((user) => ({
+    ...user,
+    semanticName: emailToName(user.email),
+  }));
+
+  // Store the success message and clear it from session
+  const successMessage = req.session.data.successMessage;
+  delete req.session.data.successMessage;
+
+  // Debug logging
+  console.log("Users with names:", JSON.stringify(usersWithNames, null, 2));
+
+  const templateData = {
+    data: {
+      ...req.session.data,
+      users: usersWithNames,
+      successMessage: successMessage,
+    },
+  };
+
+  // Debug logging
+  console.log("Template data:", JSON.stringify(templateData, null, 2));
+
+  res.render("roles/manage-users.html", templateData);
+});
+
+// Add route to show welcome email template
+router.get("/email/welcome-preview", function (req, res) {
+  const data = {
+    email: req.query.email || "email address",
+    role: req.query.role || "Form creator",
+    addedBy: "Daniel Da Silveria",
+  };
+
+  res.render("email/welcome-email", {
+    data: data,
+  });
+});
+
+// Helper function to convert email to semantic name
+function emailToName(email) {
+  if (!email) return "";
+  // Remove domain part
+  const localPart = email.split("@")[0];
+  // Split by dots and underscores
+  const parts = localPart.split(/[._]/);
+  // Capitalize each part
+  const capitalizedParts = parts.map(
+    (part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase()
+  );
+  // Join with spaces
+  return capitalizedParts.join(" ");
+}
+
+// Add route to handle viewing the edit user page
+router.get("/roles/edit-user.html", function (req, res) {
+  // Initialize session data if it doesn't exist
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+
+  // Get the email from query parameters
+  const email = req.query.email;
+
+  // Find the user in the users array
+  const user = req.session.data.users.find((u) => u.email === email);
+
+  if (!user) {
+    // If user not found, redirect back to manage users page
+    return res.redirect("/roles/manage-users.html");
+  }
+
+  // Add semantic name to user object
+  const userWithName = {
+    ...user,
+    semanticName: emailToName(user.email),
+  };
+
+  res.render("roles/edit-user.html", {
+    data: {
+      user: userWithName,
+    },
+  });
+});
+
+// Add route to handle updating user information
+router.post("/update-user", function (req, res) {
+  // Initialize session data if it doesn't exist
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+
+  // Get the email and new role from the request body
+  const email = req.body.email;
+  const newRole = req.body.role;
+
+  // Find the user in the users array and update their role
+  const userIndex = req.session.data.users.findIndex((u) => u.email === email);
+  if (userIndex !== -1) {
+    req.session.data.users[userIndex].role = newRole;
+  }
+
+  // Add success message to session
+  req.session.data.successMessage = `You updated ${emailToName(
+    email
+  )}'s role to ${newRole}.`;
+
+  // Save the session
+  req.session.save(function (err) {
+    if (err) {
+      console.error("Error saving session:", err);
+    }
+    // Redirect to manage users page
+    res.redirect("/roles/manage-users.html");
+  });
+});
+
+// Add route to handle viewing the remove user confirmation page
+router.get("/roles/remove-user.html", function (req, res) {
+  // Initialize session data if it doesn't exist
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+
+  // Get the email from query parameters
+  const email = req.query.email;
+
+  // Find the user in the users array
+  const user = req.session.data.users.find((u) => u.email === email);
+
+  if (!user) {
+    // If user not found, redirect back to manage users page
+    return res.redirect("/roles/manage-users.html");
+  }
+
+  // Add semantic name to user object
+  const userWithName = {
+    ...user,
+    semanticName: emailToName(user.email),
+  };
+
+  res.render("roles/remove-user.html", {
+    data: {
+      user: userWithName,
+    },
+  });
+});
+
+// Add route to handle removing a user
+router.post("/remove-user", function (req, res) {
+  // Initialize session data if it doesn't exist
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+
+  // Get the email from the request body
+  const email = req.body.email;
+
+  // Remove the user from the users array
+  req.session.data.users = req.session.data.users.filter(
+    (u) => u.email !== email
+  );
+
+  // Add success message to session
+  req.session.data.successMessage = `You removed ${emailToName(
+    email
+  )} from Forms Designer and we've sent them an email to let them know.`;
+
+  // Save the session
+  req.session.save(function (err) {
+    if (err) {
+      console.error("Error saving session:", err);
+    }
+    // Redirect to manage users page
+    res.redirect("/roles/manage-users.html");
+  });
 });

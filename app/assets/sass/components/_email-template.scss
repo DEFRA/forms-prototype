@@ -1,0 +1,137 @@
+.app-email-template {
+  border: 1px solid $govuk-border-colour;
+  padding: govuk-spacing(4);
+  margin-bottom: govuk-spacing(6);
+  background-color: govuk-colour("white");
+
+  &__metadata {
+    margin-bottom: govuk-spacing(6);
+    border-bottom: 1px solid $govuk-border-colour;
+    padding-bottom: govuk-spacing(4);
+
+    .govuk-summary-list {
+      margin-bottom: 0;
+    }
+
+    .govuk-summary-list__key {
+      width: 100px;
+    }
+  }
+
+  &__body {
+    .govuk-body:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.app-email-preview {
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background-color: #ffffff;
+
+  &__toolbar {
+    background-color: #f3f2f1;
+    padding: govuk-spacing(2) govuk-spacing(4);
+    border: 1px solid #e1dfdd;
+    border-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: govuk-spacing(2);
+
+    .govuk-button {
+      background: #ffffff;
+      color: #201f1e;
+      border: 1px solid #8a8886;
+      box-shadow: none;
+      font-size: 14px;
+      min-height: 32px;
+      padding: 0 12px;
+      margin: 0;
+
+      &:hover {
+        background: #f3f2f1;
+        border-color: #201f1e;
+      }
+    }
+  }
+
+  &__container {
+    background-color: #ffffff;
+    border: 1px solid #e1dfdd;
+  }
+
+  &__header {
+    padding: govuk-spacing(4) govuk-spacing(4) govuk-spacing(2);
+    border-bottom: 1px solid #e1dfdd;
+
+    .govuk-heading-m {
+      color: #201f1e;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: govuk-spacing(1);
+    }
+
+    .email-meta {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 8px;
+      font-size: 14px;
+      color: #201f1e;
+      margin-bottom: 4px;
+
+      dt {
+        color: #605e5c;
+      }
+    }
+
+    .email-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #0078d4;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      margin-bottom: govuk-spacing(2);
+    }
+  }
+
+  &__content {
+    padding: govuk-spacing(4);
+    font-size: 14px;
+    color: #201f1e;
+    min-height: 200px;
+
+    .govuk-body {
+      font-size: 14px;
+      margin-bottom: govuk-spacing(4);
+      line-height: 1.4;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .govuk-list {
+      font-size: 14px;
+      margin-bottom: govuk-spacing(4);
+    }
+
+    .govuk-list--bullet > li {
+      margin-bottom: govuk-spacing(1);
+    }
+
+    a {
+      color: #0078d4;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
