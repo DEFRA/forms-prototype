@@ -4,7 +4,7 @@
 {% from "components/service-header/macro.njk" import serviceHeader %}
 {% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
-{% set pageName = "Add and edit your pages - Apply for a county parish holding number in England" %}
+{% set pageName = "Add and edit your pages - " + form.name %}
 
 {% block header %}
 {{ serviceHeader({

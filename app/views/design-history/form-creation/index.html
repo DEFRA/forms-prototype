@@ -1,5 +1,32 @@
+{#
+Design History Page for "Adding form details when creating a new form"
+----------------------------------------------------------------------
+This file documents the design and research history for the "Add form details" feature.
+It extends the main design history template and sets all the variables required by that template.
+
+Key variables:
+- featureName: The name of the feature being documented.
+- latestVersionLink: URL to the latest prototype version.
+- status, statusColor: Status tag and its color.
+- userNeed: The user need this feature addresses.
+- phase, category: Project phase and category.
+- researchRounds: List of research rounds (for the summary table).
+- improvements: Key improvements in the latest version.
+- researchHistory: Table of research rounds, findings, and prototype links.
+- researchSummaries: Detailed summaries for each research round.
+Each summary can contain sections of type: content, details, images, objectives, findings, recommendations, preview.
+
+How to use:
+- Add or update research rounds and summaries as new research is conducted.
+- Use the provided structure for each section type.
+- For previews, images, and details, see the template for rendering logic.
+
+For more info, see: /design-history/index.html (the template guide)
+#}
+
 {% extends "design-history/template.html" %}
 
+{# --- Feature metadata --- #}
 {% set featureName = "Adding form details when creating a new form" %}
 {% set latestVersionLink = "/titan-mvp-1/create-new-form/form-name.html" %}
 {% set status = "Tested" %}
@@ -7,8 +34,9 @@
 {% set userNeed = "Users need to add form details when creating a new form so that they can manage their forms
 effectively." %}
 {% set phase = "Private beta" %}
-{% set category = "Form creation" %}
+{% set category = "Form admin" %}
 
+{# --- Research rounds for the summary table --- #}
 {% set researchRounds = [
 "Round 1 - May 2024",
 "Round 3 - June 2024",
@@ -16,11 +44,13 @@ effectively." %}
 "Round 7 - October 2024"
 ] %}
 
+{# --- Key improvements in the latest version --- #}
 {% set improvements = [
 "Warning that you cannot change the form name once a form has gone live",
 "Warning to not add personal email address under team details"
 ] %}
 
+{# --- Research history table --- #}
 {% set researchHistory = [
 [
 { text: "1" },
@@ -52,34 +82,65 @@ effectively." %}
 ]
 ] %}
 
+{# --- Detailed research summaries --- #}
 {% set researchSummaries = [
 {
 title: "Round 1 - May 2024",
 summary: "Initial testing of form creation process with focus on basic user understanding and field requirements",
-objectives: [
-"Understand how users approach form creation",
-"Identify key information needed for form setup",
-"Test initial form details collection process"
-],
-findings: [
-"Users were generally confident with the basic form creation process",
-"Required fields were not clearly indicated, causing confusion",
-"Users wanted more context about why certain information was needed"
-],
-recommendations: [
+sections: [
+{
+type: "content",
+content: "### User research overview:
+- Research conducted: Remote interviews and usability testing (15 – 23 May 2024).
+- Participants: 6 content designers from various Defra operational teams."
+},
+{
+type: "content",
+content: [
+"### Objectives:
+- Test form name validation implementation
+- Evaluate team details section improvements
+- Assess overall user experience"
+]
+},
+{
+type: "findings",
+content: [
+"form names are typically decided collaboratively with SMEs or policy teams",
+"users expect flexibility to change the form name later"
+]
+},
+{
+type: "images",
+content: [
+{
+src: "/design-history/113.png",
+alt: "Description",
+caption: "Optional caption"
+}
+]
+},
+{
+type: "content",
+content: "<div class='govuk-inset-text'>
+        <p> Ideally, it would be together based on what they want the form to do and be
+                based on good content design principles, the style guides and making it clear what the form is, so not
+                just
+                giving it like an obscure number or something very generic.” — Content designer, BAU </p>
+</div>"
+},
+
+{
+type: "recommendations",
+content: [
 "Add clear indicators for required fields",
 "Include explanatory text for each section",
 "Provide examples of valid inputs"
-],
-images: [
-{
-content: "## Initial form creation interface\n\nThe first version of the form creation journey focused on collecting
-basic details. Users could enter a form name and team details, but there was little guidance on what was required."
+]
 },
 {
-src: "/public/images/113.png",
-alt: "Initial form creation interface from Round 1 testing",
-caption: "Initial form creation interface from Round 1 testing"
+type: "preview",
+url: "https://defra-forms-mvp-prototype-6c025bd15252.herokuapp.com/form-editor/reorder/1.html"
 }
 ]
 },
@@ -103,7 +164,8 @@ recommendations: [
 ],
 images: [
 {
-content: "### Improved validation and team details\n\nWe added validation for the form name and improved the team
+content: "### Improved validation and team details\n\nWe added validation for the form name and improved the
+team
 details section. Users received feedback if the form name was missing or invalid."
 }
 ]
@@ -128,10 +190,13 @@ recommendations: [
 ],
 images: [
 {
-content: "### Warning about form name changes\n\nA warning was introduced to inform users that the form name cannot be
+content: "### Warning about form name changes
+
+warning was introduced to inform users that the form name cannot be
 changed after the form goes live. This helped set expectations but also raised concerns.\n\n<div
-    class='govuk-inset-text'>\n <p>Once your form is live, you cannot change its name. Make sure the name is correct
-        before publishing.</p>\n</div>"
+        class='govuk-inset-text'>\n <p>Once your form is live, you cannot change its name. Make sure the name is
+                correct
+                before publishing.</p>\n</div>"
 }
 ]
 },
@@ -155,10 +220,34 @@ recommendations: [
 ],
 images: [
 {
-content: "### Warning about personal email addresses\n\nA new warning was added to discourage users from entering
-personal email addresses in the team details section.\n\n<div class='govuk-inset-text'>\n <p>Do not use a personal email
-        address. Use a shared team or departmental email address instead.</p>\n</div>"
+content: "### Warning about personal email addresses\n\nA new warning was added to discourage users from
+entering
+personal email addresses in the team details section.\n\n<div class='govuk-inset-text'>\n <p>Do not use a
+                personal email
+                address. Use a shared team or departmental email address instead.</p>\n</div>"
 }
 ]
 }
 ] %}
+
+<span class="govuk-caption-m govuk-!-margin-bottom-1">Preview</span>
+<div class="iframe-container govuk-!-margin-bottom-6" role="region" aria-labelledby="preview-heading">
+        <h2 id="preview-heading" class="govuk-visually-hidden">Preview of the form</h2>
+        <iframe src="https://defra-forms-mvp-prototype-6c025bd15252.herokuapp.com/form-editor/reorder/1.html"
+                class="iframe-content" style="overflow-y: auto; height: 500px; width: 100%; border: none;"
+                scrolling="yes" frameborder="0" title="Form preview" marginheight="0" marginwidth="0" allowfullscreen>
+        </iframe>
+        <div class="iframe-tabs" role="navigation" aria-label="Preview controls">
+                <a class="govuk-link govuk-link--no-visited-state iframe-tab maximise-button"
+                        style="border-right: #007f3b 1px solid;" href="#" role="button" aria-label="Maximise preview"
+                        title="Maximise preview" tabindex="0">
+                        Maximise
+                </a>
+                <a class="govuk-link govuk-link--no-visited-state iframe-tab"
+                        href="https://defra-forms-mvp-prototype-6c025bd15252.herokuapp.com/form-editor/listing"
+                        target="_blank" rel="noopener noreferrer" aria-label="Open preview in a new tab"
+                        title="Open preview in a new tab">
+                        Open in a new tab
+                </a>
+        </div>
+</div>
