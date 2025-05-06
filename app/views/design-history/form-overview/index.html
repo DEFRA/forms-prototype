@@ -1,4 +1,107 @@
-{% extends "layouts/main.html" %}
+{% extends "design-history/template.html" %}
+
+{# --- Feature metadata --- #}
+{% set featureName = "Form Overview" %}
+{% set latestVersionLink = "/titan-mvp-1/form-overview/index.html" %}
+{% set status = "Tested" %}
+{% set statusColor = "green" %}
+{% set userNeed = "Users need a clear overview of their form's structure and status so they can effectively manage and
+navigate their form." %}
+{% set phase = "Private beta" %}
+{% set category = "Form admin" %}
+{% set description = "This feature provides users with a comprehensive view of their form, including form details,
+status, structure, and navigation options." %}
+
+{# --- Research rounds for the summary table --- #}
+{% set researchRounds = [
+"Round 2 - May/June 2024",
+"Round 1 - May 2024"
+] %}
+
+{# --- Key improvements in the latest version --- #}
+{% set improvements = [
+"Enhanced form structure visualization",
+"Improved status indicators",
+"Added clear navigation options",
+"Enhanced form details display"
+] %}
+
+{# --- Research history table --- #}
+{% set researchHistory = [
+{
+roundNumber: "2",
+researchDate: "May/June 2024",
+researchFinding: "Form overview was clear and consistent with Whitehall experience",
+changeMade: "No major changes needed"
+},
+{
+roundNumber: "1",
+researchDate: "May 2024",
+researchFinding: "Clear but uncertainty about GOV.UK publishing location",
+changeMade: "Clarified publication process and location"
+}
+] %}
+
+{# --- Detailed research summaries --- #}
+{% set researchSummaries = [
+{
+title: "Round 2 - May/June 2024",
+summary: "Testing of form overview and navigation",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (30 May–3 June 2024)\n\n**Participants:** 4 content designers
+from BAU and Environment Agency\n\n**Method:** Remote usability testing with think-aloud protocol\n\n**Scenario:**
+Testing form content and conditions. Participants were asked to add and edit form content, create pages and add
+components, set up reference numbers, test preview functionality, and work with conditions."
+},
+{
+type: "findings",
+content: [
+"Form overview was clear and consistent with Whitehall experience",
+"No major usability issues identified",
+"Navigation and layout were intuitive"
+]
+},
+{
+type: "quotes",
+content: [
+"'Form overview was clear and consistent with Whitehall experience'",
+"'No major usability issues identified'"
+]
+}
+]
+},
+{
+title: "Round 1 - May 2024",
+summary: "Initial testing of form overview",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (15–23 May 2024)\n\n**Participants:** 6 content designers
+from various Defra teams (RPA, BAU, Air Quality Control, Trade and Borders, Natural England)\n\n**Method:** Remote
+interviews and usability testing\n\n**Scenario:** Testing form creation and details collection. Participants were asked
+to create a new form, add form details (name, lead organization, policy SME, team details), review form overview, and
+test filters and sorting in forms library."
+},
+{
+type: "findings",
+content: [
+"Clear but uncertainty about GOV.UK publishing location",
+"Recommendation to clarify publication process and location",
+"Users wanted clearer guidance on form status and next steps"
+]
+},
+{
+type: "quotes",
+content: [
+"'Does it go live straight on GOV.UK? Where is it going to sit?'",
+"'Published—is the same as live?'"
+]
+}
+]
+}
+] %}
 
 {% block pageTitle %}
 Form Overview - Design History

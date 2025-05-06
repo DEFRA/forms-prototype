@@ -1,189 +1,109 @@
 {% extends "design-history/template.html" %}
 
-{% set featureName = "Form validation and error handling" %}
-{% set latestVersionLink = "/titan-mvp-7/form-validation/error-messages.html" %}
-{% set status = "In progress" %}
-{% set statusColor = "blue" %}
-{% set userNeed = "Users need clear feedback when they make mistakes in form fields so they can correct them easily." %}
+{# --- Feature metadata --- #}
+{% set featureName = "Form Validation" %}
+{% set latestVersionLink = "/titan-mvp-1/form-editor/validation.html" %}
+{% set status = "Tested" %}
+{% set statusColor = "green" %}
+{% set userNeed = "Users need clear and flexible validation rules and error messages so they can ensure form data is
+accurate and properly formatted." %}
 {% set phase = "Private beta" %}
-{% set category = "Form validation" %}
+{% set category = "Form admin" %}
+{% set description = "This feature allows users to set up validation rules for form fields, customize error messages,
+and test validation behavior." %}
 
+{# --- Research rounds for the summary table --- #}
 {% set researchRounds = [
-"Round 2 - May 2024",
-"Round 5 - August 2024",
-"Round 6 - September 2024"
+"Round 8 - November 2024",
+"Round 7 - October 2024"
 ] %}
 
+{# --- Key improvements in the latest version --- #}
 {% set improvements = [
-"Added inline validation for required fields",
-"Improved error message clarity and positioning",
-"Added visual indicators for field states"
+"Standardized error message input prompts",
+"Added flexibility in error message creation",
+"Improved visibility of validation rules",
+"Enhanced guidance on error message best practices"
 ] %}
 
+{# --- Research history table --- #}
 {% set researchHistory = [
-[
-{ text: "2" },
-{ text: "May 2024" },
-{ text: "Users found error messages unclear and hard to locate" },
-{ text: "Initial implementation of form validation" },
-{ html: "<a href='/titan-mvp-2/form-validation/error-messages.html' target='_blank' rel='noopener noreferrer'>MVP 2</a>"
+{
+roundNumber: "8",
+researchDate: "November 2024",
+researchFinding: "Users needed guidance on best practices for error text",
+changeMade: "Added clear guidance on error message best practices"
+},
+{
+roundNumber: "7",
+researchDate: "October 2024",
+researchFinding: "Labels and copy clear but interaction confusing",
+changeMade: "Standardized error message input prompts"
 }
-],
-[
-{ text: "5" },
-{ text: "August 2024" },
-{ text: "Users appreciated inline validation but needed clearer error messages" },
-{ text: "Improved error message clarity and positioning" },
-{ html: "<a href='/titan-mvp-5/form-validation/error-messages.html' target='_blank' rel='noopener noreferrer'>MVP 5</a>"
-}
-],
-[
-{ text: "6" },
-{ text: "September 2024" },
-{ text: "Users found visual indicators helpful but needed more context" },
-{ text: "Added visual indicators and improved field state feedback" },
-{ html: "<a href='/titan-mvp-6/form-validation/error-messages.html' target='_blank' rel='noopener noreferrer'>MVP 6</a>"
-}
-]
 ] %}
 
+{# --- Detailed research summaries --- #}
 {% set researchSummaries = [
 {
-title: "Round 2 - May 2024",
-summary: "Initial testing of form validation with focus on error message clarity and positioning",
-objectives: [
-"Test initial error message implementation",
-"Evaluate user understanding of validation rules",
-"Assess error message visibility"
-],
-findings: [
-"Error messages were hard to locate on the page",
-"Users wanted more specific guidance on how to fix errors",
-"Validation timing was confusing for some users"
-],
-recommendations: [
-"Improve error message positioning",
-"Add more specific error guidance",
-"Consider inline validation"
-],
-images: [
+title: "Round 8 - November 2024",
+summary: "Testing of error message best practices",
+sections: [
 {
-content: "## Initial implementation
-
-This was our first attempt at form validation. We placed error messages below the form fields, but user testing showed
-this wasn't ideal.
-
-### User feedback
-
-> \"I couldn't easily see what was wrong with my form submission. The error messages were hidden at the bottom.\"
-
-### Key issues identified
-
-- Error messages were hard to locate
-- No visual connection between fields and errors
-- Messages appeared only after submission"
+type: "content",
+content: "**Research conducted:** Remote usability testing (5–7 November 2024)\n\n**Participants:** 5 content designers
++ 1 proxy user (Cefas, Environment Agency, Farming, APHA, Whitehall)\n\n**Method:** Remote usability testing with
+think-aloud protocol\n\n**Scenario:** Testing form editor enhancements and error messaging. Participants were asked to
+test error messages, work with guidance-only pages, test input field grouping, review input type familiarity, test
+preview panel, add page headers and guidance, test reordering and saving pages, enter checkbox options, test autosave
+functionality, use markdown, and participate in tree testing for guidance findability."
 },
 {
-src: "/public/images/validation-1.png",
-alt: "Initial error message implementation",
-caption: "First version of form validation showing error messages below the form",
-width: "full",
-scale: 100,
-link: "/titan-mvp-2/form-validation/error-messages.html"
+type: "findings",
+content: [
+"'Prefix' wording (e.g. 'Enter', 'Select') was confusing",
+"Users needed guidance on best practices for error text",
+"Recommendation to set expectations for prefixes",
+"Need for flexibility and clear guidance"
+]
 },
 {
-content: "### Improved error message placement
-
-Based on user feedback from Round 5, we moved the error messages above the form fields. This made them more visible and
-easier to scan.
-
-#### Changes made
-
-1. **Moved error messages** above fields
-2. Added *visual indicators* for invalid fields
-3. Improved message clarity
-
-[View the full implementation](/titan-mvp-5/form-validation/code.html)"
-},
-{
-src: "/public/images/sky.png",
-alt: "Improved error message implementation",
-caption: "Second version of form validation showing error messages above the form",
-width: "two-thirds",
-scale: 100,
-link: "/titan-mvp-5/form-validation/error-messages.html"
-},
-{
-content: "### Final implementation
-
-After multiple rounds of testing, we implemented inline validation with immediate feedback.
-
-> I like the inline validation, it's clear and helpful.
-
-Some markdown here
-
-<div class='govuk-inset-text'>
-    <p>I like the inline validation, it's clear and helpful.</p>
-</div>
-
-#### Key features
-
-- Real-time validation
-- Clear error states
-- Helpful guidance
-
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Inline validation | ✅ | Implemented |
-| Error messages | ✅ | Above fields |
-| Visual indicators | ✅ | Color and icons |
-| Help text | 🚧 | In progress |"
-},
-{
-src: "/public/images/validation-3.png",
-alt: "Final implementation with inline validation",
-caption: "Third version showing inline validation",
-width: "two-thirds",
-scale: 100
+type: "quotes",
+content: [
+"'That little red thing did throw me a little bit... it felt like it was boxing me in'",
+"'It just feels a bit over-engineered'",
+"'I'd feel like I needed guidance on best practice for error text'"
+]
 }
 ]
 },
 {
-title: "Round 5 - August 2024",
-summary: "Testing of improved error messages and inline validation",
-objectives: [
-"Evaluate inline validation implementation",
-"Test new error message format",
-"Assess user satisfaction with validation feedback"
-],
-findings: [
-"Inline validation was well received",
-"New error message format was clearer",
-"Users wanted more visual feedback"
-],
-recommendations: [
-"Add visual indicators for field states",
-"Improve error message formatting",
-"Consider adding examples of valid input"
+title: "Round 7 - October 2024",
+summary: "Testing of error messages and markdown",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (1–2 October 2024)\n\n**Participants:** 4 senior content
+designers and 1 proxy user (APHA, RPA, Countryside Stewardship)\n\n**Method:** Remote usability testing with think-aloud
+protocol\n\n**Scenario:** Testing DXT form editor redesign and file upload notifications. Participants were asked to
+review file upload notification emails, create new forms, add questions, test markdown usage, work with error messages,
+test user flow and navigation, use repeater feature, name question sets, review overview of questions, add options for
+radios, and reorder pages."
+},
+{
+type: "findings",
+content: [
+"Labels and copy clear but interaction confusing",
+"Unclear if markdown usage had limitations",
+"Recommendation to provide detailed guidance on markdown"
 ]
 },
 {
-title: "Round 6 - September 2024",
-summary: "Testing of visual indicators and improved field state feedback",
-objectives: [
-"Test visual indicators for field states",
-"Evaluate improved field feedback",
-"Assess overall user experience"
-],
-findings: [
-"Visual indicators helped users understand field states",
-"Improved feedback made validation clearer",
-"Users wanted more context about validation rules"
-],
-recommendations: [
-"Add tooltips for validation rules",
-"Include examples of valid input",
-"Consider adding a validation summary"
+type: "quotes",
+content: [
+"'Am I limited in markdown usage, like hyperlinks?'",
+"'The error messages don't work clearly'"
+]
+}
 ]
 }
 ] %}

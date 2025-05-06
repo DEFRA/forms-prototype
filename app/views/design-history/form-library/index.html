@@ -1,21 +1,213 @@
-{% extends "layouts/main.html" %}
+{#
+Design History Page Template
+---------------------------
+This is a blank template for creating new design history pages.
+It extends the main design history template and sets all the variables required by that template.
 
-{% block pageTitle %}
-Form Library - Design History
-{% endblock %}
+Key variables:
+- featureName: The name of the feature being documented.
+- latestVersionLink: URL to the latest prototype version.
+- status, statusColor: Status tag and its color.
+- userNeed: The user need this feature addresses.
+- phase, category: Project phase and category.
+- researchRounds: List of research rounds (for the summary table).
+- improvements: Key improvements in the latest version.
+- researchHistory: Table of research rounds, findings, and prototype links.
+- researchSummaries: Detailed summaries for each research round.
+Each summary can contain sections of type: content, details, images, objectives, findings, recommendations, preview.
 
-{% block content %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Form Library</h1>
+How to use:
+1. Copy this file to a new location in the design-history directory
+2. Fill in all the variables below
+3. Add research rounds and summaries as needed
+#}
 
-        <p class="govuk-body">This section contains design history for features related to the form library.</p>
+{% extends "design-history/template.html" %}
 
-        <h2 class="govuk-heading-l">Features</h2>
+{# --- Feature metadata --- #}
+{% set featureName = "Forms Library" %}
+{% set latestVersionLink = "/titan-mvp-1/form-library/index.html" %}
+{% set status = "Tested" %}
+{% set statusColor = "green" %}
+{% set userNeed = "Users need to efficiently find, manage, and organize their forms so they can work effectively with
+their form collection." %}
+{% set phase = "Private beta" %}
+{% set category = "Form admin" %}
+{% set description = "This feature allows users to browse, search, and filter their forms library, including managing
+form status, sorting options, and accessing form details." %}
 
-        <ul class="govuk-list">
-            <li><a href="posts/forms-library.html">Forms library (sorting, filtering, tags)</a></li>
-        </ul>
-    </div>
-</div>
-{% endblock %}
+{# --- Journey steps --- #}
+{% set journeySteps = [
+{
+number: "1",
+title: "Onboarding",
+subtitles: [
+{ text: "Sign in/out", isCurrent: false },
+{ text: "Roles and permissions", isCurrent: false }
+]
+},
+{
+number: "2",
+title: "Create new form",
+subtitles: [
+{ text: "Add form details", isCurrent: false }
+],
+isCurrent: false
+},
+{
+number: "3",
+title: "Form design",
+subtitles: [
+{ text: "Create and edit questions", isCurrent: false },
+{ text: "Set up page conditions", isCurrent: false }
+]
+},
+{
+number: "4",
+title: "Testing",
+subtitles: [
+{ text: "Preview form", isCurrent: false },
+{ text: "Check routing", isCurrent: false }
+]
+},
+{
+number: "5",
+title: "Form management",
+subtitles: [
+{ text: "Finding forms", isCurrent: true },
+{ text: "Publishing forms", isCurrent: false },
+{ text: "Receiving submissions", isCurrent: false },
+{ text: "Updating form details", isCurrent: false }
+],
+isCurrent: true
+}
+] %}
+
+{# --- Full page list --- #}
+{% set pageList = [
+{
+section: "Forms library",
+pages: [
+{
+name: "Forms library",
+link: "/titan-mvp-1/library.html",
+release: "Private beta"
+}
+]
+}
+] %}
+
+{# --- Feature links --- #}
+{% set featureLinks = [
+{
+title: "Forms library",
+screens: [
+{
+name: "Forms library",
+path: "/titan-mvp-1/library.html"
+}
+]
+}
+] %}
+
+{# --- Research rounds for the summary table --- #}
+{% set researchRounds = [
+"Rounds 3 & 4 - June/July 2024",
+"Round 1 - May 2024"
+] %}
+
+{# --- Key improvements in the latest version --- #}
+{% set improvements = [
+"Added search functionality",
+"Improved filter visibility",
+"Enhanced sorting options",
+"Added clear status indicators"
+] %}
+
+{# --- Research history table --- #}
+{% set researchHistory = [
+{
+roundNumber: "3 & 4",
+researchDate: "June/July 2024",
+researchFinding: "Search functionality effective but sorting options not universally useful",
+changeMade: "Enhanced search and filter capabilities"
+},
+{
+roundNumber: "1",
+researchDate: "May 2024",
+researchFinding: "Intuitive, similar to Whitehall Publishing, but lacked search functionality",
+changeMade: "Initial implementation of forms library with clear status indicators"
+}
+] %}
+
+{# --- Detailed research summaries --- #}
+{% set researchSummaries = [
+{
+title: "Rounds 3 & 4 - June/July 2024",
+summary: "Testing of search and filter functionality",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (24–25 June & 1–2 July 2024)\n\n**Participants:** 8 content
+designers across various teams (Farming, Cefas, Environment Agency, Nature, Forestry, Climate Change)\n\n**Method:**
+Remote usability testing with think-aloud protocol\n\n**Scenario:** Testing file upload and forms library. Participants
+were asked to test file upload functionality (with and without JavaScript), navigate forms library, use search and
+filter functions, create new forms, and edit draft forms."
+},
+{
+type: "findings",
+content: [
+"Search functionality effective",
+"Advanced search and state filter require further investigation",
+"Sorting options understandable but not universally useful",
+"Recommendation to evaluate usefulness further and consider streamlining options"
+]
+},
+{
+type: "quotes",
+content: [
+"'Search works very well – it meets what users need'",
+"'I personally don't know why I'd want to know which is oldest or newest'"
+]
+}
+]
+},
+{
+title: "Round 1 - May 2024",
+summary: "Initial testing of forms library",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (15–23 May 2024)\n\n**Participants:** 6 content designers
+from various Defra teams (RPA, BAU, Air Quality Control, Trade and Borders, Natural England)\n\n**Method:** Remote
+interviews and usability testing\n\n**Scenario:** Testing form creation and details collection. Participants were asked
+to create a new form, add form details (name, lead organization, policy SME, team details), review form overview, and
+test filters and sorting in forms library."
+},
+{
+type: "findings",
+content: [
+"Intuitive, similar to Whitehall Publishing",
+"Clear status indicators, helpful filters",
+"Lacks search functionality",
+"Users expect immediate access to personal forms",
+"Recommendation to implement immediate visibility, search, and sort functionalities"
+]
+},
+{
+type: "quotes",
+content: [
+"'I'd go straight to the form I'm working on'",
+"'I see I can sort for the newest, which might be what I want to do, or I might need to search for ones that I've worked
+on'"
+]
+}
+]
+}
+] %}
+
+<style>
+    .app-secondary-text {
+        color: #505a5f;
+    }
+</style>

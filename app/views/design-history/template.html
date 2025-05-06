@@ -5,10 +5,10 @@
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 
-{% macro imageCell(image) %}
+{% macro imageCell(imageData) %}
 <figure class="govuk-image">
-    <img src="{{ image.src }}" alt="{{ image.alt }}">
-    <figcaption>{{ image.caption }}</figcaption>
+    <img src="{{ imageData.src }}" alt="{{ imageData.alt }}">
+    <figcaption>{{ imageData.caption }}</figcaption>
 </figure>
 {% endmacro %}
 
@@ -19,6 +19,113 @@
 {% block head %}
 {{ super() }}
 <!-- Marked.js (for Markdown parsing) -->
+<style>
+    .iframe-container {
+        border: 5px solid black;
+        border-radius: 4px;
+        padding: 0;
+        overflow: hidden;
+        position: relative;
+        /* Ensure tabs stay relative to the container */
+    }
+
+    .iframe-tabs {
+        display: flex;
+        justify-content: flex-end;
+        border-bottom: 1px solid #ccc;
+        background-color: #f8f8f8;
+        position: absolute;
+        /* Tabs stay positioned above the iframe */
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 10;
+        padding: 10px;
+    }
+
+    .iframe-tab {
+        text-align: center;
+        padding: 10px;
+        font-size: 16px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .iframe-tab:hover {
+        background-color: #e8e8e8;
+    }
+
+    .iframe-container.fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        z-index: 9999;
+        background-color: white;
+    }
+
+    .iframe-container.fullscreen .iframe-tabs {
+        position: fixed;
+        /* Keeps tabs at the top in fullscreen mode */
+        z-index: 9999;
+        background-color: white;
+        /* Ensures visibility */
+    }
+
+    .iframe-container.fullscreen .iframe-content {
+        height: calc(100vh - 50px);
+        /* Deduct tab height from viewport */
+        width: 100%;
+        border: none;
+    }
+
+    .govuk-image {
+        max-width: 600px;
+        margin: 0 auto;
+
+    }
+
+    .govuk-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .table-image {
+        max-width: 400px;
+        min-width: 400px;
+        height: auto;
+        display: block;
+    }
+
+    .govuk-table__cell {
+        vertical-align: top;
+    }
+
+    .app-related-items {
+        border-top: 2px solid #1d70b8;
+        padding-top: 10px;
+    }
+
+    .app-related-items .govuk-list {
+        margin-top: 0;
+    }
+
+    .app-related-items .govuk-list li {
+        margin-bottom: 0;
+    }
+
+    .app-related-items .govuk-inset-text {
+        border-left-color: #00703c;
+        background-color: #f3f2f1;
+    }
+
+    .app-secondary-text {
+        color: #505a5f !important;
+        font-weight: normal !important;
+    }
+</style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -169,37 +276,48 @@ rel: "noopener noreferrer"
         {% endif %}
 
         <h2 class="govuk-heading-m">Research history</h2>
-        {{ govukTable({
-        head: [
-        { text: "Round" },
-        { text: "Date" },
-        { text: "Research findings" },
-        { text: "Changes made" }
-        ],
-        rows: researchHistory
-        }) }}
+        <table class="govuk-table">
+            <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">Round</th>
+                    <th scope="col" class="govuk-table__header">Date</th>
+                    <th scope="col" class="govuk-table__header">Research findings</th>
+                    <th scope="col" class="govuk-table__header">Changes made</th>
+                </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+                {% for entry in researchHistory %}
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">{{ entry.roundNumber }}</td>
+                    <td class="govuk-table__cell">{{ entry.researchDate }}</td>
+                    <td class="govuk-table__cell">{{ entry.researchFinding }}</td>
+                    <td class="govuk-table__cell">{{ entry.changeMade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 
         <h2 class="govuk-heading-m">Detailed research summaries</h2>
 
         <div class="timeline govuk-accordion " data-module="govuk-accordion" id="accordion-default">
-            {% for summary in researchSummaries %}
+            {% for researchSummary in researchSummaries %}
             <div class="timeline__item govuk-accordion__section">
                 <div class="timeline__header govuk-accordion__section-header govuk-!-padding-bottom-0">
                     <h3 class="timeline__title govuk-accordion__section-heading govuk-!-padding-bottom-0">
                         <span class="govuk-accordion__section-button govuk-!-padding-bottom-0"
                             id="accordion-default-heading-{{ loop.index }}">
-                            {{ summary.title }}
+                            {{ researchSummary.title }}
                         </span>
                     </h3>
                     <div class="timeline__summary govuk-accordion__section-summary govuk-body"
                         id="accordion-default-summary-{{ loop.index }}">
-                        {{ summary.summary }}
+                        {{ researchSummary.summary }}
                     </div>
                 </div>
                 <div id="accordion-default-content-{{ loop.index }}"
                     class="timeline__content govuk-accordion__section-content govuk-!-padding-top-0"
                     aria-labelledby="accordion-default-heading-{{ loop.index }}">
-                    {% for section in summary.sections %}
+                    {% for section in researchSummary.sections %}
                     {% if section.type == 'content' %}
                     <div class="markdown-content govuk-body" data-markdown="{{ section.content | replace('"', ' &quot;')
                         | replace('\n', '\\n' ) }}"></div>
@@ -539,18 +657,42 @@ rel: "noopener noreferrer"
             <nav role="navigation" aria-labelledby="journey-navigation">
                 <ul class="govuk-list govuk-list--spaced">
                     {% for step in journeySteps %}
-                    <li>
-                        {% if step.isCurrent %}
-                        <div class="govuk-!-margin-bottom-1">
-                            <span class="govuk-body-s govuk-!-font-weight-bold">{{ step.number }}. {{ step.title
-                                }}</span>
-                        </div>
+                    <li class="govuk-!-margin-top-4">
+                        <span
+                            class="govuk-heading-s govuk-!-margin-bottom-1{% if not step.isCurrent %} app-secondary-text{% endif %}"
+                            style="display: block;">
+                            {{ step.number }}. {{ step.title }}
+                        </span>
+                        {% if step.subtitles %}
+                        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-2 govuk-!-margin-top-1">
+                            {% for subtitle in step.subtitles %}
+                            {% if not subtitle.isCurrent %}
+                            <li>
+                                <span class="govuk-body-s app-secondary-text">{{ subtitle.text }}</span>
+                            </li>
+                            {% endif %}
+                            {% endfor %}
+                        </ul>
+                        {% set hasCurrent = false %}
+                        {% for subtitle in step.subtitles %}
+                        {% if subtitle.isCurrent %}
+                        {% set hasCurrent = true %}
+                        {% endif %}
+                        {% endfor %}
+                        {% if hasCurrent %}
                         <div
                             class="govuk-inset-text govuk-!-margin-top-0 govuk-!-margin-bottom-2 govuk-!-padding-top-2 govuk-!-padding-bottom-2">
-                            <span class="govuk-body-s">{{ step.subtitle }}</span>
+                            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                                {% for subtitle in step.subtitles %}
+                                {% if subtitle.isCurrent %}
+                                <li>
+                                    <span class="govuk-body-s govuk-!-font-weight-bold">{{ subtitle.text }}</span>
+                                </li>
+                                {% endif %}
+                                {% endfor %}
+                            </ul>
                         </div>
-                        {% else %}
-                        <span class="govuk-body-s">{{ step.number }}. {{ step.title }}</span>
+                        {% endif %}
                         {% endif %}
                     </li>
                     {% endfor %}
@@ -559,109 +701,6 @@ rel: "noopener noreferrer"
         </div>
     </div>
 </div>
-
-<style>
-    .iframe-container {
-        border: 5px solid black;
-        border-radius: 4px;
-        padding: 0;
-        overflow: hidden;
-        position: relative;
-        /* Ensure tabs stay relative to the container */
-    }
-
-    .iframe-tabs {
-        display: flex;
-        justify-content: flex-end;
-        border-bottom: 1px solid #ccc;
-        background-color: #f8f8f8;
-        position: absolute;
-        /* Tabs stay positioned above the iframe */
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 10;
-        padding: 10px;
-    }
-
-    .iframe-tab {
-        text-align: center;
-        padding: 10px;
-        font-size: 16px;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    .iframe-tab:hover {
-        background-color: #e8e8e8;
-    }
-
-    .iframe-container.fullscreen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        z-index: 9999;
-        background-color: white;
-    }
-
-    .iframe-container.fullscreen .iframe-tabs {
-        position: fixed;
-        /* Keeps tabs at the top in fullscreen mode */
-        z-index: 9999;
-        background-color: white;
-        /* Ensures visibility */
-    }
-
-    .iframe-container.fullscreen .iframe-content {
-        height: calc(100vh - 50px);
-        /* Deduct tab height from viewport */
-        width: 100%;
-        border: none;
-    }
-
-    .govuk-image {
-        max-width: 600px;
-        margin: 0 auto;
-
-    }
-
-    .govuk-image img {
-        width: 100%;
-        height: auto;
-        display: block;
-    }
-
-    .table-image {
-        max-width: 400px;
-        min-width: 400px;
-        height: auto;
-        display: block;
-    }
-
-    .govuk-table__cell {
-        vertical-align: top;
-    }
-
-    .app-related-items {
-        border-top: 2px solid #1d70b8;
-        padding-top: 10px;
-    }
-
-    .app-related-items .govuk-list {
-        margin-top: 0;
-    }
-
-    .app-related-items .govuk-list li {
-        margin-bottom: 0;
-    }
-
-    .app-related-items .govuk-inset-text {
-        border-left-color: #00703c;
-        background-color: #f3f2f1;
-    }
-</style>
 
 <script>
     document.querySelector('.maximise-button').addEventListener('click', function (event) {

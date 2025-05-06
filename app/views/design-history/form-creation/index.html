@@ -27,35 +27,58 @@ For more info, see: /design-history/index.html (the template guide)
 {% extends "design-history/template.html" %}
 
 {# --- Feature metadata --- #}
-{% set featureName = "Adding form details when creating a new form" %}
+{% set featureName = "Form Creation and Details" %}
 {% set latestVersionLink = "/titan-mvp-1/create-new-form/form-name.html" %}
 {% set status = "Tested" %}
 {% set statusColor = "green" %}
-{% set userNeed = "Users need to add form details when creating a new form so that they can manage their forms
-effectively." %}
+{% set userNeed = "Users need to create new forms with clear details so they can effectively manage and identify their
+forms." %}
 {% set phase = "Private beta" %}
 {% set category = "Form admin" %}
-{% set description = "This is the first step in creating a new form. It collects key details like the form's name, the
-responsible organisation, and policy SME. This information helps manage the form and the output appears on the Form
-overview page." %}
+{% set description = "This feature allows users to create new forms by providing essential details including form name,
+lead organisation, and team details. This information helps manage the form and appears on the Form overview page." %}
 {% set journeySteps = [
 {
 number: "1",
-title: "Create new form",
-subtitle: "Add form details",
-isCurrent: true
+title: "Onboarding",
+subtitles: [
+{ text: "Sign in/out", isCurrent: false },
+{ text: "Roles and permissions", isCurrent: false }
+]
 },
 {
 number: "2",
-title: "Design form"
+title: "Create new form",
+subtitles: [
+{ text: "Add form details", isCurrent: true }
+],
+isCurrent: true
 },
 {
 number: "3",
-title: "Test form"
+title: "Form design",
+subtitles: [
+{ text: "Create and edit questions", isCurrent: false },
+{ text: "Set up page conditions", isCurrent: false }
+]
 },
 {
 number: "4",
-title: "Manage form"
+title: "Testing",
+subtitles: [
+{ text: "Preview form", isCurrent: false },
+{ text: "Check routing", isCurrent: false }
+]
+},
+{
+number: "5",
+title: "Form management",
+subtitles: [
+{ text: "Finding forms", isCurrent: false },
+{ text: "Publishing forms", isCurrent: false },
+{ text: "Receiving submissions", isCurrent: false },
+{ text: "Updating form details", isCurrent: false }
+]
 }
 ] %}
 
@@ -143,244 +166,134 @@ path: "/titan-mvp-1/create-new-form/policy-sme-error.html"
 
 {# --- Research rounds for the summary table --- #}
 {% set researchRounds = [
-"Round 8 - November 2024",
-"Round 3 and 4 - June and July 2024",
+"Round 7 - October 2024",
+"Round 2 - May/June 2024",
 "Round 1 - May 2024"
 ] %}
 
 {# --- Key improvements in the latest version --- #}
 {% set improvements = [
-"Warning that you cannot change the form name once a form has gone live",
-"Warning to not add personal email address under team details"
+"Clarified difference between form name and title",
+"Added support for multiple organisations",
+"Improved email usage instructions",
+"Enhanced form overview and publication process explanation"
 ] %}
 
 {# --- Research history table --- #}
 {% set researchHistory = [
-[
-{ text: "8" },
-{ text: "November 2024" },
-{ text: "Users understood the security implications but needed clearer guidance on appropriate email addresses" },
-{ text: "Added warning about personal email addresses in team details" }
-],
-[
-{ text: "3 and 4" },
-{ text: "June and July 2024" },
-{ text: "Users found the new hint text clearer and more helpful, but some were concerned about the permanence of form
-names" },
-{ text: "Added form name validation and improved team details section" }
-],
-[
-{ text: "1" },
-{ text: "May 2024" },
-{ text: "Users understood the basic form creation process but needed clearer guidance on required fields" },
-{ text: "Initial implementation of form details collection" }
-]
+{
+roundNumber: "7",
+researchDate: "October 2024",
+researchFinding: "Users needed clearer guidance on email usage in team details",
+changeMade: "Added clarification about personal email addresses"
+},
+{
+roundNumber: "2",
+researchDate: "May/June 2024",
+researchFinding: "Form overview was clear and consistent with Whitehall experience",
+changeMade: "No major changes needed"
+},
+{
+roundNumber: "1",
+researchDate: "May 2024",
+researchFinding: "Users needed clearer guidance on required fields and naming conventions",
+changeMade: "Initial implementation of form details collection"
+}
 ] %}
 
 {# --- Detailed research summaries --- #}
 {% set researchSummaries = [
 {
-title: "Round 8 - November 2024",
-summary: "Testing of warnings about personal email addresses in team details",
+title: "Round 7 - October 2024",
+summary: "Testing of team details and email usage",
 sections: [
 {
 type: "content",
-content: "**Research conducted:** Remote usability testing (10–17 November 2024)\n\n**Participants:** 7 content
-designers and 3 team leads"
-},
-{
-type: "screen",
-title: "Screen 2: Team Details",
-content: "The team details screen collects information about the team responsible for the form, including contact
-details.",
-images: [
-{
-src: "/public/images/form-admin/round-7/team-details.png",
-alt: "Team details input screen showing warning about personal email addresses",
-caption: "Team details screen with warning about personal email addresses"
-}
-]
-},
-{
-type: "changes",
-screen: "Changes since previous round",
-content: [
-{
-screen: "Screen 2: Team Details",
-what: "Added warning about personal email addresses in team details",
-why: "Previous rounds of research showed that users were still using their personal email addresses in team details"
-}
-]
+content: "**Research conducted:** Remote usability testing (1–2 October 2024)\n\n**Participants:** 4 senior content
+designers and 1 proxy user (APHA, RPA, Countryside Stewardship)\n\n**Method:** Remote usability testing with think-aloud
+protocol\n\n**Scenario:** Testing DXT form editor redesign and file upload notifications. Participants were asked to
+review file upload notification emails, create new forms, add questions, test markdown usage, work with error messages,
+test user flow and navigation, use repeater feature, name question sets, review overview of questions, add options for
+radios, and reorder pages."
 },
 {
 type: "findings",
 content: [
-"Users found the new hint text helpful",
-"One wasn't sure if the personal email address was their Defra email address or their Hotmail email address"
+"Users needed clearer guidance on email usage in team details",
+"Confusion about 'shared team email' hint text",
+"Recommendation to clarify definition of 'personal email address'"
 ]
 },
 {
 type: "quotes",
 content: [
-"...personal email address...is it my Defra email address or my Hotmail email address?<br><br>- Content designer, BaU"
+"'Personal email—my Defra email or my Hotmail?'",
+"'I don't know what the policy team are actually called. What business area responsible for this form?'"
 ]
 }
 ]
 },
 {
-title: "Round 3 and 4 - June and July 2024",
-summary: "Testing new hint text for form name",
+title: "Round 2 - May/June 2024",
+summary: "Testing of form overview and navigation",
 sections: [
 {
 type: "content",
-content: "**Research conducted:** Remote usability testing (5–12 June 2024)\n\n**Participants:** 6 content designers
-from various Defra operational teams"
-},
-{
-type: "screen",
-title: "Screen 1: Form Name",
-content: "The form name screen is the first step in creating a new form. It helps users identify and manage their forms
-within the system.",
-images: [
-{
-src: "/public/images/form-admin/round-2/form-name.png",
-alt: "Form name input screen showing warning about form name permanence",
-caption: "Form name screen with new warning message"
-}
-]
-},
-{
-type: "changes",
-screen: "Changes since previous round",
-content: [
-{
-screen: "Screen 1: Form Name",
-what: "Added hint text explaining that a form cannot be changed after it has gone live",
-why: "Previous rounds of research showed that users were not aware that a form name could be changed after it had gone
-live and that they were concerned about the permanence of form names"
-}
-]
+content: "**Research conducted:** Remote usability testing (30 May–3 June 2024)\n\n**Participants:** 4 content designers
+from BAU and Environment Agency\n\n**Method:** Remote usability testing with think-aloud protocol\n\n**Scenario:**
+Testing form content and conditions. Participants were asked to add and edit form content, create pages and add
+components, set up reference numbers, test preview functionality, and work with conditions."
 },
 {
 type: "findings",
 content: [
-"Users found the new hint text clearer and more helpful",
-"Some users still needed additional context about form naming conventions"
+"Form overview was clear and consistent with Whitehall experience",
+"No major usability issues identified",
+"Navigation and layout were intuitive"
 ]
 },
 {
 type: "quotes",
 content: [
-"The hint text makes it much clearer what this is for. I understand now that this is just for our internal use.<br><br>—
-Content designer, BAU"
+"'Form overview was clear and consistent with Whitehall experience'",
+"'No major usability issues identified'"
 ]
 }
 ]
 },
 {
 title: "Round 1 - May 2024",
-summary: "Initial research with content designers to understand form creation behaviors and needs",
+summary: "Initial research on form creation process",
 sections: [
 {
 type: "content",
 content: "**Research conducted:** Remote interviews and usability testing (15–23 May 2024)\n\n**Participants:** 6
-content designers from various Defra operational teams"
+content designers from various Defra teams (RPA, BAU, Air Quality Control, Trade and Borders, Natural
+England)\n\n**Method:** Remote interviews and usability testing\n\n**Scenario:** Testing form creation and details
+collection. Participants were asked to create a new form, add form details (name, lead organization, policy SME, team
+details), review form overview, and test filters and sorting in forms library."
 },
 {
-type: "content",
+type: "findings",
 content: [
-"- understand content designers' behaviors, motivations, and needs\n- evaluate the process used for creating and editing
-forms in Defra's form builder prototype"
+"Users needed clearer guidance on required fields and naming conventions",
+"Initial implementation of form details collection"
 ]
 },
 {
-type: "screen",
-title: "Screen 1: Form Name",
-content: "The form name screen is the first step in creating a new form. It helps users identify and manage their forms
-within the system.",
-images: [
-{
-src: "/public/images/form-admin/round-1/form-name.png",
-alt: "Form name input screen showing the question 'What is the name of your form?' and hint text explaining it's for
-internal use",
-caption: "Form name input screen"
-}
-],
-insights: [
-"Form names are typically decided collaboratively with SMEs or policy teams",
-"Users expect flexibility to change the form name later"
-],
-quotes: [
-"Ideally, it would be together based on what they want the form to do and be based on good content design principles,
-the style guides and making it clear what the form is, so not just giving it like an obscure number or something very
-generic.<br><br>— Content designer, BAU"
-]
-},
-{
-type: "screen",
-title: "Screen 2: Lead Organisation",
-content: "The lead organisation screen helps users specify which department or agency is responsible for the form.",
-images: [
-{
-src: "/public/images/form-admin/round-1/lead-org.png",
-alt: "Lead organisation selection screen showing a dropdown with options for different Defra departments",
-caption: "Lead organisation selection screen"
-}
-],
-insights: [
-"The process of choosing a lead organisation was clear",
-"Participants identified scenarios where selecting more than one organisation might be necessary"
-],
-quotes: [
-"We're sort of operating within three areas: Defra core, APHA and DAERA. So, I'm going to pick APHA, but I might want to
-pick two.<br><br>— Content Designer, Trade"
-]
-},
-{
-type: "screen",
-title: "Screen 3: Team Details",
-content: "The team details screen collects information about the team responsible for the form, including contact
-details.",
-images: [
-{
-src: "/public/images/form-admin/round-1/team-details.png",
-alt: "Team details input screen showing fields for team name, email, and contact person",
-caption: "Team details input screen"
-}
-],
-insights: [
-"Content designers generally don't have immediate access to specific team details and rely on SMEs or policy teams for
-this information",
-"Some teams lack a shared email address; content designers often input their own Defra email address instead"
-],
-quotes: [
-"I don't know what the policy team are actually called. What business area responsible for this form? I would assume
-that I'm responsible for this form as I'm creating it and I'm in the xxx team. So that's what I would put
-there.<br><br>— Content designer, Air Quality Control"
+type: "quotes",
+content: [
+"'Ideally, it would be together based on what they want the form to do and be based on good content design principles'",
+"'The name, I assume something unique so that I can find it again'",
+"'We're sort of operating within three areas: Defra core, APHA and DAERA. So, I'm going to pick APHA, but I might want
+to pick two'"
 ]
 }
 ]
 }
 ] %}
-
-<span class="govuk-caption-m govuk-!-margin-bottom-1">Preview</span>
-<div class="iframe-container govuk-!-margin-bottom-6" role="region" aria-labelledby="preview-heading">
-        <h2 id="preview-heading" class="govuk-visually-hidden">Preview of the form</h2>
-        <iframe src="https://defra-forms-mvp-prototype-6c025bd15252.herokuapp.com/form-editor/reorder/1.html"
-                class="iframe-content" style="overflow-y: auto; height: 500px; width: 100%; border: none;"
-                scrolling="yes" frameborder="0" title="Form preview" marginheight="0" marginwidth="0" allowfullscreen>
-        </iframe>
-        <div class="iframe-tabs" role="navigation" aria-label="Preview controls">
-                <a class="govuk-link govuk-link--no-visited-state iframe-tab maximise-button"
-                        style="border-right: #007f3b 1px solid;" href="#" role="button" aria-label="Maximise preview"
-                        title="Maximise preview" tabindex="0">
-                        Maximise
-                </a>
-                <a class="govuk-link govuk-link--no-visited-state iframe-tab"
-                        href="https://defra-forms-mvp-prototype-6c025bd15252.herokuapp.com/form-editor/listing"
-                        target="_blank" rel="noopener noreferrer" aria-label="Open preview in a new tab"
-                        title="Open preview in a new tab">
-                        Open in a new tab
-                </a>
-        </div>
-</div>
+<style>
+        .app-secondary-text {
+                color: #505a5f;
+        }
+</style>

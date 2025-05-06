@@ -1,39 +1,141 @@
-{% extends "layouts/main.html" %}
+{% extends "design-history/template.html" %}
 
-{% block pageTitle %}
-Repeaters (including Add another) - Design History
-{% endblock %}
+{# --- Feature metadata --- #}
+{% set featureName = "Repeaters (Add Another)" %}
+{% set latestVersionLink = "/titan-mvp-1/form-editor/repeaters.html" %}
+{% set status = "Tested" %}
+{% set statusColor = "green" %}
+{% set userNeed = "Users need to create repeatable sections in their forms so they can collect multiple instances of the
+same information." %}
+{% set phase = "Private beta" %}
+{% set category = "Form editor" %}
+{% set description = "This feature allows users to create repeatable sections in forms, including the 'Add Another'
+functionality, enabling respondents to add multiple instances of the same information." %}
 
-{% block content %}
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <h1 class="govuk-heading-xl">Repeaters (including Add another)</h1>
+{# --- Research rounds for the summary table --- #}
+{% set researchRounds = [
+"Round 9 - March 2025",
+"Round 7 - October 2024",
+"Round 6 - September 2024",
+"Round 5 - July 2024"
+] %}
 
-        <p class="govuk-body">This section contains design history for the Repeaters feature.</p>
+{# --- Key improvements in the latest version --- #}
+{% set improvements = [
+"Enhanced repeater management",
+"Improved 'Add Another' interaction",
+"Added clear guidance on repeater use",
+"Enhanced repeater editing"
+] %}
 
-        <h2 class="govuk-heading-l">Research rounds</h2>
+{# --- Research history table --- #}
+{% set researchHistory = [
+{
+roundNumber: "9",
+researchDate: "March 2025",
+researchFinding: "Repeater management intuitive but needed clearer guidance",
+changeMade: "Added clear guidance on repeater use cases"
+},
+{
+roundNumber: "7",
+researchDate: "October 2024",
+researchFinding: "'Add Another' interaction clear but needed refinement",
+changeMade: "Improved 'Add Another' interaction design"
+},
+{
+roundNumber: "6",
+researchDate: "September 2024",
+researchFinding: "Repeater editing interface clear but needed better guidance",
+changeMade: "Enhanced repeater editing interface and guidance"
+},
+{
+roundNumber: "5",
+researchDate: "July 2024",
+researchFinding: "Initial implementation well received but needed refinement",
+changeMade: "Initial implementation of repeaters feature"
+}
+] %}
 
-        <ul class="govuk-list">
-            <li><a href="posts/round-5.html">Round 5 - July 2024</a></li>
-            <li><a href="posts/round-6.html">Round 6 - September 2024</a></li>
-            <li><a href="posts/round-7.html">Round 7 - October 2024</a></li>
-            <li><a href="posts/round-9.html">Round 9 - March 2025</a></li>
-        </ul>
-
-        <h2 class="govuk-heading-l">Problem statement</h2>
-        <p class="govuk-body">Users need to create repeatable sections</p>
-
-        <h2 class="govuk-heading-l">Status</h2>
-        <p class="govuk-body"><strong class="govuk-tag govuk-tag--green">Tested</strong></p>
-
-        <h2 class="govuk-heading-l">Phase</h2>
-        <p class="govuk-body">Private beta</p>
-
-        <h2 class="govuk-heading-l">Type</h2>
-        <p class="govuk-body">Question types</p>
-
-        <h2 class="govuk-heading-l">Category</h2>
-        <p class="govuk-body">Form editor</p>
-    </div>
-</div>
-{% endblock %}
+{# --- Detailed research summaries --- #}
+{% set researchSummaries = [
+{
+title: "Round 9 - March 2025",
+summary: "Testing of repeater management",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (March 2025)\n\n**Participants:** Content designers and form
+administrators"
+},
+{
+type: "findings",
+content: [
+"Repeater management intuitive",
+"Needed clearer guidance on use cases",
+"Recommendation to add examples of good repeater usage",
+"Users wanted more context on when to use repeaters"
+]
+}
+]
+},
+{
+title: "Round 7 - October 2024",
+summary: "Testing of 'Add Another' interaction",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (October 2024)\n\n**Participants:** Content designers and
+form administrators"
+},
+{
+type: "findings",
+content: [
+"'Add Another' interaction clear",
+"Needed better visual feedback",
+"Recommendation to enhance interaction design",
+"Users wanted clearer indication of added items"
+]
+}
+]
+},
+{
+title: "Round 6 - September 2024",
+summary: "Testing of repeater editing",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (September 2024)\n\n**Participants:** Content designers and
+form administrators"
+},
+{
+type: "findings",
+content: [
+"Repeater editing interface clear",
+"Needed better guidance on best practices",
+"Recommendation to add inline help",
+"Users wanted more examples of good repeater design"
+]
+}
+]
+},
+{
+title: "Round 5 - July 2024",
+summary: "Initial testing of repeaters",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (July 2024)\n\n**Participants:** Content designers and form
+administrators"
+},
+{
+type: "findings",
+content: [
+"Initial implementation well received",
+"Basic functionality clear and intuitive",
+"Recommendation to add more advanced features",
+"Users wanted more customization options"
+]
+}
+]
+}
+] %}
