@@ -27,7 +27,7 @@ For more info, see: /design-history/index.html (the template guide)
 {% extends "design-history/template.html" %}
 
 {# --- Feature metadata --- #}
-{% set featureName = "Form Creation and Details" %}
+{% set featureName = "Adding form details when creating a new form" %}
 {% set latestVersionLink = "/titan-mvp-1/create-new-form/form-name.html" %}
 {% set status = "Tested" %}
 {% set statusColor = "green" %}
@@ -184,24 +184,27 @@ path: "/titan-mvp-1/create-new-form/policy-sme-error.html"
 {
 roundNumber: "7",
 researchDate: "October 2024",
-researchFinding: "Users needed clearer guidance on email usage in team details",
-changeMade: "Added clarification about personal email addresses"
+researchFinding: "Users needed clearer guidance on email usage in team details. Hint text was helpful but could be
+improved.",
+changeMade: "Added clarification about personal email addresses. Updated hint text."
 },
 {
-roundNumber: "2",
-researchDate: "May/June 2024",
-researchFinding: "Form overview was clear and consistent with Whitehall experience",
-changeMade: "No major changes needed"
+roundNumber: "3 & 4",
+researchDate: "July 2024",
+researchFinding: "No major issues identified. Still an expectation to be able to choose more than one organisation.
+Participants would refer SMEs/Policy teams for unclear information.",
+changeMade: "Screens unchanged from Round 1. Noted need for multi-organisation selection."
 },
 {
 roundNumber: "1",
 researchDate: "May 2024",
-researchFinding: "Users needed clearer guidance on required fields and naming conventions",
-changeMade: "Initial implementation of form details collection"
+researchFinding: "Users needed clearer guidance on required fields and naming conventions. Confusion between form 'name'
+and 'title'. Need for multiple organisation selection. Uncertainty around what to put as 'shared team email'",
+changeMade: "Initial implementation of form details collection. Added guidance and clarified naming conventions."
 }
 ] %}
 
-{# --- Detailed research summaries --- #}
+{# --- Research summaries --- #}
 {% set researchSummaries = [
 {
 title: "Round 7 - October 2024",
@@ -211,87 +214,168 @@ sections: [
 type: "content",
 content: "**Research conducted:** Remote usability testing (1–2 October 2024)\n\n**Participants:** 4 senior content
 designers and 1 proxy user (APHA, RPA, Countryside Stewardship)\n\n**Method:** Remote usability testing with think-aloud
-protocol\n\n**Scenario:** Testing DXT form editor redesign and file upload notifications. Participants were asked to
-review file upload notification emails, create new forms, add questions, test markdown usage, work with error messages,
-test user flow and navigation, use repeater feature, name question sets, review overview of questions, add options for
-radios, and reorder pages."
+protocol\n\n**Scenario:** Testing form creation process, focusing on team details and email usage. Participants were
+asked to create new forms and provide team information.",
+fullReportLink: "/public/research/round-7-full-report.pdf"
 },
 {
-type: "findings",
+type: "changes",
+showImageColumn: false,
 content: [
-"Users needed clearer guidance on email usage in team details",
-"Confusion about 'shared team email' hint text",
-"Recommendation to clarify definition of 'personal email address'"
+{
+screen: "Team details screen",
+what: "Added clarification about personal email addresses",
+why: "To address user confusion about what constitutes a personal email address"
+}
 ]
 },
 {
-type: "quotes",
-content: [
-"'Personal email—my Defra email or my Hotmail?'",
-"'I don't know what the policy team are actually called. What business area responsible for this form?'"
+type: "screen",
+title: "Team details screen",
+content: "The team details screen collects information about the team responsible for the form, including contact
+details and roles.",
+images: [
+{
+src: "/public/images/form-admin/round-7/team-details.png",
+alt: "Screenshot of the team details input screen",
+caption: "Team details screen",
+width: "two-thirds"
+}
+],
+insights: [
+"Hint text was helpful but copy could be improved"
+],
+quotes: [
+"'Personal email—my Defra email or my Hotmail?' [Content designer, BAU]"
 ]
 }
 ]
 },
 {
-title: "Round 2 - May/June 2024",
-summary: "Testing of form overview and navigation",
+title: "Round 3 & 4 - July 2024",
+summary: "The same screens were tested again with a different participant group.",
 sections: [
 {
 type: "content",
-content: "**Research conducted:** Remote usability testing (30 May–3 June 2024)\n\n**Participants:** 4 content designers
-from BAU and Environment Agency\n\n**Method:** Remote usability testing with think-aloud protocol\n\n**Scenario:**
-Testing form content and conditions. Participants were asked to add and edit form content, create pages and add
-components, set up reference numbers, test preview functionality, and work with conditions."
+content: "### Round 3
+- 1 x BaU working mainly with Farming – Whitehall\n- 1 x EA - Check for
+flooding service\n- 1 x Find Team, Sustainable Farming Incentive (SFI), Farming\n- 1 x BaU - Whitehall\n\n### Round 4
+- 1 x BaU working mainly with Farming – Whitehall\n- 1 x BaU working mainly with Farming – GOV.UK forms\n- 1 x Cefas -
+Whitehall\n- 1 x BaU working mainly with Nature, forestry and climate change content - Whitehall",
+fullReportLink:
+"https://defra.sharepoint.com.mcas.ms/:p:/r/teams/Team1466/_layouts/15/Doc.aspx?sourcedoc=%7B5239DF9E-4310-4653-A010-866F308A50F6%7D&file=Private%20Beta%20Round%203%20UR%20Report%20June%202024.pptx&action=edit&mobileredirect=true"
+},
+{
+type: "content",
+content: "The screens were unchanged from Round 1."
 },
 {
 type: "findings",
 content: [
-"Form overview was clear and consistent with Whitehall experience",
-"No major usability issues identified",
-"Navigation and layout were intuitive"
-]
-},
-{
-type: "quotes",
-content: [
-"'Form overview was clear and consistent with Whitehall experience'",
-"'No major usability issues identified'"
+"No major issues identified",
+"Participants would refer SMEs/Policy teams for unclear information",
+"Still an expectation to be able to choose more than one organisation. Often ALBs collaborate on services."
 ]
 }
 ]
 },
 {
 title: "Round 1 - May 2024",
-summary: "Initial research on form creation process",
+summary: "Initial testing of adding form details when creating a new form",
 sections: [
 {
 type: "content",
 content: "**Research conducted:** Remote interviews and usability testing (15–23 May 2024)\n\n**Participants:** 6
 content designers from various Defra teams (RPA, BAU, Air Quality Control, Trade and Borders, Natural
-England)\n\n**Method:** Remote interviews and usability testing\n\n**Scenario:** Testing form creation and details
-collection. Participants were asked to create a new form, add form details (name, lead organization, policy SME, team
-details), review form overview, and test filters and sorting in forms library."
+England)\n\n**Method:** Remote usability testing with think-aloud protocol\n\n**Scenario:** Testing initial form
+creation process, focusing on required fields and naming conventions.",
+fullReportLink:
+"https://defra.sharepoint.com.mcas.ms/:p:/r/teams/Team1466/_layouts/15/Doc.aspx?sourcedoc=%7BF0D60B66-2081-4D83-BBBA-D80C124CCD99%7D&file=Private%20Beta%20Round%201%20UR%20Report%20May%202024.pptx&action=edit&mobileredirect=true"
 },
 {
 type: "findings",
 content: [
 "Users needed clearer guidance on required fields and naming conventions",
-"Initial implementation of form details collection"
+"Confusion between form 'name' and 'title'",
+"Need for multiple organisation selection",
+"Uncertainty around what to put as 'shared team email'"
 ]
 },
 {
-type: "quotes",
-content: [
-"'Ideally, it would be together based on what they want the form to do and be based on good content design principles'",
-"'The name, I assume something unique so that I can find it again'",
+type: "screen",
+title: "Screen 1: Form name screen",
+content: "The form name screen allows users to enter a unique name for their form. This name is used throughout the
+system to identify and reference the form.",
+images: [
+{
+src: "/public/images/form-admin/round-1/form-name.png",
+alt: "Screenshot of the form name input screen",
+caption: "Form name screen"}
+],
+insights: [
+"Names often decided collaboratively; users expect flexibility",
+"Confusion between form 'name' and 'title'",
+"Most participants expected to be able to change the form name later."
+],
+quotes: [
+"'Ideally, it would be together based on what they want the form to do and be based on good content design principles.'
+[Content designer, BAU]",
+"'The name, I assume something unique so that I can find it again.' [Round 1, May 2024]"
+]
+},
+{
+type: "audio",
+src: "/public/audio/round-1/Name-vs-title.mp4",
+caption: "Discussion about the difference between form name and title [Content designer, BAU]"
+},
+{
+type: "screen",
+title: "Screen 2: Lead organisation screen",
+content: "The lead organisation screen allows users to specify which organisation is responsible for the form.",
+images: [
+{
+src: "/public/images/form-admin/round-1/lead-org.png",
+alt: "Screenshot of the lead organisation input screen",
+caption: "Lead organisation screen"
+}
+],
+insights: [
+"Clear interface but requires ability to select multiple organisations",
+"Users operate across multiple organisational areas",
+"Need for flexibility in organisation selection"
+],
+quotes: [
 "'We're sort of operating within three areas: Defra core, APHA and DAERA. So, I'm going to pick APHA, but I might want
-to pick two'"
+to pick two.' [Content Designer, Trade]",
+"'I don't know what the policy team are actually called. What business area responsible for this form?' [Content
+designer, Air Quality Control]"
+]
+},
+{
+type: "screen",
+title: "Screen 3: Team details screen",
+content: "The team details screen collects information about the team responsible for the form.",
+images: [
+{
+src: "/public/images/form-admin/round-1/team-details.png",
+alt: "Screenshot of the team details input screen",
+caption: "Team details screen"
+}
+],
+insights: [
+"Often no shared team email; reliance on personal Defra emails"
+],
+quotes: [
+"'I don't know what the policy team are actually called. What business area responsible for this form? I would assume
+that
+I'm responsible for this form as I'm creating it and I'm in the xxx team. So that's what I would put there.' [Content
+designer, Air Quality Control]"
 ]
 }
 ]
 }
 ] %}
+
 <style>
         .app-secondary-text {
                 color: #505a5f;

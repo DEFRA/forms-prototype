@@ -26,7 +26,7 @@ How to use:
 
 {# --- Feature metadata --- #}
 {% set featureName = "Forms Library" %}
-{% set latestVersionLink = "/titan-mvp-1/form-library/index.html" %}
+{% set latestVersionLink = "/titan-mvp-1/library.html" %}
 {% set status = "Tested" %}
 {% set statusColor = "green" %}
 {% set userNeed = "Users need to efficiently find, manage, and organize their forms so they can work effectively with
@@ -87,11 +87,88 @@ isCurrent: true
 {% set pageList = [
 {
 section: "Forms library",
+detailsTitle: "Latest version of the Forms Library prototype",
+showDescriptionColumn: true,
 pages: [
 {
-name: "Forms library",
+name: "Default view",
 link: "/titan-mvp-1/library.html",
-release: "Private beta"
+release: "Titan MVP 1",
+description: "The standard forms library with no filters or search applied."
+},
+{
+name: "With search results",
+link: "/titan-mvp-1/library.html?name=test",
+release: "Titan MVP 1",
+description: "Forms library showing results for a search query."
+},
+{
+name: "With filters applied",
+link: "/titan-mvp-1/library.html?author=Chris%20Smith&organisation=Defra&status=draft",
+release: "Titan MVP 1",
+description: "Forms library with author, organisation, and status filters applied."
+},
+{
+name: "No results",
+link: "/titan-mvp-1/library.html?name=nonexistentform",
+release: "Titan MVP 1",
+description: "Forms library showing the empty state when no results are found."
+},
+{
+name: "Sorted by name (A-Z)",
+link: "/titan-mvp-1/library.html?sort=name-ascending",
+release: "Titan MVP 1",
+description: "Forms library sorted alphabetically from A to Z."
+},
+{
+name: "Sorted by name (Z-A)",
+link: "/titan-mvp-1/library.html?sort=name-descending",
+release: "Titan MVP 1",
+description: "Forms library sorted alphabetically from Z to A."
+},
+{
+name: "Sorted by date (newest)",
+link: "/titan-mvp-1/library.html?sort=updated-newest",
+release: "Titan MVP 1",
+description: "Forms library sorted by most recently updated forms first."
+},
+{
+name: "Sorted by date (oldest)",
+link: "/titan-mvp-1/library.html?sort=updated-oldest",
+release: "Titan MVP 1",
+description: "Forms library sorted by oldest updated forms first."
+}
+]
+},
+{
+section: "Concepts",
+detailsTitle: "Concepts for the Forms Library",
+showDescriptionColumn: true,
+sectionIntro: "These are concepts that came out of early ideation sessions and design crits.",
+pages: [
+{
+name: "Summary list v2",
+link: "/design-history/form-library/ideation/alpha/concepts/summary-list-v2.html",
+release: "Concept",
+description: "Uses a summary list layout for forms, basic search and sort, no advanced filters."
+},
+{
+name: "Summary list v3",
+link: "/design-history/form-library/ideation/alpha/concepts/summary-list-v3.html",
+release: "Concept",
+description: "Adds advanced search and filters (accordion), improved search UI, and more filter options."
+},
+{
+name: "Cards v2",
+link: "/design-history/form-library/ideation/alpha/concepts/cards-v2.html",
+release: "Concept",
+description: "Switches to a card-based layout for each form, with summary card components and basic sort."
+},
+{
+name: "Cards v3",
+link: "/design-history/form-library/ideation/alpha/concepts/cards-v3.html",
+release: "Concept",
+description: "Card-based layout with advanced search and filters (accordion), matching summary-list v3 features."
 }
 ]
 }
@@ -127,21 +204,70 @@ path: "/titan-mvp-1/library.html"
 {# --- Research history table --- #}
 {% set researchHistory = [
 {
+roundNumber: "5",
+researchDate: "July 2024",
+researchFinding: "Search and filters were clear and useful. Sorting was considered the least useful feature; keyword
+search was preferred by participants.",
+changeMade: "Recommendation to reassess sorting functionality and prioritise keyword search effectiveness."
+},
+{
 roundNumber: "3 & 4",
 researchDate: "June/July 2024",
-researchFinding: "Search functionality effective but sorting options not universally useful",
-changeMade: "Enhanced search and filter capabilities"
+researchFinding: "Search functionality effective. Sorting options understandable but not universally useful. Advanced
+search and state filter require further investigation.",
+changeMade: "Enhanced search and filter capabilities. Recommendation to evaluate and streamline sorting options."
 },
 {
 roundNumber: "1",
 researchDate: "May 2024",
-researchFinding: "Intuitive, similar to Whitehall Publishing, but lacked search functionality",
-changeMade: "Initial implementation of forms library with clear status indicators"
+researchFinding: "Intuitive, similar to Whitehall Publishing. Clear status indicators and helpful filters. Lacks search
+functionality. Users expect immediate access to personal forms.",
+changeMade: "Initial implementation of forms library with clear status indicators. Recommendation to implement immediate
+visibility, search, and sort functionalities."
 }
 ] %}
 
 {# --- Detailed research summaries --- #}
 {% set researchSummaries = [
+{
+title: "Round 5 – July 2024",
+summary: "Usability testing of Forms Library search, filters, and sorting with 8 content designers.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (16–19 July 2024)\n\n**Participants:** 8 content designers
+from BAU, Ivory & Waste Exemption, and internal Defra Forms team.\n\n**Focus:** Evaluation of search, filters, and
+sorting in the Forms Library.",
+fullReportLink:
+"https://defra.sharepoint.com.mcas.ms/:p:/r/teams/Team1466/_layouts/15/Doc.aspx?sourcedoc=%7B7069D768-FDF0-4F5E-820A-FBC21C0180F6%7D&file=Private%20Beta%20Round%205%20UR%20Report%20July%202024.pptx&action=edit&mobileredirect=true"
+},
+{
+type: "findings",
+content: [
+"The purpose of the page is clear – participants understand what it is, what it offers, and what they can do.",
+"Search functionality and filters are clear and helpful.",
+"Sorting was considered the least useful feature; keyword search was preferred by participants.",
+"The page needs a design iteration and more research."
+]
+},
+{
+type: "quotes",
+content: [
+"_…this is a place where I can go in and create a form._ – Content designer",
+"'Keyword search is more useful than sorting options.' [Round 5, July 2024]",
+"'I don't know why we'd need sorting unless looking for recently published.' [Round 5, July 2024]"
+]
+},
+{
+type: "content",
+content: "### Prototype of the Forms Library that was tested in round 5"
+},
+{
+type: "preview",
+url: "/titan-mvp-1/library.html"
+}
+]
+},
 {
 title: "Rounds 3 & 4 - June/July 2024",
 summary: "Testing of search and filter functionality",
@@ -152,22 +278,80 @@ content: "**Research conducted:** Remote usability testing (24–25 June & 1–2
 designers across various teams (Farming, Cefas, Environment Agency, Nature, Forestry, Climate Change)\n\n**Method:**
 Remote usability testing with think-aloud protocol\n\n**Scenario:** Testing file upload and forms library. Participants
 were asked to test file upload functionality (with and without JavaScript), navigate forms library, use search and
-filter functions, create new forms, and edit draft forms."
+filter functions, create new forms, and edit draft forms.",
+fullReportLink: "/public/research/rounds-3-4-full-report.pdf"
 },
 {
 type: "findings",
 content: [
-"Search functionality effective",
-"Advanced search and state filter require further investigation",
-"Sorting options understandable but not universally useful",
-"Recommendation to evaluate usefulness further and consider streamlining options"
+"Both design and interaction tested very well (e.g. '...you can sort like in Whitehall...it's good!')",
+"Search works very well – it meets what users need, to be able to find a specific form(s) (e.g. Apply for a County
+Parish Holding – a participant searched for CPH and the system could not find it)",
+"Advanced search (Show all sections) needs more research.",
+"Authors filter works well but the list could become too long considering the number of Content designers who will use
+DXT.",
+"Organisation filter works very well, like in Whitehall.",
+"State filter needs more research. It is also available in the Sort by drop down options."
 ]
+},
+{
+type: "content",
+content: "**User needs**\n\n- As a user I need to be able to easily find a form I'm looking for.\n- As a user I need to
+be able to search and sort forms efficiently.\n\n**User need MET:** As a user I need to be able to easily find a form
+I'm looking for."
+},
+{
+type: "content",
+content: "### Round 4 testing
+The Forms library was unchanged from round 1. In round 4, the search, filter and sort functionality was
+added."
+},
+{
+type: "preview",
+url: "/design-history/form-library/ideation/alpha/4/library.html"
+},
+{
+type: "content",
+content: "### Search functionality"
 },
 {
 type: "quotes",
 content: [
-"'Search works very well – it meets what users need'",
-"'I personally don't know why I'd want to know which is oldest or newest'"
+"'I want the search to be able to give me what I want without me having to wage through all this stuff.' [Content
+designer, Round 3]",
+"'Search works very well – it meets what users need' [Round 4, July 2024]"
+]
+},
+{
+type: "content",
+content: "### Sort functionality"
+},
+{
+type: "quotes",
+content: [
+"'I think what would be a bit weird the fact that I can't search, or I can't sort it alphabetically.' [Content designer,
+Round 3]",
+"'...you can sort like in Whitehall...it's good!' [Content designer, Round 4]",
+"'I personally don't know why I'd want to know which is oldest or newest' [Rounds 3 & 4, June/July 2024]",
+"'I probably wouldn't use them. I mean I just search for the name in the search box, or search for the keyword. I
+personally don't know why I'd want to know which is the oldest or the newest, maybe the status would be good to see.'
+[Content designer, Sort by]"
+]
+},
+{
+type: "content",
+content: "### Form visibility and status"
+},
+{
+type: "quotes",
+content: [
+"'I'm assuming the forms that other people have created. I've not created any yet, but I can see all the other ones that
+people are drafting.' [Content designer, Round 3]",
+"'I don't really understand what this means to have the draft and the live. Does that mean there's already one of the
+forms on the site and there's a draft being done? That's what I'm assuming it means.' [Content designer, Round 3]",
+"'How many you've got live and how many are in draft, that's just for your own stats, isn't it? I mean, you're the
+content designer, you'd know which ones you're working on. And if they're live or in draft.' [Content designer, Sort
+by]"
 ]
 }
 ]
@@ -182,24 +366,48 @@ content: "**Research conducted:** Remote usability testing (15–23 May 2024)\n\
 from various Defra teams (RPA, BAU, Air Quality Control, Trade and Borders, Natural England)\n\n**Method:** Remote
 interviews and usability testing\n\n**Scenario:** Testing form creation and details collection. Participants were asked
 to create a new form, add form details (name, lead organization, policy SME, team details), review form overview, and
-test filters and sorting in forms library."
+test filters and sorting in forms library.",
+fullReportLink:
+"https://defra.sharepoint.com.mcas.ms/:p:/r/teams/Team1466/_layouts/15/Doc.aspx?sourcedoc=%7BF0D60B66-2081-4D83-BBBA-D80C124CCD99%7D&file=Private%20Beta%20Round%201%20UR%20Report%20May%202024.pptx&action=edit&mobileredirect=true"
+},
+{
+type: "content",
+content: "**User needs**\n\n- As a user I need to be able to see straight away the forms I have worked on.\n- As a user
+I need to be able to easily find a form I'm looking for."
+},
+{
+type: "content",
+content: "**MISSING**\n\n- Search functionality (participants used Ctrl+F to find the form for the scenario)\n- Sort by
+A–Z\n- Organisations within Defra (Operational Teams)"
+},
+{
+type: "preview",
+url: "/design-history/form-library/ideation/alpha/round-2/library.html"
 },
 {
 type: "findings",
 content: [
-"Intuitive, similar to Whitehall Publishing",
-"Clear status indicators, helpful filters",
-"Lacks search functionality",
-"Users expect immediate access to personal forms",
-"Recommendation to implement immediate visibility, search, and sort functionalities"
+"Intuitive, makes sense and clear (\"...a list of forms that have been recently published or are being worked on.\")",
+"Familiar – very similar to Whitehall Publishing.",
+"Clean, lots of white space.",
+"Filters – clear and helpful.",
+"Draft and Live status – clear to some participants.",
+"Not clear to participants who have not used Whitehall.",
+"A participant expected to be able to click the status labels.",
+"Some confusion about the difference between Published and Live status.",
+"Users expect immediate access to personal forms."
 ]
 },
 {
 type: "quotes",
 content: [
-"'I'd go straight to the form I'm working on'",
+"'...a list of forms that have been recently published or are being worked on.' [Round 1, May 2024]",
+"'It's very similar to Whitehall Publishing...' [Round 1, May 2024]",
+"'Participants used Ctrl F to find the form for the scenario.' [Round 1, May 2024]",
 "'I see I can sort for the newest, which might be what I want to do, or I might need to search for ones that I've worked
-on'"
+on.' [Round 1, May 2024]",
+"'I'd go straight to the form I'm working on.' [Round 1, May 2024]",
+"'Published – is the same as live?' [Content designer, Trade]"
 ]
 }
 ]

@@ -4,6 +4,7 @@
 {% from "side-navigation/macro.njk" import dwpSideNavigation %}
 {% from "govuk/components/table/macro.njk" import govukTable %}
 {% from "govuk/components/tabs/macro.njk" import govukTabs %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
 {% macro imageCell(imageData) %}
 <figure class="govuk-image">
@@ -136,13 +137,26 @@
             pedantic: false // Use standard markdown behavior
         });
 
+        // Custom renderer for GOV.UK inset text
+        const renderer = new marked.Renderer();
+        const defaultBlockquote = renderer.blockquote.bind(renderer);
+        renderer.blockquote = function (quote) {
+            // If quote is an object, render it as HTML
+            if (typeof quote !== 'string') {
+                quote = marked.parseInline(quote.text || '');
+            }
+            // Remove any wrapping <blockquote> tags, even with whitespace/newlines
+            quote = String(quote).replace(/^\s*<blockquote[^>]*>/i, '').replace(/<\/blockquote>\s*$/i, '');
+            return `<div class=\"govuk-inset-text\">${quote}</div>`;
+        };
+
         // Find all elements with data-markdown attribute
         document.querySelectorAll('.markdown-content').forEach(function (element) {
             try {
                 // Get the markdown content and unescape newlines
                 const markdown = element.getAttribute('data-markdown').replace(/\\n/g, '\n');
-                // Render the markdown
-                element.innerHTML = marked.parse(markdown);
+                // Render the markdown with the custom renderer
+                element.innerHTML = marked.parse(markdown, { renderer });
             } catch (error) {
                 console.error('Error parsing markdown:', error);
             }
@@ -179,6 +193,9 @@ attributes: {
 target: "_blank",
 rel: "noopener noreferrer"
 }
+},
+breadcrumbs: {
+items: breadcrumbs
 }
 }) }}
 {% endblock %}
@@ -186,7 +203,6 @@ rel: "noopener noreferrer"
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-
         <h2 class="govuk-heading-m">Feature details</h2>
         <dl class="govuk-summary-list">
             <div class="govuk-summary-list__row">
@@ -238,42 +254,7 @@ rel: "noopener noreferrer"
             </div>
         </dl>
 
-        {% if pageList %}
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    Full page list for latest version of '{{ featureName }}'
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                {% for section in pageList %}
-                <h3 class="govuk-heading-s">{{ section.section }}</h3>
-                <table class="govuk-table">
-                    <thead class="govuk-table__head">
-                        <tr class="govuk-table__row">
-                            <th scope="col" class="govuk-table__header">Name</th>
-                            <th scope="col" class="govuk-table__header">Prototype link</th>
-                            <th scope="col" class="govuk-table__header">Release</th>
-                        </tr>
-                    </thead>
-                    <tbody class="govuk-table__body">
-                        {% for page in section.pages %}
-                        <tr class="govuk-table__row">
-                            <td class="govuk-table__cell">{{ page.name }}</td>
-                            <td class="govuk-table__cell">
-                                <a href="{{ page.link }}" class="govuk-link" target="_blank" rel="noopener noreferrer">
-                                    {{ page.link }}
-                                </a>
-                            </td>
-                            <td class="govuk-table__cell">{{ page.release }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-                {% endfor %}
-            </div>
-        </details>
-        {% endif %}
+        {% block customContent %}{% endblock %}
 
         <h2 class="govuk-heading-m">Research history</h2>
         <table class="govuk-table">
@@ -312,6 +293,14 @@ rel: "noopener noreferrer"
                     <div class="timeline__summary govuk-accordion__section-summary govuk-body"
                         id="accordion-default-summary-{{ loop.index }}">
                         {{ researchSummary.summary }}
+                        {% if researchSummary.fullReportLink %}
+                        <p class="govuk-body govuk-!-margin-top-2">
+                            <a href="{{ researchSummary.fullReportLink }}" class="govuk-link" target="_blank"
+                                rel="noopener noreferrer">
+                                View full research report
+                            </a>
+                        </p>
+                        {% endif %}
                     </div>
                 </div>
                 <div id="accordion-default-content-{{ loop.index }}"
@@ -321,6 +310,14 @@ rel: "noopener noreferrer"
                     {% if section.type == 'content' %}
                     <div class="markdown-content govuk-body" data-markdown="{{ section.content | replace('"', ' &quot;')
                         | replace('\n', '\\n' ) }}"></div>
+                    {% if section.fullReportLink %}
+                    <p class="govuk-body govuk-!-margin-top-2">
+                        <a href="{{ section.fullReportLink }}" class="govuk-link" target="_blank"
+                            rel="noopener noreferrer">
+                            View full research report
+                        </a>
+                    </p>
+                    {% endif %}
                     {% elif section.type == 'objectives' %}
                     <h4 class="govuk-heading-s">Research objectives</h4>
                     <ul class="govuk-list govuk-list--bullet">
@@ -417,7 +414,8 @@ rel: "noopener noreferrer"
                                 &quot;') | replace('\n', '\\n' ) }}"></div>
                             {% elif item.type == 'preview' %}
                             <div class="preview-section">
-                                <span class="govuk-caption-m govuk-!-margin-bottom-1">Preview</span>
+                                <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ section.previewLabel |
+                                    default("Preview") }}</span>
                                 <div class="iframe-container govuk-!-margin-bottom-6" role="region"
                                     aria-labelledby="preview-heading-{{ loop.index }}">
                                     <h2 id="preview-heading-{{ loop.index }}" class="govuk-visually-hidden">Preview of
@@ -481,6 +479,21 @@ rel: "noopener noreferrer"
                             {% for quote in section.content %}
                             <div class="govuk-inset-text">{{ quote | safe }}</div>
                             {% endfor %}
+                        </div>
+                    </div>
+                    {% elif section.type == 'audio' %}
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-two-thirds">
+                            <h4 class="govuk-heading-s govuk-!-padding-top-0">Audio recording</h4>
+                            <div class="govuk-inset-text">
+                                <audio controls>
+                                    <source src="{{ section.src }}" type="audio/mp4">
+                                    Your browser does not support the audio element.
+                                </audio>
+                                {% if section.caption %}
+                                <p class="govuk-body-s govuk-!-margin-top-2">{{ section.caption }}</p>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% elif section.type == 'screen' %}
@@ -553,7 +566,8 @@ rel: "noopener noreferrer"
 
                             {% if section.preview %}
                             <div class="preview-section">
-                                <span class="govuk-caption-m govuk-!-margin-bottom-1">Preview</span>
+                                <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ section.previewLabel |
+                                    default("Preview") }}</span>
                                 <div class="iframe-container govuk-!-margin-bottom-6" role="region"
                                     aria-labelledby="preview-heading-{{ loop.index }}">
                                     <h2 id="preview-heading-{{ loop.index }}" class="govuk-visually-hidden">Preview of
@@ -576,13 +590,23 @@ rel: "noopener noreferrer"
                                         </a>
                                     </div>
                                 </div>
+                                {% if section.caption %}
+                                <div class="markdown-content govuk-body"
+                                    data-markdown="{{ section.caption | replace('"', ' &quot;') | replace('\n', '\\n' )
+                                    }}"></div>
+                                {% if section.showSectionBreak %}
+                                <hr
+                                    class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+                                {% endif %}
+                                {% endif %}
                             </div>
                             {% endif %}
                         </div>
                     </div>
                     {% elif section.type == 'preview' %}
                     <div class="preview-section">
-                        <span class="govuk-caption-m govuk-!-margin-bottom-1">Preview</span>
+                        <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ section.previewLabel |
+                            default("Preview") }}</span>
                         <div class="iframe-container govuk-!-margin-bottom-6" role="region"
                             aria-labelledby="preview-heading-{{ loop.index }}">
                             <h2 id="preview-heading-{{ loop.index }}" class="govuk-visually-hidden">Preview of the form
@@ -604,6 +628,14 @@ rel: "noopener noreferrer"
                                 </a>
                             </div>
                         </div>
+                        {% if section.caption %}
+                        <div class="markdown-content govuk-body" data-markdown="{{ section.caption | replace('"', '
+                            &quot;') | replace('\n', '\\n' ) }}"></div>
+                        {% if section.showSectionBreak %}
+                        <hr
+                            class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+                        {% endif %}
+                        {% endif %}
                     </div>
                     {% elif section.type == 'changes' %}
                     <h4 class="govuk-heading-s">
@@ -619,7 +651,9 @@ rel: "noopener noreferrer"
                                 <th scope="col" class="govuk-table__header">Screen</th>
                                 <th scope="col" class="govuk-table__header">What changed</th>
                                 <th scope="col" class="govuk-table__header">Why</th>
+                                {% if section.showImageColumn != false %}
                                 <th scope="col" class="govuk-table__header">Image</th>
+                                {% endif %}
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
@@ -628,6 +662,7 @@ rel: "noopener noreferrer"
                                 <td class="govuk-table__cell">{{ change.screen }}</td>
                                 <td class="govuk-table__cell">{{ change.what }}</td>
                                 <td class="govuk-table__cell">{{ change.why }}</td>
+                                {% if section.showImageColumn != false %}
                                 <td class="govuk-table__cell">
                                     {% if change.image %}
                                     <figure class="govuk-image govuk-!-margin-0">
@@ -640,6 +675,7 @@ rel: "noopener noreferrer"
                                     </figure>
                                     {% endif %}
                                 </td>
+                                {% endif %}
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -698,6 +734,28 @@ rel: "noopener noreferrer"
                     {% endfor %}
                 </ul>
             </nav>
+
+            {% if relatedPosts %}
+            <h2 class="govuk-heading-s govuk-!-margin-top-6">Related posts</h2>
+            <nav role="navigation" aria-labelledby="related-posts">
+                <ul class="govuk-list govuk-list--spaced">
+                    {% for post in relatedPosts %}
+                    <li>
+                        <a href="{{ post.link }}" class="govuk-link">{{ post.title }}</a>
+                        <p class="govuk-body-s govuk-!-margin-top-1">
+                            {{ post.date }}
+                            {% if post.tags %}
+                            <br>
+                            {% for tag in post.tags %}
+                            <span class="govuk-tag govuk-tag--grey govuk-!-margin-right-1">{{ tag }}</span>
+                            {% endfor %}
+                            {% endif %}
+                        </p>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -10,12 +10,14 @@
 
   - Confusion between form 'name' and 'title'
   - Users expect flexibility in naming as it's often decided collaboratively
+  - Quote: "Ideally, it would be together based on what they want the form to do and be based on good content design principles." [Round 1, May 2024]
   - Recommendation: Explicitly state editability of form names and clarify difference between name and title
 
 - Lead Organisation
 
   - Clear but requires ability to select multiple organisations
   - Users work across multiple areas (e.g., Defra core, APHA, DAERA)
+  - Quote: "We're sort of operating within three areas: Defra core, APHA and DAERA. So, I'm going to pick APHA, but I might want to pick two." [Round 1, May 2024]
   - Recommendation: Enable multi-organisation selection
 
 - Team Details and Email
@@ -25,6 +27,7 @@
 
 - Form Overview
   - Clear but uncertainty about GOV.UK publishing location
+  - Quote: "Does it go live straight on GOV.UK? Where is it going to sit?" [Round 1, May 2024]
   - Recommendation: Clarify publication process and location
 
 #### Refinement (Round 2 - May/June 2024)
@@ -53,6 +56,7 @@
 #### Initial Testing (Round 2 - May/June 2024)
 
 - Confusion about relationship between creating pages and adding questions
+- Quote: "Participants' mental model is to create/add a question to the form." [Round 2, May/June 2024]
 - 'Page title' was unclear to participants
 - Recommendation: Consider automatically creating pages as users add questions
 - Recommendation: Add more explanatory text or examples
@@ -60,6 +64,7 @@
 #### Major Redesign (Round 11 - March 2025)
 
 - Users expected to write question before setting up options
+- Quote: "It would be really nice to... think about what's my question text then think about all of my radios at the same time." [Round 11, March 2025]
 - Recommendation: Allow question text entry before radio options
 
 #### Refinement (Round 12 - March 2025)
@@ -77,6 +82,7 @@
 #### Major Redesign (Round 11 - March 2025)
 
 - 'Add a new radio option' page redirecting caused disruption
+- Quote: "You never get to like see your list in the drafting stage altogether... could have easily duplicated." [Round 11, March 2025]
 - Recommendation: Keep users on same page when adding multiple options
 
 #### Refinement (Round 12 - March 2025)
@@ -89,6 +95,7 @@
 #### Refinement (Round 12 - March 2025)
 
 - Participants confused about purpose and difference between hint text and short description
+- Quote: "I don't know what the difference between hint text and short description is." [Round 12, March 2025]
 - Recommendation: Provide clearer guidance or examples to distinguish between fields
 
 ### Evolution of Error Messages
@@ -102,6 +109,7 @@
 #### Refinement (Round 8 - November 2024)
 
 - 'Prefix' wording (e.g. "Enter", "Select") was confusing
+- Quote: "That little red thing did throw me a little bit... it felt like it was boxing me in." [Round 8, November 2024]
 - Recommendation: Set expectations for prefixes, offer flexibility, and provide clear guidance
 
 ### Evolution of Question Frequency
@@ -109,6 +117,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Users found 'How many times...' initially confusing
+- Quote: "Does that mean multiple-choice, or can users change their answers later?" [Round 6, August/September 2024]
 - Recommendation: Provide clearer context or examples, such as 'Add another child'
 
 ### Evolution of Short Label
@@ -116,6 +125,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Term 'short label' unclear without reading hint text
+- Quote: "I'd call it 'add text for error messages'." [Round 6, August/September 2024]
 - Recommendation: Clarify label or directly indicate error message purpose
 
 ### Evolution of Saving Changes
@@ -123,6 +133,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Users unclear if saving was necessary before adding another question
+- Quote: "I don't know if I should save it first, but I'll save it to be careful." [Round 6, August/September 2024]
 - Recommendation: Clearer guidance on the need to save progress
 
 ### Evolution of Editor Summary
@@ -130,6 +141,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Very clear, intuitive, and helpful for reviewing form structure
+- Quote: "It's easy to see and edit your questions, really useful." [Round 6, August/September 2024]
 - Recommendation: Maintain current design
 
 ### Evolution of Adding Multiple Questions
@@ -144,11 +156,13 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Markdown helpful but requires reminders
+- Quote: "I sometimes need a reminder for markdown. Whitehall does this really well." [Round 6, August/September 2024]
 - Recommendation: Provide easy-access markdown help links or tooltips
 
 #### Refinement (Round 7 - October 2024)
 
 - Unclear if markdown usage had limitations
+- Quote: "Am I limited in markdown usage, like hyperlinks?" [Round 7, October 2024]
 - Recommendation: Provide detailed guidance on markdown capabilities
 
 ### Evolution of Navigation After Adding a Question
@@ -156,6 +170,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Unclear next steps after adding the first question
+- Quote: "Should I 'Save changes'? Do I click 'Add another question'?" [Round 6, August/September 2024]
 - Recommendation: Provide clear continuation prompts at bottom of page
 
 ### Evolution of Confirmation Page
@@ -163,6 +178,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Page visually crowded and overwhelming
+- Quote: "Feels like a lot going on, visually busy." [Round 6, August/September 2024]
 - Recommendation: Revisit page layout for visual clarity and navigation consistency
 
 ### Evolution of Repeater Feature
@@ -170,6 +186,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Initial confusion but understood after interaction
+- Quote: "Repeater makes sense once I've tried it; initially confusing." [Round 6, August/September 2024]
 - Recommendation: Research further to validate naming of this feature
 
 #### Refinement (Round 7 - October 2024)
@@ -182,6 +199,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Works well but lacks visual cues for easier recognition
+- Quote: "Missing visual cues; can reordering be on summary page to avoid extra click?" [Round 6, August/September 2024]
 - Recommendation: Integrate reordering into main summary view
 
 ## Page Conditions
@@ -193,6 +211,7 @@
 - "Conditions" label unclear without prompting
 - "Add or change conditions" unclear; "select" condition clear
 - Overall logic and clarity of conditional questions were well-understood
+- Quote: "If I was going to approach this in reality, say I've got this old PDF form in front of me, or I was asked to create a new form, what I would expect to be able or what I would do is first of all sketch out on paper or in Mural or Figma or whatever I would sketch out first how I would expect the pages to be and then I'd feel more comfortable using this form builder." [Round 2, May/June 2024]
 - Recommendation: Revise content for clarity and intuitive understanding
 - Recommendation: Clarify instructions on adding conditions
 
@@ -203,6 +222,7 @@
 #### Major Redesign (Round 11 - March 2025)
 
 - Users confused by settings only appearing after saving a question
+- Quote: "I'm slightly confused as to why these are offered at this point and not when creating the question." [Round 11, March 2025]
 - Recommendation: Introduce page condition settings earlier in flow
 - 'Existing vs New Condition' order led to incorrect selections
 - Recommendation: Reorder 'Create new' vs 'Add existing' options
@@ -220,12 +240,15 @@
 #### Final Iteration (Round 13 - April 2025)
 
 - Journey too repetitive—especially being asked twice to select new/existing conditions
+- Quote: "It's a bit clunky compared to other experiences like MS Forms." [Round 13, April 2025]
 - Recommendation: Reduce repetition in new/existing condition selection flow
 - Combining multiple conditions worked well
 - Checkboxes and "join" button enabled confident logic building
 - Link from questions to condition setup unclear
+- Quote: "You think you're putting conditions on that question... but they're actually separate." [Round 13, April 2025]
 - Users expected conditions to be tied directly to question
 - Success message after condition creation helped guide users
+- Quote: "Whatever appears in a green box, I just do it." [Round 13, April 2025]
 - Info about where conditions are applied felt too subtle
 - Recommendation: Present applied-condition info more prominently
 
@@ -249,6 +272,7 @@
 
 - **Round 13 (April 2025)**
   - Distinction between "section" and "page" unclear
+  - Quote: "I expected the section to appear above the page header." [Round 13, April 2025]
   - Expected section headers to appear above page H1s
   - Concerns about SEO and accessibility from repeated H1/H2 usage
   - Recommendation: Clarify section vs page hierarchy with labels (e.g. H1/H2)
@@ -261,9 +285,11 @@
 #### Initial Testing (Rounds 3 & 4 - June/July 2024)
 
 - Public view with JavaScript: Interactions and statuses clear
+- Quote: "I'm just wondering why I'd need to upload up to two. Is 1 file enough?" [Rounds 3 & 4, June/July 2024]
 - Unclear why two documents were required
 - Recommendation: Clarify reasons for multiple uploads
 - Public view without JavaScript: Refresh page link frequently overlooked
+- Quote: "So was this link here the whole time telling me I need? Yeah, I missed it." [Rounds 3 & 4, June/July 2024]
 - Recommendation: Improve visibility and clarity of refresh instructions
 - Error messages: Clear but virus-related error messages need additional detail
 - Recommendation: Clarify virus status and provide less alarming error presentations
@@ -271,6 +297,7 @@
 #### Refinement (Round 7 - October 2024)
 
 - File upload notification email tested well
+- Quote: "I don't know what I have to use it for, but that tells me what I need to know." [Round 7, October 2024]
 - Clear content and interaction
 - Recommendation: Maintain current clarity in notification emails
 
@@ -281,6 +308,7 @@
 #### Initial Testing (Round 1 - May 2024)
 
 - Intuitive, similar to Whitehall Publishing
+- Quote: "I'd go straight to the form I'm working on." [Round 1, May 2024]
 - Clear status indicators, helpful filters
 - Lacks search functionality
 - Users expect immediate access to personal forms
@@ -289,8 +317,10 @@
 #### Refinement (Rounds 3 & 4 - June/July 2024)
 
 - Search functionality effective
+- Quote: "'Search' works very well – it meets what users need." [Rounds 3 & 4, June/July 2024]
 - Advanced search and state filter require further investigation
 - Sorting options understandable but not universally useful
+- Quote: "I personally don't know why I'd want to know which is oldest or newest." [Rounds 3 & 4, June/July 2024]
 - Recommendation: Evaluate usefulness further and consider streamlining options
 
 ## Form Export/Import
@@ -300,6 +330,7 @@
 #### Initial Testing (Round 13 - April 2025)
 
 - Functionality tested well
+- Quote: "The downloads thing is obviously really handy." [Round 13, April 2025]
 - Users successfully found download option through "Tools" menu
 - Maintain easy-to-locate form export/download tools
 
@@ -416,6 +447,7 @@
 #### Initial Testing (Round 8 - November 2024)
 
 - Users weren't confident that progress was being saved
+- Quote: "I'm a bit concerned whether that's going to save or not." [Round 8, November 2024]
 - Recommendation: Consider explicit save feedback (e.g. 'Save and continue')
 
 ## Check Your Answers
@@ -425,6 +457,7 @@
 #### Initial Testing (Rounds 3 & 4 - June/July 2024)
 
 - Clear interactions and content
+- Quote: "I wouldn't know how to chase my application up." [Rounds 3 & 4, June/July 2024]
 - Lacked essential contact and timeline information
 - Users wanted to know how to chase applications and expected processing times
 - Recommendation: Include contact details and expected processing times
@@ -442,6 +475,7 @@
 #### Initial Testing (Round 5 - July 2024)
 
 - Missing options for pets younger than a year
+- Quote: "What happens if they're less than a year old? Is there an option for months?" [Round 5, July 2024]
 - Users wanted input options for pet ages in months
 - Recommendation: Add input options for pet ages in months
 
@@ -470,6 +504,7 @@
 
 #### Initial Testing (Round 5 - July 2024)
 
+- Quote: "I think this has taken me around in a circle." [Round 5, July 2024]
 - Clear overall, but confusion in some navigation paths
 - Especially around creating pages and components
 - Users wanted clearer navigation instructions and examples
@@ -491,6 +526,7 @@
 
 #### Initial Testing (Round 1 - May 2024)
 
+- Quote: "The text is quite long, and I would not need to read it all the time." [Round 1, May 2024]
 - Clear but excessively lengthy
 - Users didn't need to read it all the time
 - Recommendation: Implement accordion format for readability
@@ -501,6 +537,7 @@
 
 #### Initial Testing (Round 1 - May 2024)
 
+- Quote: "I'm not clear if the email is the only option." [Round 1, May 2024]
 - Clear content but unclear if email is only follow-up
 - Recommendation: Clarify next-step actions and add preview for formatted content
 
@@ -510,6 +547,7 @@
 
 #### Initial Testing (Round 1 - May 2024)
 
+- Quote: "Why would you still need a preview link if it's live?" [Round 1, May 2024]
 - Confusion about necessity of preview link post-publication
 - Recommendation: Clarify the function and necessity of preview links post-publication
 
@@ -550,6 +588,7 @@
 
 #### Initial Testing (Round 8 - November 2024)
 
+- Quote: "I'd feel like I needed guidance on best practices for error text." [Round 8, November 2024]
 - Users needed guidance on best practices for error text
 - Recommendation: Provide clear guidance on error message best practices
 - Users wanted flexibility in error message creation
@@ -561,6 +600,7 @@
 
 #### Initial Testing (Round 2 - May/June 2024)
 
+- Quote: "If I was going to approach this in reality, say I've got this old PDF form in front of me, or I was asked to create a new form, what I would expect to be able or what I would do is first of all sketch out on paper or in Mural or Figma or whatever I would sketch out first how I would expect the pages to be and then I'd feel more comfortable using this form builder." [Round 2, May/June 2024]
 - Users preferred sketching form structure before using builder
 - Recommendation: Consider providing planning tools or templates
 - Mental model focused on question-first approach
@@ -569,8 +609,10 @@
 #### Refinement (Round 11 - March 2025)
 
 - Tool design felt clean, well-spaced, and intuitive
+- Quote: "It feels like it's really intuitive... very like, methodical step by step." [Round 11, March 2025]
 - Recommendation: Maintain clean, methodical step-by-step approach
 - Users wanted to see all options together during drafting
+- Quote: "Because you have to add them one at a time and come back to this point, you never get to like see your list in the drafting stage altogether." [Round 11, March 2025]
 - Recommendation: Keep users on same page when adding multiple options
 
 ## Guidance and Learning Tools
@@ -580,6 +622,7 @@
 #### Initial Testing (Round 6 - August/September 2024)
 
 - Markdown helpful but required reminders
+- Quote: "I sometimes need a reminder for markdown. Whitehall does this really well." [Round 6, August/September 2024]
 - Recommendation: Provide easy-access markdown help links or tooltips
 - Users wanted inline help rather than external guides
 - Recommendation: Improve visibility of contextual help
@@ -587,6 +630,7 @@
 #### Refinement (Round 7 - October 2024)
 
 - Unclear if markdown usage had limitations
+- Quote: "Am I limited in markdown usage, like hyperlinks?" [Round 7, October 2024]
 - Recommendation: Provide detailed guidance on markdown capabilities
 - Users needed clearer examples and context
 - Recommendation: Add more contextual examples and guidance
@@ -669,11 +713,11 @@
 #### Refinement (Round 7 - October 2024)
 
 - File upload notification email tested well
-- Clear content and interaction
 - Recommendation: Maintain current clarity in notification emails
 
 #### Final Iteration (Round 13 - April 2025)
 
 - Functionality tested well
+- Quote: "The downloads thing is obviously really handy." [Round 13, April 2025]
 - Users successfully found download option through "Tools" menu
 - Recommendation: Maintain easy-to-locate form export/download tools

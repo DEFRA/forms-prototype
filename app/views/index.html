@@ -311,6 +311,25 @@ text: "Latest version"
 {% endblock %}
 
 {% block content %}
+{{ xGovukRelatedNavigation({
+sections: [{
+items: [{
+text: "Find and compare schools in England",
+href: "/school-performance-tables"
+}, {
+text: "Types of school",
+href: "/types-of-school"
+}],
+subsections: [{
+title: "Explore the topic",
+items: [{
+text: "Schools and curriculum",
+href: "/browse/education/school-life"
+}]
+}]
+}]
+}) }}
+
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <h2 class="govuk-heading-l">Features</h2>
