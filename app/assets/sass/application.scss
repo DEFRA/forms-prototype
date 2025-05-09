@@ -1030,8 +1030,8 @@ $defra-link-colour-hover: govuk-shade($defra-link-colour, 50%);
 
 .gem-c-button-publishing--secondary-quiet {
   padding: 8px 10px;
-  border-color: #505a5f;
-  color: #505a5f;
+  border-color: #505a5f !important;
+  color: #505a5f !important;
   background-color: #fff;
   box-shadow: none;
 }

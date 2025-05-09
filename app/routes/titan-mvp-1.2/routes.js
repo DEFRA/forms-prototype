@@ -151,6 +151,21 @@ router.get(
     const currentPage = formPages[pageIndex] || {};
     const pageNumber = pageIndex + 1;
     const conditions = currentPage.conditions || [];
+
+    // Get available questions for conditions
+    const availableQuestions = formPages
+      .flatMap((page) => page.questions)
+      .filter((question) => {
+        const type = question.subType || question.type;
+        return ["radios", "checkboxes", "yes-no"].includes(type);
+      })
+      .map((question) => ({
+        value: question.questionId,
+        text: question.label,
+        type: question.subType || question.type,
+        options: question.options,
+      }));
+
     res.render("titan-mvp-1.2/form-editor/conditions/page-level.html", {
       form: { name: formData.formName || "Form name" },
       currentPage,
@@ -158,6 +173,7 @@ router.get(
       conditions,
       question: currentPage.questions ? currentPage.questions[0] : {},
       existingConditions: [], // You may want to populate this as needed
+      availableQuestions: availableQuestions, // Add available questions to the template context
     });
   }
 );
@@ -194,6 +210,78 @@ router.get(
       formPages: formPages,
       conditionSaved: conditionSaved,
     });
+  }
+);
+
+// Add route to handle creating conditions at the page level
+router.post(
+  "/titan-mvp-1.2/form-editor/conditions/page-level/:pageId/add",
+  function (req, res) {
+    const formData = req.session.data || {};
+    const formPages = req.session.data.formPages || [];
+    const pageId = req.params.pageId;
+
+    // Find the current page
+    const currentPage = formPages.find(
+      (page) => String(page.pageId) === pageId
+    );
+
+    if (!currentPage) {
+      console.error("Page not found:", pageId);
+      return res.redirect("/titan-mvp-1.2/form-editor/listing");
+    }
+
+    // Initialize conditions array if it doesn't exist
+    currentPage.conditions = currentPage.conditions || [];
+
+    // Parse rules if it's a string, or use directly if it's already an object
+    let rules;
+    try {
+      if (req.body.rules) {
+        rules =
+          typeof req.body.rules === "string"
+            ? JSON.parse(req.body.rules)
+            : req.body.rules;
+        if (!Array.isArray(rules)) {
+          rules = [rules];
+        }
+      } else {
+        console.error("No rules provided in request");
+        rules = [];
+      }
+    } catch (e) {
+      console.error("Error handling rules:", e);
+      rules = [];
+    }
+
+    // Create the new condition
+    const newCondition = {
+      id: Date.now(),
+      conditionName: req.body.conditionName,
+      rules: rules.map((rule) => ({
+        questionText: rule.questionText,
+        operator: rule.operator,
+        value: rule.value,
+        logicalOperator: rule.logicalOperator,
+      })),
+      text: rules
+        .map((rule) => {
+          const valueText = Array.isArray(rule.value)
+            ? rule.value.map((v) => `'${v}'`).join(" or ")
+            : `'${rule.value}'`;
+          return `${rule.questionText} ${rule.operator} ${valueText}`;
+        })
+        .join(" "),
+    };
+
+    // Add the condition to the page
+    currentPage.conditions.push(newCondition);
+
+    // Save back to session
+    req.session.data.formPages = formPages;
+
+    // Redirect back to the page-level conditions view
+    res.redirect(`/titan-mvp-1.2/form-editor/conditions/page-level/${pageId}`);
   }
 );
 
@@ -1655,6 +1743,104 @@ router.get(
       },
       pageName: "Upload confirmation",
     });
+  }
+);
+
+// Live-draft overview page route
+router.get("/titan-mvp-1.2/form-overview/live-draft", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+
+  // Create a URL-friendly version of the form name
+  const urlFriendlyName = (formData.formName || "Form name")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+  // Create the preview URL and live URL
+  const previewUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/preview/draft/${urlFriendlyName}`;
+  const liveUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/forms/${urlFriendlyName}`;
+
+  // Create the form object that the templates expect
+  const form = {
+    name: formData.formName || "Form name",
+    status: {
+      text: "Draft-Live",
+      color: "blue",
+    },
+    previewUrl: previewUrl,
+    liveUrl: liveUrl,
+    createdAt: formData.formDetails?.createdAt || new Date().toISOString(),
+    updatedAt: formData.formDetails?.lastUpdated || new Date().toISOString(),
+    updatedBy: formData.formDetails?.updatedBy || "Chris Smith",
+    draftCreatedAt:
+      formData.formDetails?.draftCreatedAt || new Date().toISOString(),
+    draftCreatedBy: formData.formDetails?.draftCreatedBy || "Chris Smith",
+    publishedAt: formData.formDetails?.publishedAt || new Date().toISOString(),
+    publishedBy: formData.formDetails?.publishedBy || "Chris Smith",
+    organisation: {
+      name: formData.formDetails?.organisation || "Not set",
+    },
+    team: {
+      name: formData.formDetails?.teamName || "Not set",
+      email: formData.formDetails?.email || "Not set",
+    },
+    support: {
+      phone: formData.formDetails?.support?.phone,
+      email: formData.formDetails?.support?.email,
+      link: formData.formDetails?.support?.link,
+    },
+    nextSteps: formData.formDetails?.nextSteps,
+    privacyNotice: formData.formDetails?.privacyNotice,
+    notificationEmail: formData.formDetails?.notificationEmail,
+  };
+
+  res.render("titan-mvp-1.2/form-overview/live-draft/index", {
+    form: form,
+    pageName: `Overview - ${form.name}`,
+  });
+});
+
+// Delete draft confirmation page
+router.get(
+  "/titan-mvp-1.2/form-overview/manage-form/delete-draft",
+  (req, res) => {
+    const formData = req.session.data || {};
+
+    res.render("titan-mvp-1.2/form-overview/manage-form/delete-draft/index", {
+      form: {
+        name: formData.formName || "Form name",
+        status: formData.formDetails?.status || {
+          text: "Draft",
+          color: "orange",
+        },
+      },
+      actions: {
+        continue:
+          "/titan-mvp-1.2/form-overview/manage-form/delete-draft/confirm",
+        cancel: "/titan-mvp-1.2/form-overview/index",
+      },
+    });
+  }
+);
+
+// Handle delete draft confirmation
+router.post(
+  "/titan-mvp-1.2/form-overview/manage-form/delete-draft/confirm",
+  (req, res) => {
+    const formData = req.session.data || {};
+
+    // Update form status in session
+    formData.formDetails = {
+      ...formData.formDetails,
+      status: "Live",
+      lastUpdated: new Date().toISOString(),
+    };
+
+    req.session.data = formData;
+
+    // Redirect back to form overview
+    res.redirect("/titan-mvp-1.2/form-overview/index");
   }
 );
 

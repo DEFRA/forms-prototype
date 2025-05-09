@@ -17,14 +17,14 @@ navigationItems: [
 { href: "/titan-mvp-1/library.html", text: "Forms library", id: "nav-library" },
 { href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
 { href: "/titan-mvp-1/form-editor/listing", text: "Editor", id: "nav-editor" } ],
-activeLinkId: "nav-editor"
+activeLinkId: ""
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
     <div class="govuk-width-container">
 
         {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text:
-        commonTerms.form_editor.information_type.back, href: "/titan-mvp-1/form-editor/listing.html" }) }}
+        "Back to form overview", href: "/titan-mvp-1/form-overview/index.html" }) }}
 
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
             style="border-bottom: 1px solid white; margin-bottom: 0" />
@@ -55,7 +55,7 @@ activeLinkId: "nav-editor"
 
         <div class="govuk-button-group">
             <a href="/titan-mvp-1.2/form-editor/listing" class="govuk-button" data-module="govuk-button">
-                Use new editor
+                Switch to new editor
             </a>
             <a href="/titan-mvp-1.2/form-overview/index" class="govuk-button govuk-button--secondary"
                 data-module="govuk-button">
