@@ -166,13 +166,69 @@ router.get(
         options: question.options,
       }));
 
+    // Populate existingConditions (form-level and other page-level)
+    const existingConditions = [];
+    // Add form-level conditions first
+    if (formData.conditions) {
+      existingConditions.push(
+        ...formData.conditions.map((condition) => ({
+          value: condition.id.toString(),
+          text: condition.conditionName,
+          hint: {
+            text: condition.rules
+              .map(
+                (rule) =>
+                  `${rule.questionText} ${rule.operator} ${
+                    Array.isArray(rule.value)
+                      ? rule.value.join(" or ")
+                      : rule.value
+                  }`
+              )
+              .join(" AND "),
+          },
+        }))
+      );
+    }
+    // Add page-level conditions from other pages
+    formPages
+      .filter((page) => String(page.pageId) !== req.params.pageId)
+      .forEach((page) => {
+        if (page.conditions) {
+          existingConditions.push(
+            ...page.conditions.map((condition) => ({
+              value: condition.id.toString(),
+              text: condition.conditionName,
+              hint: {
+                text: condition.rules
+                  .map(
+                    (rule) =>
+                      `${rule.questionText} ${rule.operator} ${
+                        Array.isArray(rule.value)
+                          ? rule.value.join(" or ")
+                          : rule.value
+                      }`
+                  )
+                  .join(" AND "),
+              },
+            }))
+          );
+        }
+      });
+
+    // Combine default option and existingConditions for the select
+    const selectItems = [
+      { value: "", text: "Select existing condition" },
+      ...existingConditions,
+    ];
+
     res.render("titan-mvp-1.2/form-editor/conditions/page-level.html", {
       form: { name: formData.formName || "Form name" },
       currentPage,
       pageNumber,
       conditions,
       question: currentPage.questions ? currentPage.questions[0] : {},
-      existingConditions: [], // You may want to populate this as needed
+      existingConditions: existingConditions,
+      selectItems: selectItems,
       availableQuestions: availableQuestions, // Add available questions to the template context
     });
   }
@@ -277,6 +333,15 @@ router.post(
     // Add the condition to the page
     currentPage.conditions.push(newCondition);
 
+    // Also add to form-level (manager) conditions if not already present
+    req.session.data.conditions = req.session.data.conditions || [];
+    const alreadyExists = req.session.data.conditions.some(
+      (c) => String(c.id) === String(newCondition.id)
+    );
+    if (!alreadyExists) {
+      req.session.data.conditions.push(newCondition);
+    }
+
     // Save back to session
     req.session.data.formPages = formPages;
 
@@ -284,6 +349,153 @@ router.post(
     res.redirect(`/titan-mvp-1.2/form-editor/conditions/page-level/${pageId}`);
   }
 );
+
+// Add/Edit form-level condition (manager)
+router.post(
+  "/titan-mvp-1.2/form-editor/conditions-manager/add",
+  function (req, res) {
+    const formData = req.session.data || {};
+    if (!formData.conditions) {
+      formData.conditions = [];
+    }
+
+    // Parse rules if it's a string, or use directly if it's already an object
+    let rules;
+    try {
+      if (req.body.rules) {
+        rules =
+          typeof req.body.rules === "string"
+            ? JSON.parse(req.body.rules)
+            : req.body.rules;
+        if (!Array.isArray(rules)) {
+          rules = [rules];
+        }
+      } else {
+        console.error("No rules provided in request");
+        rules = [];
+      }
+    } catch (e) {
+      console.error("Error handling rules:", e);
+      rules = [];
+    }
+
+    // Create the new condition
+    const newCondition = {
+      id: Date.now(),
+      conditionName: req.body.conditionName,
+      rules: rules.map((rule) => ({
+        questionText: rule.questionText,
+        operator: rule.operator,
+        value: rule.value,
+        logicalOperator: rule.logicalOperator,
+      })),
+      text: rules
+        .map((rule) => {
+          const valueText = Array.isArray(rule.value)
+            ? rule.value.map((v) => `'${v}'`).join(" or ")
+            : `'${rule.value}'`;
+          return `${rule.questionText} ${rule.operator} ${valueText}`;
+        })
+        .join(" "),
+    };
+
+    // Add the condition to the global conditions list only
+    formData.conditions.push(newCondition);
+
+    // Save back to session
+    req.session.data = formData;
+
+    // Redirect with the new condition ID
+    res.redirect(
+      `/titan-mvp-1.2/form-editor/conditions/manager?conditionSaved=true&newConditionId=${newCondition.id}`
+    );
+  }
+);
+
+// Add existing condition to a page (for page-level conditions UI)
+router.post("/conditions-add", function (req, res) {
+  const formData = req.session.data || {};
+  const formPages = req.session.data.formPages || [];
+  const currentPageId = req.body.currentPageId;
+
+  // Find the current page by pageId
+  const currentPage = formPages.find(
+    (page) => String(page.pageId) === String(currentPageId)
+  );
+
+  if (!currentPage) {
+    console.error("Page not found:", currentPageId);
+    return res.redirect("/titan-mvp-1.2/form-editor/listing");
+  }
+
+  // Initialize conditions array if it doesn't exist
+  currentPage.conditions = currentPage.conditions || [];
+
+  if (req.body.conditionType === "existing") {
+    const existingConditionId = req.body.existingConditionId;
+
+    // Find the existing condition from form-level conditions first
+    let existingCondition = null;
+    if (formData.conditions) {
+      existingCondition = formData.conditions.find(
+        (c) => String(c.id) === String(existingConditionId)
+      );
+    }
+
+    // If not found in form-level, look in page-level conditions
+    if (!existingCondition) {
+      for (const page of formPages) {
+        if (page.conditions) {
+          const found = page.conditions.find(
+            (c) => String(c.id) === String(existingConditionId)
+          );
+          if (found) {
+            existingCondition = found;
+            break;
+          }
+        }
+      }
+    }
+
+    if (existingCondition) {
+      // Check if condition already exists in current page
+      const alreadyExists = currentPage.conditions.some(
+        (c) => String(c.id) === String(existingConditionId)
+      );
+
+      if (!alreadyExists) {
+        // Add a deep copy of the condition to avoid reference issues
+        currentPage.conditions.push(
+          JSON.parse(JSON.stringify(existingCondition))
+        );
+      }
+    } else {
+      console.error(
+        "Could not find existing condition with ID:",
+        existingConditionId
+      );
+    }
+
+    // Save back to session
+    req.session.data.formPages = formPages;
+
+    // Debug log for redirect
+    console.log(
+      "POST /conditions-add hit, redirecting to:",
+      `/titan-mvp-1.2/form-editor/conditions/page-level/${currentPageId}`
+    );
+
+    // Redirect back to the page-level conditions view
+    return res.redirect(
+      `/titan-mvp-1.2/form-editor/conditions/page-level/${currentPageId}`
+    );
+  }
+
+  // If not an existing condition, just redirect
+  res.redirect(
+    `/titan-mvp-1.2/form-editor/conditions/page-level/${currentPageId}`
+  );
+});
 
 // ── FORM EDITOR ROUTES ─────────────────────────────────────────────────────────
 
