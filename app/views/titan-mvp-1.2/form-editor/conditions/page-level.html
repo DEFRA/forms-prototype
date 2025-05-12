@@ -119,7 +119,7 @@ activeLinkId: "nav-editor"
                         Control who can see this page based on previous answers
                       </legend>
 
-                      <div class="govuk-radios" data-module="govuk-radios" id="condition-mode-radios">
+                      <div class="govuk-radios" data-module="govuk-radios">
                         <div class="govuk-radios__item">
                           <input class="govuk-radios__input" id="mode-existing" name="condition-mode" type="radio"
                             value="existing" checked>
@@ -129,13 +129,13 @@ activeLinkId: "nav-editor"
                         </div>
                         <div class="govuk-radios__item">
                           <input class="govuk-radios__input" id="mode-new" name="condition-mode" type="radio"
-                            value="new">
+                            value="new" data-aria-controls="conditional-new">
                           <label class="govuk-label govuk-radios__label" for="mode-new">
                             Create a new condition
                           </label>
                         </div>
-                        <!-- New Condition Form (hidden by default) -->
-                        <div id="new-condition-section" style="display:none;">
+                        <!-- New Condition Form (using conditional reveal) -->
+                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-new">
                           <form id="condition-form" method="post"
                             action="/titan-mvp-1.2/form-editor/conditions/page-level/{{ currentPage.pageId }}/add">
                             <div class="govuk-form-group app-form-container">
@@ -253,117 +253,10 @@ activeLinkId: "nav-editor"
                     {% endif %}
                   </div>
 
-                  {# <!-- New Condition Form (hidden by default) -->
-                  <div id="new-condition-section" style="display:none;">
-                    <form id="condition-form" method="post"
-                      action="/titan-mvp-1.2/form-editor/conditions/page-level/{{ currentPage.pageId }}/add">
-                      <div class="govuk-form-group app-form-container">
-                        <h2 class="govuk-heading-m app-form-container__title">Create new condition</h2>
-                        <div class="govuk-form-group" id="conditions-container">
-                          <div class="govuk-form-group">
-                            <label class="govuk-label" for="questionSelect">
-                              Select a question
-                            </label>
-                            <select class="govuk-select" id="questionSelect" name="question" required
-                              data-available-questions='{{ availableQuestions | dump | safe }}'>
-                              <option value="">Choose a question</option>
-                              {% for question in availableQuestions %}
-                              <option value="{{ question.value }}" data-type="{{ question.type }}"
-                                data-options='{{ question.options | dump | safe }}'>
-                                {{ question.text }}
-                              </option>
-                              {% endfor %}
-                            </select>
-                          </div>
-                          <div class="govuk-form-group">
-                            <label class="govuk-label" for="operatorSelect">
-                              Condition type
-                            </label>
-                            <select class="govuk-select" id="operatorSelect" name="operator" required>
-                              <option value="">Select a condition type</option>
-                              <option value="is" selected>is</option>
-                              <option value="is-not">is not</option>
-                            </select>
-                          </div>
-                          <div class="govuk-form-group" id="valueContainer" style="display: none;">
-                            <!-- Value inputs will be dynamically populated here -->
-                          </div>
-                        </div>
-                        <div class="govuk-form-group" id="logicalOperatorGroup" style="display: none;">
-                          <fieldset class="govuk-fieldset">
-                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                              How do you want to combine these conditions?
-                            </legend>
-                            <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
-                              <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="logical-operator-and" name="logicalOperator"
-                                  type="radio" value="AND" checked>
-                                <label class="govuk-label govuk-radios__label" for="logical-operator-and">
-                                  All conditions must be met (AND)
-                                </label>
-                              </div>
-                              <div class="govuk-radios__item">
-                                <input class="govuk-radios__input" id="logical-operator-or" name="logicalOperator"
-                                  type="radio" value="OR">
-                                <label class="govuk-label govuk-radios__label" for="logical-operator-or">
-                                  Any condition can be met (OR)
-                                </label>
-                              </div>
-                            </div>
-                          </fieldset>
-                        </div>
-                        <div id="additional-conditions">
-                          <!-- Additional conditions will be added here -->
-                        </div>
-                        <div class="govuk-button-group">
-                          <button class="govuk-button govuk-button--inverse" id="add-condition-link">
-                            <svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12"
-                              height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                              <path d="M6 1V11" stroke="currentColor" stroke-width="2" />
-                              <path d="M1 6H11" stroke="currentColor" stroke-width="2" />
-                            </svg>
-                            Add another condition
-                          </button>
-                        </div>
-                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-                        <div class="govuk-form-group">
-                          <label class="govuk-label govuk-label--m" for="conditionName">
-                            Condition name
-                          </label>
-                          <div class="govuk-hint">
-                            Condition names help you to identify conditions in your form,
-                            for example, 'Not a farmer'. Users will not see condition names.
-                          </div>
-                          <input class="govuk-input" id="conditionName" name="conditionName" type="text" required>
-                        </div>
-                        <div class="govuk-button-group">
-                          <button type="submit" class="govuk-button">Save condition</button>
-                          <a href="#" class="govuk-link govuk-link--no-visited-state" id="cancel-condition">Cancel</a>
-                        </div>
-                      </div>
-                    </form>
-                  </div> #}
 
                   <script>
                     document.addEventListener('DOMContentLoaded', function () {
-                      // Radio group show/hide logic
-                      const radios = document.getElementsByName('condition-mode');
-                      const existingSection = document.getElementById('existing-condition-section');
-                      const newSection = document.getElementById('new-condition-section');
-                      function updateSections() {
-                        if (document.getElementById('mode-existing').checked) {
-                          existingSection.style.display = '';
-                          newSection.style.display = 'none';
-                        } else {
-                          existingSection.style.display = 'none';
-                          newSection.style.display = '';
-                        }
-                      }
-                      radios.forEach(radio => {
-                        radio.addEventListener('change', updateSections);
-                      });
-                      updateSections(); // Set initial state
-
+                      // Radio group show/hide logic is now handled by GOV.UK Design System
                       // Handle question selection and value input
                       const questionSelect = document.getElementById('questionSelect');
                       const operatorSelect = document.getElementById('operatorSelect');
