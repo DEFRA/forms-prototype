@@ -132,10 +132,8 @@ activeLinkId: "nav-editor"
 
                 // Show the card if:
                 // 1. No conditions are selected (show all), OR
-                // 2. The card has no conditions (always show), OR
-                // 3. The card has one of the selected conditions
+                // 2. The card has one of the selected conditions
                 const shouldShow = selectedConditions.length === 0 ||
-                    cardConditions.length === 0 ||
                     selectedConditions.some(condition => cardConditions.includes(condition));
 
                 card.style.display = shouldShow ? 'block' : 'none';
