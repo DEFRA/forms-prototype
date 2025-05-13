@@ -299,37 +299,20 @@ title: {
 text: "Forms Designer prototypes"
 },
 description: {
-text: "This page shows prototypes for the Defra Forms Designer (DxT). You can see the current status and features of
-different versions of the tool."
+html: 'This page shows prototypes for the Defra Forms Designer (DxT). You can see the current status and features of
+different versions of the tool.<br><br><a href="/titan-mvp-1/library.html" class="govuk-link govuk-link--inverse">
+  In progress version
+</a>'
 },
 startButton: {
-href: "/titan-mvp-1",
-text: "Latest version"
+href: "/titan-mvp-1.2/choose.html",
+text: "Start latest prototype (Titan MVP 1.2)"
 }
 }) }}
 
 {% endblock %}
 
 {% block content %}
-{{ xGovukRelatedNavigation({
-sections: [{
-items: [{
-text: "Find and compare schools in England",
-href: "/school-performance-tables"
-}, {
-text: "Types of school",
-href: "/types-of-school"
-}],
-subsections: [{
-title: "Explore the topic",
-items: [{
-text: "Schools and curriculum",
-href: "/browse/education/school-life"
-}]
-}]
-}]
-}) }}
-
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-full">
     <h2 class="govuk-heading-l">Features</h2>
@@ -379,53 +362,48 @@ href: "/browse/education/school-life"
     {% set testedCount = testedTableData | length %}
     {% set inProgressCount = inProgressTableData | length %}
 
-    <div class="govuk-grid-column-full">
-      {{ govukTabs({
-      items: [
-      {
-      label: "In progress (" + inProgressCount + ")",
-      id: "in-progress",
-      panel: {
-      html: govukTable({
-      attributes: { "data-module": "moj-sortable-table" },
-      head: [
-      { text: "Feature", attributes: { "aria-sort": "ascending" } },
-      { text: "Problem statement" },
-      { text: "Status" },
-      { text: "Phase" },
-      { text: "Number of rounds" },
-      { text: "Rounds tested" },
-      { text: "Design history" }
-      ],
-      rows: inProgressTableData
-      })
-      }
-      },
-      {
-      label: "Tested (" + testedCount + ")",
-      id: "tested",
-      panel: {
-      html: govukTable({
-      attributes: { "data-module": "moj-sortable-table" },
-      head: [
-      { text: "Feature", attributes: { "aria-sort": "ascending" } },
-      { text: "Problem statement" },
-      { text: "Status" },
-      { text: "Phase" },
-      { text: "Number of rounds" },
-      { text: "Rounds tested" },
-      { text: "Design history" }
-      ],
-      rows: testedTableData
-      })
-      }
-      }
-      ]
-      }) }}
-    </div>
-
-
-
+    {{ govukTabs({
+    items: [
+    {
+    label: "In progress (" + inProgressCount + ")",
+    id: "in-progress",
+    panel: {
+    html: govukTable({
+    attributes: { "data-module": "moj-sortable-table" },
+    head: [
+    { text: "Feature", attributes: { "aria-sort": "ascending" } },
+    { text: "Problem statement" },
+    { text: "Status" },
+    { text: "Phase" },
+    { text: "Number of rounds" },
+    { text: "Rounds tested" },
+    { text: "Design history" }
+    ],
+    rows: inProgressTableData
+    })
+    }
+    },
+    {
+    label: "Tested (" + testedCount + ")",
+    id: "tested",
+    panel: {
+    html: govukTable({
+    attributes: { "data-module": "moj-sortable-table" },
+    head: [
+    { text: "Feature", attributes: { "aria-sort": "ascending" } },
+    { text: "Problem statement" },
+    { text: "Status" },
+    { text: "Phase" },
+    { text: "Number of rounds" },
+    { text: "Rounds tested" },
+    { text: "Design history" }
+    ],
+    rows: testedTableData
+    })
+    }
+    }
+    ]
+    }) }}
   </div>
 
   <div class="govuk-grid-column-full govuk-grid-column-two-thirds-from-desktop">

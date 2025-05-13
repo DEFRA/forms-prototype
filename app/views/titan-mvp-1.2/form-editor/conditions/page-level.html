@@ -74,7 +74,7 @@ activeLinkId: "nav-editor"
 
                   <div id="conditions-list-container"
                     class="{% if conditions and conditions | length %}govuk-!-margin-top-4{% else %}govuk-visually-hidden{% endif %}"
-                    style="background-color: white; padding: 15px; border-left: #008938 solid 5px; margin-bottom: 30px !important;">
+                    style="background-color: white; padding: 15px; border-left: #008938 solid 5px; margin-bottom: 30px !important; outline: 1px solid #b1b4b6;">
                     <h2 class="govuk-heading-m">
                       <span id="condition-counter">{{ conditions | length }}</span> added conditions
                     </h2>
@@ -147,7 +147,7 @@ activeLinkId: "nav-editor"
                             value="new" {% if existingConditions | length==0 %}checked{% endif %}
                             data-aria-controls="conditional-new">
                           <label class="govuk-label govuk-radios__label" for="mode-new">
-                            Create a simple condition
+                            Create condition
                           </label>
                         </div>
                         <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-new">
@@ -211,13 +211,13 @@ activeLinkId: "nav-editor"
                   </div>
                   <!-- Inset text for advanced conditions -->
                   <div class="govuk-inset-text" style="margin-bottom: 20px;">
-                    <h3 class="govuk-heading-m">Manage advanced and reusable conditions</h3>
-                    Use the <a
-                      href="/titan-mvp-1.2/form-editor/conditions/manager?fromPageId={{ currentPage.pageId }}&fromPageHeading={{ currentPage.pageHeading | urlencode }}&fromQuestionId={{ question.questionId }}"
-                      class="govuk-link govuk-link--no-visited-state">
-                      conditions manager
-                    </a> to create, edit and combine conditions, apply or remove them across multiple pages, and create
-                    advanced AND/OR logic.
+                    <h3 class="govuk-heading-m">Advanced conditions</h3>
+                    <p class="govuk-body">
+                      Create, edit and combine conditions or reuse conditions in the <a
+                        href="/titan-mvp-1.2/form-editor/conditions/manager?fromPageId={{ currentPage.pageId }}&fromPageHeading={{ currentPage.pageHeading | urlencode }}&fromQuestionId={{ question.questionId }}"
+                        class="govuk-link govuk-link--no-visited-state">
+                        conditions manager</a>.</p>
+
                   </div>
 
 

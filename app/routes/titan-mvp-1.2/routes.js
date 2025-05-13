@@ -2931,3 +2931,45 @@ router.post(
 
 // Export the router
 module.exports = router;
+
+// Add preview route
+router.get("/titan-mvp-1.2/form-editor/preview", function (req, res) {
+  const formPages = req.session.data["formPages"] || [];
+  const formData = req.session.data || {};
+  res.render("titan-mvp-1.2/form-editor/preview", {
+    data: { formPages: formPages },
+    form: { name: formData.formName || "Form name" },
+  });
+});
+
+// Add check answers route
+router.get("/titan-mvp-1.2/form-editor/check-answers", function (req, res) {
+  const formPages = req.session.data["formPages"] || [];
+  const formData = req.session.data || {};
+  res.render("titan-mvp-1.2/form-editor/check-answers", {
+    data: { formPages: formPages },
+    form: { name: formData.formName || "Form name" },
+  });
+});
+
+// Route for prototype routing page
+router.get("/titan-mvp-1.2/choose", function (req, res) {
+  res.render("titan-mvp-1.2/choose");
+});
+router.get("/titan-mvp-1.2/choose.html", function (req, res) {
+  res.render("titan-mvp-1.2/choose");
+});
+
+// Catch-all route for any .html file in titan-mvp-1.2
+router.get("/titan-mvp-1.2/:page", function (req, res, next) {
+  const page = req.params.page;
+  // Only allow .html or no extension
+  if (!page.match(/^[a-zA-Z0-9\-_]+(\.html)?$/)) return next();
+  // Remove .html if present
+  const viewName = page.replace(/\.html$/, "");
+  // Try to render the view
+  res.render(`titan-mvp-1.2/${viewName}`, function (err, html) {
+    if (err) return next(); // Pass to 404 if not found
+    res.send(html);
+  });
+});
