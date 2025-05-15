@@ -3225,3 +3225,51 @@ router.post("/titan-mvp-1.2/update-user", function (req, res) {
     res.redirect("/titan-mvp-1.2/roles/manage-users.html");
   });
 });
+
+// Delete page confirmation (GET)
+router.get("/titan-mvp-1.2/form-editor/delete/:pageId", function (req, res) {
+  const formData = req.session.data || {};
+  const pageId = req.params.pageId;
+  // Find the page index for the given pageId
+  const formPages = formData.formPages || [];
+  const pageIndex = formPages.findIndex(
+    (page) => String(page.pageId) === String(pageId)
+  );
+  const pageNumber = pageIndex + 1;
+  let pageHeading = "";
+  let questionLabel = "";
+  if (pageIndex !== -1) {
+    const page = formPages[pageIndex];
+    pageHeading = page.pageHeading || "";
+    if (page.questions && page.questions.length > 0) {
+      questionLabel = page.questions[0].label || "";
+    }
+  }
+  res.render("titan-mvp-1.2/form-editor/delete.html", {
+    form: {
+      name: formData.formName || "Form name",
+    },
+    pageNumber: pageNumber,
+    pageId: pageId,
+    pageHeading: pageHeading,
+    questionLabel: questionLabel,
+  });
+});
+
+// Delete page (POST)
+router.post("/titan-mvp-1.2/delete-page", function (req, res) {
+  const pageId = req.body.pageId;
+  const formPages = req.session.data["formPages"] || [];
+
+  // Find and remove the page
+  const pageIndex = formPages.findIndex(
+    (page) => String(page.pageId) === String(pageId)
+  );
+  if (pageIndex !== -1) {
+    formPages.splice(pageIndex, 1);
+    req.session.data["formPages"] = formPages;
+  }
+
+  // Redirect back to the listing page
+  res.redirect("/titan-mvp-1.2/form-editor/listing");
+});
