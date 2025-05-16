@@ -298,10 +298,10 @@ formLibrary.items %}
     {% set formRowsDesktop = [] %}
 
     {% for formItem in formsByPage[pageCurrent - 1] %}
-    {% set formHref = formItem.href if formItem.href else "/form-designer-v2/" + formItem.path %}
+    {% set formHref = formItem.href if formItem.href else formItem.path %}
 
     {% set formName %}
-    <a href="/form-overview/index" class="govuk-link govuk-link--no-visited-state">
+    <a href="{{ formHref }}" class="govuk-link govuk-link--no-visited-state">
       {{ formItem.name }}
     </a>
     {% endset %}

@@ -12,7 +12,7 @@ homepageLink: "/",
 signOutLink: "/titan-mvp-1.2/onboarding/sign-out-confirmation",
 navigationItems: [
 {
-href: "/titan-mvp-1.2/form-overview/index",
+href: "/titan-mvp-1.2/form-overview/live-overview",
 text: "Overview",
 id: "nav-overview",
 active: false
@@ -30,7 +30,7 @@ activeLinkId: "form-history"
         {{ govukBackLink({
         classes: "govuk-back-link--inverse govuk-!-margin-bottom-0",
         text: "Back to form overview",
-        href: "/titan-mvp-1.2/form-overview/index"
+        href: "/titan-mvp-1.2/form-overview/live-overview"
         }) }}
 
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
@@ -39,7 +39,8 @@ activeLinkId: "form-history"
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full-from-desktop">
                 <h1 class="x-govuk-masthead__title">
-                    <span class="govuk-caption-l" style="color: white">{{ form.name }}</span>
+                    <span class="govuk-caption-l" style="color: white">{{ formName or "Employee Onboarding" }}
+                    </span>
                     Form history
                 </h1>
             </div>
