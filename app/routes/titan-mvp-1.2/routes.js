@@ -3285,6 +3285,140 @@ router.post("/titan-mvp-1.2/update-page-order", function (req, res) {
   }
 });
 
+// Update the guidance overview route
+router.post("/titan-mvp-1.2/form-editor/guidance/overview", (req, res) => {
+  console.log("Form submission received:", req.body);
+  console.log("Current session data:", req.session.data);
+
+  const formData = req.session.data || {};
+  const formPages = formData.formPages || [];
+  const pageIndex = formData.currentPageIndex || 0;
+
+  console.log("Page index:", pageIndex);
+  console.log("Current page:", formPages[pageIndex]);
+
+  // Get the current page
+  const currentPage = formPages[pageIndex];
+
+  // Handle section data
+  const sectionId = req.body.section;
+  let section = null;
+  if (sectionId) {
+    const sections = formData.sections || [];
+    const foundSection = sections.find((s) => s.id === sectionId);
+    if (foundSection) {
+      section = {
+        id: foundSection.id,
+        name: foundSection.name,
+      };
+    }
+  }
+
+  // Update the current page with the guidance configuration and section data
+  formPages[pageIndex] = {
+    ...currentPage,
+    pageType: "guidance",
+    guidanceOnlyHeadingInput: req.body.guidanceOnlyHeadingInput,
+    guidanceOnlyGuidanceTextInput: req.body.guidanceOnlyGuidanceTextInput,
+    isExitPage: Array.isArray(req.body.exitPage)
+      ? req.body.exitPage.includes("true")
+      : req.body.exitPage === "true",
+    lastUpdated: new Date().toISOString(),
+    section: section,
+  };
+
+  console.log("Updated page:", formPages[pageIndex]);
+
+  // Update the session data
+  req.session.data = {
+    ...formData,
+    formPages: formPages,
+    formDetails: {
+      ...formData.formDetails,
+      lastUpdated: new Date().toISOString(),
+    },
+  };
+
+  console.log("Updated session data:", req.session.data);
+
+  // Redirect back to the guidance configuration page
+  res.redirect(
+    "/titan-mvp-1.2/form-editor/question-type/guidance-configuration.html"
+  );
+});
+
+// Add this GET route for guidance configuration
+router.get(
+  "/titan-mvp-1.2/form-editor/question-type/guidance-configuration.html",
+  function (req, res) {
+    const formPages = req.session.data["formPages"] || [];
+    const pageIndex = req.session.data["currentPageIndex"];
+    const formData = req.session.data || {};
+    const pageNumber = pageIndex + 1;
+
+    // Get the current page from the session
+    const currentPage = formPages[pageIndex];
+
+    if (!currentPage) {
+      console.log("No current page found:", {
+        pageIndex,
+        formPagesLength: formPages.length,
+      });
+      return res.redirect("/titan-mvp-1.2/form-editor/listing.html");
+    }
+
+    console.log("Rendering guidance config with page:", currentPage);
+
+    res.render(
+      "titan-mvp-1.2/form-editor/question-type/guidance-configuration.html",
+      {
+        currentPage: currentPage,
+        data: req.session.data,
+        form: {
+          name: formData.formName || "Form name",
+        },
+        pageNumber: pageNumber,
+      }
+    );
+  }
+);
+
+//--------------------------------------
+// Edit an existing guidance page
+//--------------------------------------
+router.get("/titan-mvp-1.2/form-editor/edit-guidance", function (req, res) {
+  const pageId = (req.query.pageId || "").trim();
+  console.log("Editing guidance page with ID:", pageId);
+
+  if (!pageId) {
+    console.log("No pageId provided – redirecting to listing.");
+    return res.redirect("/titan-mvp-1/form-editor/listing.html");
+  }
+
+  // Retrieve formPages from session
+  const formPages = req.session.data["formPages"] || [];
+
+  // Find the guidance page
+  const foundPageIndex = formPages.findIndex(
+    (page) => String(page.pageId) === pageId && page.pageType === "guidance"
+  );
+
+  if (foundPageIndex === -1) {
+    console.log("Guidance page not found – redirecting to listing.");
+    return res.redirect("/titan-mvp-1/form-editor/listing.html");
+  }
+
+  // Set the found page as the current page for editing
+  req.session.data["currentPageIndex"] = foundPageIndex;
+
+  const guidancePage = formPages[foundPageIndex];
+  console.log("Editing guidance page details:", guidancePage);
+
+  res.redirect(
+    "/titan-mvp-1.2/form-editor/question-type/guidance-configuration.html"
+  );
+});
+
 // Catch-all route for any .html file in titan-mvp-1.2 (must be last)
 router.get("/titan-mvp-1.2/*", function (req, res, next) {
   console.log("CATCH-ALL ROUTE: /titan-mvp-1.2/*", req.path);

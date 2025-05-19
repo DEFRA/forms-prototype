@@ -1,0 +1,414 @@
+{#
+Design History Page Template for Form Overview
+---------------------------------------------
+This page documents the evolution of the Form Overview feature.
+#}
+
+{% extends "design-history/template.html" %}
+
+{# --- Breadcrumbs --- #}
+{% set breadcrumbs = [
+{
+text: "Design History",
+href: "/design-history/index.html"
+},
+{
+text: "Add another",
+href: "/design-history/add-another/index.html"
+}
+] %}
+
+{# --- Feature metadata --- #}
+{% set featureName = "Add another" %}
+{% set latestVersionLink = "/titan-mvp-1/form-overview/index.html" %}
+{% set status = "Tested" %}
+{% set statusColor = "green" %}
+{% set userNeed = "Users need to see and manage the details and status of a specific form." %}
+{% set phase = "Private beta" %}
+{% set category = "Form admin" %}
+{% set description = "This feature allows users to view, edit, and manage the details of a specific form, including its
+status, metadata, and actions. <details class='govuk-details govuk-!-margin-top-2' data-module='govuk-details'>
+    <summary class='govuk-details__summary'>
+        <span class='govuk-details__summary-text'>
+            Form States
+        </span>
+    </summary>
+    <div class='govuk-details__text'>
+        <p class='govuk-body'>Forms can be in one of three states:</p>
+        <ul class='govuk-list govuk-list--bullet'>
+            <li><strong>Draft:</strong> a form that's being worked on but isn't live yet.</li>
+            <li><strong>Live:</strong> a form that's published and available to users.</li>
+            <li><strong>Live with Draft:</strong> a form that's live but has a new version being worked on.</li>
+        </ul>
+    </div>
+</details>" | safe %}
+
+{# --- Journey steps --- #}
+{% set journeySteps = [
+{ number: "1", title: "Onboarding", subtitles: [ { text: "Sign in/out", isCurrent: false } ] },
+{ number: "2", title: "Create new form", subtitles: [ { text: "Add form details", isCurrent: false } ] },
+{ number: "3", title: "Form design", subtitles: [ { text: "Create and edit questions", isCurrent: false } ] },
+{ number: "4", title: "Form overview", subtitles: [ { text: "View and edit form details", isCurrent: true } ],
+isCurrent: true },
+{ number: "5", title: "Testing", subtitles: [ { text: "Preview form", isCurrent: false } ] }
+] %}
+
+{# --- Full page list --- #}
+{% set pageList = [
+{
+section: "Form Overview",
+detailsTitle: "Latest version of the Form Overview prototype",
+showDescriptionColumn: true,
+pages: [
+{
+name: "Default view",
+link: "/titan-mvp-1/form-overview/index.html",
+release: "Titan MVP 1",
+description: "Standard form overview page for a single form."
+},
+{
+name: "Edit mode",
+link: "/titan-mvp-1/form-overview/edit.html",
+release: "Titan MVP 1",
+description: "Form overview page in edit mode (placeholder link)."
+}
+]
+}
+] %}
+
+{# --- Research objectives and sample --- #}
+{% set researchObjectives = [
+"Understand our users (content designers) behaviors, motivations and needs.",
+"Understand the process our users follow when creating/editing a form."
+] %}
+
+{% set researchSample = [
+"1 x RPA Customer support team",
+"1 x BAU",
+"1 x Air Quality Control",
+"1 x Trade and Borders, 'NI Pets Travel scheme'",
+"1 x BAU - Natural England",
+"1 x Trade and Borders, 'Move animals to GB'"
+] %}
+
+{# --- Research rounds for the summary table --- #}
+{% set researchRounds = [
+"Round 5 - July 2024",
+"Round 6 - August/September 2024",
+"Round 7 - October 2024",
+"Round 11 - March 2025",
+"Round 12 - March 2025",
+"Round 13 - April 2025"
+] %}
+
+{# --- Key improvements in the latest version --- #}
+{% set improvements = [
+"Clarified publication process and location",
+"Maintained overview design and clarity",
+"Continued to refine content and interaction clarity"
+] %}
+
+{# --- Research history table --- #}
+{% set researchHistory = [
+{
+roundNumber: "13",
+researchDate: "April 2025",
+researchFinding: "Condition logic improvements well received; terminology and link behaviors caused confusion; page
+section hierarchy unclear.",
+changeMade: "Recommendations made for label clarity, visual hierarchy, and streamlined user flow."
+},
+{
+roundNumber: "12",
+researchDate: "March 2025",
+researchFinding: "Updated designs for question order and conditions were well received; confusion remained around hint
+text and short descriptions.",
+changeMade: "Improved visibility of condition filters, preserved preview pane clarity, proposed clearer labeling for
+text fields."
+},
+{
+roundNumber: "11",
+researchDate: "March 2025",
+researchFinding: "Users confused by the order of setup and placement of controls; struggled with previewing and setting
+up repeater limits.",
+changeMade: "Plan to adjust UI for clearer flow, improve labels, and surface condition controls earlier."
+},
+{
+roundNumber: "7",
+researchDate: "October 2024",
+researchFinding: "Label 'Repeater' clear after interaction but initially confusing. More direct language needed.
+Ambiguity around naming question sets and affirmative copy needed.",
+changeMade: "Recommendations to revise instructional copy, improve navigation, and clarify labels."
+},
+{
+roundNumber: "6",
+researchDate: "August/September 2024",
+researchFinding: "Initial confusion with 'Repeater' feature but understood after interaction. Users found the redesign
+intuitive overall.",
+changeMade: "Proposed clearer instructional copy, navigation adjustments, and terminology reviews."
+},
+{
+roundNumber: "5",
+researchDate: "July 2024",
+researchFinding: "Clarification required in pet-addition steps, inconsistent CTA labels, and some navigation
+confusion.",
+changeMade: "Suggested clearer guidance, CTA standardization, and content revisions."
+}
+] %}
+
+{# --- Research summaries --- #}
+{% set researchSummaries = [
+{
+title: "Round 13 – April 2025",
+summary: "Evaluation of page conditions, sections, and form management.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (29 April 2025)
+
+**Participants:** Multiple Defra content designers and form creators
+
+**Focus:** Evaluation of the DxT prototype focused on iterating page conditions, introducing page sections, and testing
+file upload/download functionality."
+},
+{
+type: "findings",
+content: [
+"Condition logic improvements well received.",
+"Terminology and link behaviors caused confusion.",
+"Page section hierarchy unclear.",
+"Success message after condition creation helped guide users.",
+"Combining multiple conditions worked well."
+]
+},
+{
+type: "recommendations",
+content: [
+"Reduce repetition in the new/existing condition selection flow.",
+"Make condition–question relationships clearer in UI and terminology.",
+"Retain success banner with clear CTAs after condition creation.",
+"Present applied-condition info more prominently.",
+"Clarify section vs page hierarchy with labels."
+]
+}
+]
+},
+{
+title: "Round 12 – March 2025",
+summary: "Iteration 2 of page conditions and content guidance.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (31 March 2025)
+
+**Participants:** 5 content designers from Defra BAU
+
+**Focus:** This round evaluated updates made to page conditions, the order of question and option creation, and clarity
+around short descriptions and hint text."
+},
+{
+type: "findings",
+content: [
+"Moving question text before options improved logic and usability.",
+"Users appreciated entering all options on one page.",
+"Participants navigated condition setup successfully.",
+"Renaming 'operator' to 'Condition type' improved comprehension.",
+"Visibility of condition filters improved by moving to left-hand pane."
+]
+},
+{
+type: "recommendations",
+content: [
+"Retain improved order of question-before-options in question creation.",
+"Maintain single-page radio option entry for better drafting visibility.",
+"Provide clearer definitions/examples for hint text and short descriptions.",
+"Continue exposing condition filters in overview pane.",
+"Explore clearer distinction between new and existing conditions."
+]
+}
+]
+},
+{
+title: "Round 11 – March 2025",
+summary: "Testing of page conditions and repeater questions.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (18 March 2025)
+
+**Participants:** 6 users (content designers and a proxy user from Cefas, Environment Agency, APHA, Farming, Whitehall)
+
+**Focus:** Testing how users understand and use page conditions and repeater questions in the Defra Forms Builder
+(DxT)."
+},
+{
+type: "findings",
+content: [
+"Users confused by the order of setup and placement of controls.",
+"Struggled with previewing and setting up repeater limits.",
+"Some missed the 'multiple responses' option altogether.",
+"'Repeater question' terminology unfamiliar; 'multiple responses' clearer.",
+"Preview helped users identify setup errors."
+]
+},
+{
+type: "recommendations",
+content: [
+"Allow question text entry before radio options.",
+"Keep users on the same page when adding multiple options.",
+"Simplify and reorganise the 'Edit question' page layout.",
+"Introduce page condition settings earlier in the flow.",
+"Clarify technical terms like 'operator' and 'repeater'."
+]
+}
+]
+},
+{
+title: "Round 7 – October 2024",
+summary: "Usability testing of form editor redesign and terminology clarity.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (1–2 October 2024)
+
+**Participants:** 4 senior content designers and 1 proxy user (APHA, RPA, Countryside Stewardship)
+
+**Focus:** Evaluating the usability of the form editor redesign, terminology clarity, and file upload notification
+emails."
+},
+{
+type: "findings",
+content: [
+"Label 'Repeater' clear after interaction but initially confusing.",
+"Ambiguity around naming question sets.",
+"Need for more affirmative copy in overview of questions.",
+"Functionality clear but minor navigational friction in reordering pages."
+]
+},
+{
+type: "recommendations",
+content: [
+"Conduct further research to confirm appropriate naming for 'Repeater' feature.",
+"Revise language to plain English and direct instructions.",
+"Adjust copy to more affirmative, positive language.",
+"Streamline navigation post-action for smoother user experience."
+]
+}
+]
+},
+{
+title: "Round 6 – August/September 2024",
+summary: "Usability testing of form editor redesign and terminology clarity.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (29 Aug–2 Sept 2024)
+
+**Participants:** 7 content designers from various teams (Farming, SFI, Flood Services, Trade, Policy Lab)
+
+**Focus:** Validating usability of the Form Editor redesign and assessing clarity of new labels and interactions."
+},
+{
+type: "findings",
+content: [
+"Users generally found the redesign intuitive and straightforward.",
+"Initial confusion with 'Repeater' feature but understood after interaction.",
+"Clear overall navigation but some confusion in specific interactions.",
+"Editor summary was very clear and helpful for reviewing form structure."
+]
+},
+{
+type: "recommendations",
+content: [
+"Research further to validate naming of the 'Repeater' feature.",
+"Provide clear continuation prompts at bottom of page.",
+"Integrate reordering into main summary view.",
+"Enhance visual recognition for interactions."
+]
+}
+]
+},
+{
+title: "Round 5 – July 2024",
+summary: "Initial usability testing of Add Another feature and Forms Library.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Remote usability testing (16–19 July 2024)\n\n**Participants:** 8 content designers
+from BAU, Ivory & Waste Exemption, and internal Defra Forms team\n\n**What we tested:**\n- Add another feature for both
+members of the public (public view) and XGov (internal) user journeys\n- Forms library\n\n**Scenario:**\nParticipants
+imagined booking a holiday in France and needing to add their pets for an animal health certificate. They were asked to
+use the form to add pets (public view) and design the journey (XGov view)."
+},
+{
+type: "screen",
+title: "Public pages video",
+content: "Walkthrough of the public pages journey.",
+images: [
+{
+src: "/public/images/repeaters/public-pages-r1.mp4",
+alt: "Video of the public pages research",
+caption: "Walkthrough of the public pages"
+}
+]
+},
+{
+type: "findings",
+content: [
+"Participants did not realize they needed to add one pet at a time.",
+"Expectation to add all pets' names on a single page.",
+"Guidance or confirmation was missing to clarify that information should be added pet by pet.",
+"Users wanted confirmation for each pet (Pet 1, Pet 2, etc.).",
+"Some confusion about why to add another page in the form designer.",
+"The 'slide thing' (visual journey/summary) was praised for helping users visualize the form structure.",
+"Some participants were confused by the CTA label 'Submit' vs. 'Save'."
+]
+},
+{
+type: "user_needs",
+content: [
+"Users need to know what they have done, where they are, and what to do next.",
+"Users want to visualize the structure of the form.",
+"Users need to understand how naming a field affects the form."
+]
+},
+{
+type: "quotes",
+content: [
+"It's not clear in the interface where you are. I think you need something to show which level of the form you are
+editing, because when you're inside the question set, the questions that you can create within the question set are the
+same as the ones at the top, and I was confused 'I hang on, I'm in the right place there?' - Content designer, Add
+another UR",
+"I think this thing though, this slide thing, is brilliant because it does give you a really nice view of what the form
+is going to be like, so...something like that, but for the whole form building process. - Content designer, Add another
+UR",
+"In general sometimes I've been struggling with knowing what to call things, what impact will setting a name has on the
+form. Is it something you're going to see? Where's it going to appear? So I've kind of been doing it with trial and
+error in a few places. Like I'll put something in and see. Oh, like, this is how it's used. I was using an error message
+or. You know it appears here or whatever, so I feel like that could be useful at this stage should be like. Where does
+this go? Is it just for me so I can identify as it for the end user?"
+]
+},
+{
+type: "recommendations",
+content: [
+"Set clear expectations early in the user journey with explicit guidance.",
+"Provide confirmation for each item added (e.g., Pet 1, Pet 2, etc.).",
+"Clarify CTA labels (e.g., 'Save' vs. 'Submit').",
+"Enhance visual tools to help users understand form structure and progress."
+]
+}
+]
+}
+] %}
+
+{# --- Related posts --- #}
+{% set relatedPosts = [
+{
+title: "Making form actions intuitive",
+link: "/design-history/form-overview/posts/form-actions.html",
+date: "26 April 2024"},
+{
+title: "How we present information about forms",
+link: "/design-history/form-overview/posts/form-details.html",
+date: "12 April 2024"}
+] %}

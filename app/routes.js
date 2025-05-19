@@ -20,6 +20,12 @@ router.use((req, res, next) => {
   if (!req.session.data.formName) {
     req.session.data.formName = "Form name";
   }
+  if (!req.session.data.sections) {
+    req.session.data.sections = [];
+  }
+  if (!req.session.data.formPages) {
+    req.session.data.formPages = [];
+  }
   next();
 });
 

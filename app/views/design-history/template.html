@@ -126,6 +126,24 @@
         color: #505a5f !important;
         font-weight: normal !important;
     }
+
+    /* Add video container styles */
+    .video-container {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .video-container video {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .video-container figcaption {
+        margin-top: 1em;
+        font-size: 16px;
+        color: #505a5f;
+    }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
@@ -510,6 +528,20 @@ items: breadcrumbs
                             <div class="govuk-grid-row app-prose-scope">
                                 {% for image in section.images %}
                                 <div class="govuk-grid-column-{{ image.width | default('two-thirds') }}">
+                                    {% if image.src and (image.src.endsWith('.mp4') or image.src.endsWith('.webm')) %}
+                                    <figure
+                                        class="video-container {% if image.classes %}{{ image.classes }}{% endif %}">
+                                        <video controls>
+                                            <source src="{{ image.src }}" type="video/{{ image.src.split('.').pop() }}">
+                                            Your browser does not support the video tag.
+                                        </video>
+                                        {% if image.caption %}
+                                        <figcaption>
+                                            {{ image.caption }}
+                                        </figcaption>
+                                        {% endif %}
+                                    </figure>
+                                    {% else %}
                                     <figure class="govuk-image {% if image.classes %}{{ image.classes }}{% endif %}">
                                         {% if image.link %}
                                         <a href="{{ image.link }}" class="govuk-link">
@@ -528,6 +560,7 @@ items: breadcrumbs
                                         </figcaption>
                                         {% endif %}
                                     </figure>
+                                    {% endif %}
                                 </div>
                                 {% endfor %}
                             </div>

@@ -14,16 +14,16 @@ accountName: "Chris Smith",
 homepageLink: "/",
 signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
-{ href: "/titan-mvp-1/library.html", text: "Forms library", id: "nav-library" },
+{ href: "/titan-mvp-1.2/library.html", text: "Forms library", id: "nav-library" },
 { href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/titan-mvp-1/form-editor/listing", text: "Editor", id: "nav-editor" } ],
+{ href: "/titan-mvp-1.2/form-editor/listing", text: "Editor", id: "nav-editor" } ],
 activeLinkId: "nav-editor"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
   <div class="govuk-width-container">
     {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text: "Back to add
-    and edit pages", href: "/titan-mvp-1/form-editor/listing.html" }) }}
+    and edit pages", href: "/titan-mvp-1.2/form-editor/listing.html" }) }}
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
       style="border-bottom: 1px solid white; margin-bottom: 0" />
@@ -35,8 +35,8 @@ activeLinkId: "nav-editor"
           {{ form.name }}
         </h1>
 
-        <a href="/titan-mvp-1/form-editor/page-type.html" role="button" draggable="false" class="govuk-button govuk-button--inverse"
-          data-module="govuk-button">
+        <a href="/titan-mvp-1.2/form-editor/page-type.html" role="button" draggable="false"
+          class="govuk-button govuk-button--inverse" data-module="govuk-button">
           Add new page
         </a>
       </div>
@@ -73,7 +73,7 @@ activeLinkId: "nav-editor"
                             </li>
                             <li class="moj-sub-navigation__item">
                               <a class="moj-sub-navigation__link"
-                                href="/titan-mvp-1/form-editor/conditions/page-level/{{ currentPage.pageId }}">
+                                href="/titan-mvp-1.2/form-editor/conditions/page-level/{{ currentPage.pageId }}">
                                 Conditions
                               </a>
                             </li>
@@ -88,7 +88,7 @@ activeLinkId: "nav-editor"
                         <span class="govuk-caption-l">Page {{ pageNumber }}</span>
                         <h1 class="govuk-heading-l">Edit guidance page</h1>
 
-                        <form class="form" action="/titan-mvp-1/form-editor/guidance/overview" method="post">
+                        <form class="form" action="/titan-mvp-1.2/form-editor/guidance/overview" method="post">
                           <!-- Page Heading Input -->
                           {{ govukInput({
                           label: {
@@ -187,6 +187,69 @@ activeLinkId: "nav-editor"
                           ]
                           }) }}
 
+                          <!-- Section Selection -->
+                          <div class="govuk-!-margin-top-6">
+                            <div class="govuk-form-group">
+                              <fieldset class="govuk-fieldset" aria-describedby="section-hint">
+                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                  Section
+                                </legend>
+                                <div id="section-hint" class="govuk-hint">
+                                  You can group related pages into sections. When you add a section to a page, a
+                                  caption appears above the page heading.
+                                </div>
+                                {% set sectionItems = [] %}
+                                {% set _ = sectionItems.push({
+                                value: "",
+                                text: "No section",
+                                selected: not currentPage.section
+                                }) %}
+                                {% for section in sections %}
+                                {% set _ = sectionItems.push({
+                                value: section.id,
+                                text: section.name,
+                                selected: currentPage.section and currentPage.section.id == section.id
+                                }) %}
+                                {% endfor %}
+                                {% set _ = sectionItems.push({
+                                value: "create-new",
+                                text: "+ Create new section"
+                                }) %}
+                                {{ govukSelect({
+                                id: "section",
+                                name: "section",
+                                items: sectionItems
+                                }) }}
+                              </fieldset>
+                            </div>
+                          </div>
+
+                          <!-- Section Edit Card -->
+                          <div id="section-edit-card" class="govuk-summary-card govuk-!-margin-top-4"
+                            style="display: none; border-left: 5px solid #008938; padding: 15px; background-color: #fff;">
+                            <div class="govuk-summary-card__content">
+                              <div id="create-section-form">
+                                <div class="govuk-form-group">
+                                  <label class="govuk-label govuk-label--m" for="new-section-name">
+                                    Section name
+                                  </label>
+                                  <div id="new-section-name-hint" class="govuk-hint">
+                                    Enter a name for your new section
+                                  </div>
+                                  <input class="govuk-input" id="new-section-name" type="text"
+                                    aria-describedby="new-section-name-hint">
+                                </div>
+
+                                <div class="govuk-button-group govuk-!-margin-top-4">
+                                  <button type="button" class="govuk-button" id="save-new-section">
+                                    Save new section
+                                  </button>
+                                  <a class="govuk-link" href="#" id="cancel-create-section">Cancel</a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
                           <div class="govuk-button-group">
                             {{ govukButton({
                             text: "Save",
@@ -199,8 +262,6 @@ activeLinkId: "nav-editor"
                                 class="govuk-link govuk-link--no-visited-state govuk-link--destructive hide-in-reorder-mode hide-when-edit-mode">
                                 Delete page
                               </a>
-                            </p>
-
                             </p>
                           </div>
                         </form>
@@ -601,6 +662,74 @@ activeLinkId: "nav-editor"
           /* Ensure content is above the #before-content */
         }
       </style>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          console.log('Page loaded');
+
+          // Main form submission
+          const mainForm = document.querySelector('form.form');
+          if (mainForm) {
+            console.log('Main form found:', mainForm.action);
+            mainForm.addEventListener('submit', function (e) {
+              console.log('Form submitted');
+              const formData = new FormData(mainForm);
+              console.log('Form data:', Object.fromEntries(formData));
+            });
+          } else {
+            console.error('Main form not found');
+          }
+
+          // Section handling
+          const sectionSelect = document.getElementById('section');
+          const sectionEditCard = document.getElementById('section-edit-card');
+          const newSectionName = document.getElementById('new-section-name');
+          const saveNewSection = document.getElementById('save-new-section');
+          const cancelCreateSection = document.getElementById('cancel-create-section');
+
+          if (sectionSelect) {
+            // Handle section selection change
+            sectionSelect.addEventListener('change', function () {
+              if (this.value === 'create-new') {
+                sectionEditCard.style.display = 'block';
+                this.value = ''; // Reset to no selection
+              }
+            });
+          }
+
+          if (saveNewSection && newSectionName) {
+            // Handle new section creation
+            saveNewSection.addEventListener('click', function () {
+              const sectionName = newSectionName.value.trim();
+              if (sectionName) {
+                const sectionId = 'section-' + Date.now(); // Generate unique ID
+
+                // Add new section to select options
+                const option = new Option(sectionName, sectionId);
+                sectionSelect.add(option);
+                sectionSelect.value = sectionId;
+
+                sectionEditCard.style.display = 'none';
+                newSectionName.value = '';
+              }
+            });
+          }
+
+          if (cancelCreateSection) {
+            // Handle cancel creation
+            cancelCreateSection.addEventListener('click', function (e) {
+              e.preventDefault();
+              sectionEditCard.style.display = 'none';
+              if (newSectionName) {
+                newSectionName.value = '';
+              }
+              if (sectionSelect) {
+                sectionSelect.value = '';
+              }
+            });
+          }
+        });
+      </script>
 
       {% endblock %}
     </div>
