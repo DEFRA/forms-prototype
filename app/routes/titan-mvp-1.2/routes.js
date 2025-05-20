@@ -2552,25 +2552,40 @@ router.get(
 
 // Guidance configuration edit route
 router.get(
-  "/titan-mvp-1.2/form-editor/question-type/guidance-configuration.html",
+  "/titan-mvp-1.2/form-editor/question-type/guidance-configuration-nojs.html",
   function (req, res) {
     const formPages = req.session.data["formPages"] || [];
     const pageIndex = req.session.data["currentPageIndex"];
     const formData = req.session.data || {};
     const pageNumber = pageIndex + 1;
+
+    // Get the current page from the session
     const currentPage = formPages[pageIndex];
+
     if (!currentPage) {
+      console.log("No current page found:", {
+        pageIndex,
+        formPagesLength: formPages.length,
+      });
       return res.redirect("/titan-mvp-1.2/form-editor/listing.html");
     }
+
+    console.log("Rendering guidance config with page:", currentPage);
+
     res.render(
-      "titan-mvp-1.2/form-editor/question-type/guidance-configuration.html",
+      "titan-mvp-1.2/form-editor/question-type/guidance-configuration-nojs.html",
       {
         currentPage: currentPage,
-        data: req.session.data,
+        data: {
+          ...formData,
+          showCreateSection: req.query.showCreateSection === "true",
+          error: req.query.error,
+        },
         form: {
           name: formData.formName || "Form name",
         },
         pageNumber: pageNumber,
+        sections: formData.sections || [], // Add sections data here
       }
     );
   }
@@ -3378,6 +3393,7 @@ router.get(
           name: formData.formName || "Form name",
         },
         pageNumber: pageNumber,
+        sections: formData.sections || [], // Add sections data here
       }
     );
   }
@@ -3454,4 +3470,63 @@ router.get("/titan-mvp-1.2/*", function (req, res, next) {
       res.send(html);
     }
   );
+});
+
+// API endpoint for creating new sections
+router.post("/titan-mvp-1.2/form-editor/api/sections", (req, res) => {
+  try {
+    const formData = req.session.data || {};
+    const sections = formData.sections || [];
+    const newSection = {
+      id: Date.now().toString(), // Simple unique ID
+      name: req.body.name,
+      description: req.body.description || "",
+      pages: [],
+    };
+    sections.push(newSection);
+    req.session.data.sections = sections;
+    console.log("Created new section:", newSection);
+    console.log("Updated sections:", sections);
+    res.json(newSection);
+  } catch (error) {
+    console.error("Error creating section:", error);
+    res.status(500).json({ error: "Failed to create section" });
+  }
+});
+
+// Create new section page (no JS)
+router.get("/titan-mvp-1.2/form-editor/section/create", function (req, res) {
+  res.render("titan-mvp-1.2/form-editor/section/create.html", {
+    data: req.session.data,
+    form: {
+      name: req.session.data.formName || "Form name",
+    },
+  });
+});
+
+// Handle section creation (no JS)
+router.post("/titan-mvp-1.2/form-editor/section/create", function (req, res) {
+  const sectionName = req.body.sectionName;
+  const returnUrl =
+    req.body.returnUrl ||
+    "/titan-mvp-1.2/form-editor/question-type/guidance-configuration-nojs.html";
+
+  if (!sectionName) {
+    // Redirect back with error
+    return res.redirect(
+      returnUrl + "?showCreateSection=true&error=Section name is required"
+    );
+  }
+
+  // Create new section
+  const sections = req.session.data.sections || [];
+  const newSection = {
+    id: Date.now().toString(), // Simple ID generation
+    name: sectionName,
+  };
+  sections.push(newSection);
+  req.session.data.sections = sections;
+
+  // Redirect back to the form with the new section selected
+  res.redirect(returnUrl + "?section=" + newSection.id);
 });

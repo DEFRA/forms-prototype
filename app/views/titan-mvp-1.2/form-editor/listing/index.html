@@ -324,16 +324,17 @@ activeLinkId: "nav-editor"
                                 <div class="govuk-summary-card__title-wrapper"
                                     style="display: flex; justify-content: space-between; align-items: center;">
                                     <div style="flex: 1;">
-                                        {% if page.section %}
-                                        <span class="govuk-tag govuk-tag--green"
-                                            style="margin-bottom: 10px!important; display: inline-table;">
-                                            {{ page.section.name }}</span>
-                                        {% endif %}
-                                        {% if page.isExitPage %}
-                                        <span class="govuk-tag govuk-tag--pink"
-                                            style="margin-bottom: 10px; display: block; width: fit-content;">Exit
-                                            page</span>
-                                        {% endif %}
+                                        <div class="govuk-button-group"
+                                            style="margin-bottom: 10px; margin-right: 10px!important;">
+                                            {% if page.isExitPage %}
+                                            <span class="govuk-tag govuk-tag--pink" style="margin-right: 10px;">Exit
+                                                page</span>
+                                            {% endif %}
+                                            {% if page.section %}
+                                            <span class="govuk-tag govuk-tag--green">
+                                                {{ page.section.name }}</span>
+                                            {% endif %}
+                                        </div>
                                         <h2 class="govuk-summary-card__title" style="margin: 0;">
                                             Page {{ loop.index }}:
                                             {% if page.pageType == 'guidance' %}
