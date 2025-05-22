@@ -63,8 +63,7 @@ activeLinkId: "nav-editor"
 
                     <h2 class="govuk-heading-l">Edit page 4</h2>
 
-                    <form method="post" id="options-form"
-                      action="/redesigntest/templates/1-question/autocomplete/overview">
+                    <form method="post" id="options-form" action="/titan-mvp-1.2/question-configuration-save">
                       {{ govukInput({
                       label: { text: "Question", classes: "govuk-label--m" },
                       id: "question-label-input-autocomplete",
@@ -104,6 +103,7 @@ activeLinkId: "nav-editor"
                           and value with a colon (e.g., English:en-gb).</div>
                         <textarea id="csv-input" class="govuk-textarea" rows="10"></textarea>
                         <div id="options-entry"></div>
+                        <input type="hidden" id="autocomplete-options-data" name="autocompleteOptionsData" value="[]">
                       </div>
 
                       <div class="moj-button-action">
@@ -178,6 +178,8 @@ activeLinkId: "nav-editor"
     function updateAutocomplete() {
       const options = processCSV(csvInput.value);
       initialiseAutocomplete(options);
+      // Update hidden input with options data
+      document.getElementById('autocomplete-options-data').value = JSON.stringify(options);
     }
 
     function updatePreview() {
@@ -217,6 +219,12 @@ activeLinkId: "nav-editor"
           updateAutocomplete();
         });
     }
+
+    // Form submission handler
+    document.getElementById('options-form').addEventListener('submit', function (e) {
+      updateAutocomplete(); // Ensure options are up to date before submitting
+      return true;
+    });
 
     // Attach event listeners
     csvInput.addEventListener('input', updateAutocomplete);

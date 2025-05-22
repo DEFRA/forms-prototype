@@ -976,14 +976,42 @@ activeLinkId: "nav-editor"
                     try {
                         const options = JSON.parse(optionsData);
 
-                        // Add the label only when we have a question selected
-                        const label = document.createElement('label');
-                        label.className = 'govuk-label';
-                        label.htmlFor = 'condition-value';
-                        label.textContent = 'Select a value';
-                        valueContainer.appendChild(label);
+                        if (questionType === 'autocomplete') {
+                            // Create checkboxes for autocomplete options
+                            const fieldset = document.createElement('div');
+                            fieldset.className = 'govuk-form-group';
 
-                        if (questionType === 'yes-no') {
+                            const checkboxesDiv = document.createElement('div');
+                            checkboxesDiv.className = 'govuk-checkboxes govuk-checkboxes--small';
+                            checkboxesDiv.setAttribute('data-module', 'govuk-checkboxes');
+
+                            // Add options to checkboxes
+                            if (options && Array.isArray(options)) {
+                                options.forEach((option, index) => {
+                                    const itemDiv = document.createElement('div');
+                                    itemDiv.className = 'govuk-checkboxes__item';
+
+                                    const input = document.createElement('input');
+                                    input.className = 'govuk-checkboxes__input';
+                                    input.type = 'checkbox';
+                                    input.id = 'value-' + conditionCount + '-' + index;
+                                    input.name = 'value-' + conditionCount;
+                                    input.value = option.value || option.text || option.label;
+
+                                    const label = document.createElement('label');
+                                    label.className = 'govuk-label govuk-checkboxes__label';
+                                    label.htmlFor = 'value-' + conditionCount + '-' + index;
+                                    label.textContent = option.text || option.label || option.value;
+
+                                    itemDiv.appendChild(input);
+                                    itemDiv.appendChild(label);
+                                    checkboxesDiv.appendChild(itemDiv);
+                                });
+                            }
+
+                            fieldset.appendChild(checkboxesDiv);
+                            valueContainer.appendChild(fieldset);
+                        } else if (questionType === 'yes-no') {
                             // Create radio buttons for Yes/No
                             const fieldset = document.createElement('div');
                             fieldset.className = 'govuk-form-group';
@@ -1050,35 +1078,28 @@ activeLinkId: "nav-editor"
                             valueContainer.appendChild(fieldset);
 
                         } else if (questionType === 'checkboxes') {
-                            // Create checkboxes for options
                             const fieldset = document.createElement('div');
                             fieldset.className = 'govuk-form-group';
-
                             const checkboxesDiv = document.createElement('div');
                             checkboxesDiv.className = 'govuk-checkboxes govuk-checkboxes--small';
                             checkboxesDiv.setAttribute('data-module', 'govuk-checkboxes');
-
                             options.forEach((option, index) => {
                                 const itemDiv = document.createElement('div');
                                 itemDiv.className = 'govuk-checkboxes__item';
-
                                 const input = document.createElement('input');
                                 input.className = 'govuk-checkboxes__input';
                                 input.type = 'checkbox';
                                 input.id = 'value-' + index;
                                 input.name = 'main-value';
                                 input.value = option.value || option.text;
-
                                 const label = document.createElement('label');
                                 label.className = 'govuk-label govuk-checkboxes__label';
                                 label.htmlFor = 'value-' + index;
                                 label.textContent = option.text || option.label;
-
                                 itemDiv.appendChild(input);
                                 itemDiv.appendChild(label);
                                 checkboxesDiv.appendChild(itemDiv);
                             });
-
                             fieldset.appendChild(checkboxesDiv);
                             valueContainer.appendChild(fieldset);
                         }
@@ -1207,12 +1228,12 @@ activeLinkId: "nav-editor"
                                         const input = document.createElement('input');
                                         input.className = 'govuk-radios__input';
                                         input.type = 'radio';
-                                        input.id = 'value-' + conditionCount + '-' + index;
-                                        input.name = 'value-' + conditionCount;
+                                        input.id = 'value-' + index;
+                                        input.name = 'main-value';
                                         input.value = value;
                                         const label = document.createElement('label');
                                         label.className = 'govuk-label govuk-radios__label';
-                                        label.htmlFor = 'value-' + conditionCount + '-' + index;
+                                        label.htmlFor = 'value-' + index;
                                         label.textContent = value.charAt(0).toUpperCase() + value.slice(1);
                                         itemDiv.appendChild(input);
                                         itemDiv.appendChild(label);
@@ -1232,12 +1253,12 @@ activeLinkId: "nav-editor"
                                         const input = document.createElement('input');
                                         input.className = 'govuk-radios__input';
                                         input.type = 'radio';
-                                        input.id = 'value-' + conditionCount + '-' + index;
-                                        input.name = 'value-' + conditionCount;
+                                        input.id = 'value-' + index;
+                                        input.name = 'main-value';
                                         input.value = option.value || option.text;
                                         const label = document.createElement('label');
                                         label.className = 'govuk-label govuk-radios__label';
-                                        label.htmlFor = 'value-' + conditionCount + '-' + index;
+                                        label.htmlFor = 'value-' + index;
                                         label.textContent = option.text || option.label;
                                         itemDiv.appendChild(input);
                                         itemDiv.appendChild(label);
@@ -1268,6 +1289,34 @@ activeLinkId: "nav-editor"
                                         itemDiv.appendChild(label);
                                         checkboxesDiv.appendChild(itemDiv);
                                     });
+                                    fieldset.appendChild(checkboxesDiv);
+                                    newValueContainer.appendChild(fieldset);
+                                } else if (questionType === 'autocomplete') {
+                                    // Create checkboxes for autocomplete options
+                                    const fieldset = document.createElement('div');
+                                    fieldset.className = 'govuk-form-group';
+                                    const checkboxesDiv = document.createElement('div');
+                                    checkboxesDiv.className = 'govuk-checkboxes govuk-checkboxes--small';
+                                    checkboxesDiv.setAttribute('data-module', 'govuk-checkboxes');
+                                    if (options && Array.isArray(options)) {
+                                        options.forEach((option, index) => {
+                                            const itemDiv = document.createElement('div');
+                                            itemDiv.className = 'govuk-checkboxes__item';
+                                            const input = document.createElement('input');
+                                            input.className = 'govuk-checkboxes__input';
+                                            input.type = 'checkbox';
+                                            input.id = 'value-' + index;
+                                            input.name = 'main-value';
+                                            input.value = option.value || option.text || option.label;
+                                            const label = document.createElement('label');
+                                            label.className = 'govuk-label govuk-checkboxes__label';
+                                            label.htmlFor = 'value-' + index;
+                                            label.textContent = option.text || option.label || option.value;
+                                            itemDiv.appendChild(input);
+                                            itemDiv.appendChild(label);
+                                            checkboxesDiv.appendChild(itemDiv);
+                                        });
+                                    }
                                     fieldset.appendChild(checkboxesDiv);
                                     newValueContainer.appendChild(fieldset);
                                 }
@@ -1303,7 +1352,7 @@ activeLinkId: "nav-editor"
 
                 // Handle different input types for main condition
                 let mainValue;
-                if (questionType === 'checkboxes') {
+                if (questionType === 'checkboxes' || questionType === 'autocomplete') {
                     const checkedInputs = mainValueContainer.querySelectorAll('input[type="checkbox"]:checked');
                     mainValue = Array.from(checkedInputs).map(input => input.value);
                 } else {
@@ -1332,7 +1381,7 @@ activeLinkId: "nav-editor"
                         const questionType = questionSelect.options[questionSelect.selectedIndex].getAttribute('data-type');
 
                         let value;
-                        if (questionType === 'checkboxes') {
+                        if (questionType === 'checkboxes' || questionType === 'autocomplete') {
                             const checkedInputs = valueContainer.querySelectorAll('input[type="checkbox"]:checked');
                             value = Array.from(checkedInputs).map(input => input.value);
                         } else {

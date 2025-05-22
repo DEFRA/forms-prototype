@@ -157,7 +157,9 @@ router.get(
       .flatMap((page) => page.questions)
       .filter((question) => {
         const type = question.subType || question.type;
-        return ["radios", "checkboxes", "yes-no"].includes(type);
+        return ["radios", "checkboxes", "yes-no", "autocomplete"].includes(
+          type
+        );
       })
       .map((question) => ({
         value: question.questionId,
@@ -259,7 +261,9 @@ router.get(
       .flatMap((page) => page.questions)
       .filter((question) => {
         const type = question.subType || question.type;
-        return ["radios", "checkboxes", "yes-no"].includes(type);
+        return ["radios", "checkboxes", "yes-no", "autocomplete"].includes(
+          type
+        );
       })
       .map((question) => ({
         value: question.questionId,
@@ -787,6 +791,10 @@ router.post("/titan-mvp-1.2/information-type-answer-nf", function (req, res) {
     if (!currentPage.checkboxList) {
       currentPage.checkboxList = [];
     }
+  } else if (mainType === "list" && listSubType === "select") {
+    newQuestion.type = "autocomplete";
+    newQuestion.subType = "autocomplete";
+    newQuestion.options = [];
   }
 
   currentPage.questions.push(newQuestion);
@@ -906,9 +914,15 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
   } else if (questionType === "date") {
     finalSubType = dateSubType;
   } else if (questionType === "list") {
-    finalSubType = listSubType;
+    if (listSubType === "select") {
+      finalSubType = "autocomplete";
+    } else {
+      finalSubType = listSubType;
+    }
   } else if (questionType === "address") {
     finalSubType = "address";
+  } else if (questionType === "autocomplete") {
+    finalSubType = "autocomplete";
   }
 
   let questionLabel = "";
@@ -978,6 +992,12 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
     const existingQuestionIndex = req.session.data["currentQuestionIndex"];
     const existingQuestion = currentPage.questions[existingQuestionIndex];
     questionOptions = existingQuestion.options || [];
+  } else if (questionType === "list" && listSubType === "select") {
+    try {
+      questionOptions = JSON.parse(req.body.autocompleteOptionsData || "[]");
+    } catch (e) {
+      questionOptions = [];
+    }
   }
 
   let existingQuestionIndex = req.session.data["currentQuestionIndex"];

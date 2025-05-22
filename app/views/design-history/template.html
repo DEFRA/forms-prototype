@@ -231,11 +231,11 @@ items: breadcrumbs
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Description</dt>
-                <dd class="govuk-summary-list__value">{{ description }}</dd>
+                <dd class="govuk-summary-list__value">{{ description | safe }}</dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">User need</dt>
-                <dd class="govuk-summary-list__value">{{ userNeed }}</dd>
+                <dd class="govuk-summary-list__value">{{ userNeed | safe }}</dd>
             </div>
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Phase</dt>
@@ -244,6 +244,7 @@ items: breadcrumbs
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key">Category</dt>
                 <dd class="govuk-summary-list__value">
+                    {% if category is string %}
                     <span class="govuk-!-margin-right-2" style="display: inline-flex; align-items: center;">
                         {% if category == "Form creation" %}
                         📝
@@ -253,11 +254,33 @@ items: breadcrumbs
                         📤
                         {% elif category == "Form admin" %}
                         ⚙️
+                        {% elif category == "Members of the public" %}
+                        👤
                         {% else %}
                         📄
                         {% endif %}
                     </span>
                     {{ category }}
+                    {% else %}
+                    {% for cat in category %}
+                    <span class="govuk-!-margin-right-2" style="display: inline-flex; align-items: center;">
+                        {% if cat == "Form creation" %}
+                        📝
+                        {% elif cat == "Form editing" %}
+                        ✏️
+                        {% elif cat == "Form publishing" %}
+                        📤
+                        {% elif cat == "Form admin" %}
+                        ⚙️
+                        {% elif cat == "Members of the public" %}
+                        👤
+                        {% else %}
+                        📄
+                        {% endif %}
+                    </span>
+                    {{ cat }}{% if not loop.last %}, {% endif %}
+                    {% endfor %}
+                    {% endif %}
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -358,6 +381,9 @@ items: breadcrumbs
                         {% endfor %}
                     </ul>
                     {% elif section.type == 'images' %}
+                    {% if section.imagesLabel %}
+                    <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ section.imagesLabel }}</span>
+                    {% endif %}
                     <div class="govuk-grid-row app-prose-scope">
                         {% for image in section.content %}
                         <div class="govuk-grid-column-{{ image.width | default('two-thirds') }}">
@@ -382,6 +408,10 @@ items: breadcrumbs
                         </div>
                         {% endfor %}
                     </div>
+                    {% if section.caption %}
+                    <span class="govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-1">{{ section.caption
+                        }}</span>
+                    {% endif %}
                     {% elif section.type == 'details' %}
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
@@ -432,7 +462,7 @@ items: breadcrumbs
                                 &quot;') | replace('\n', '\\n' ) }}"></div>
                             {% elif item.type == 'preview' %}
                             <div class="preview-section">
-                                <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ section.previewLabel |
+                                <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ item.previewLabel |
                                     default("Preview") }}</span>
                                 <div class="iframe-container govuk-!-margin-bottom-6" role="region"
                                     aria-labelledby="preview-heading-{{ loop.index }}">
@@ -441,48 +471,64 @@ items: breadcrumbs
                                     <iframe src="{{ item.url }}" class="iframe-content"
                                         style="overflow-y: auto; height: 500px; width: 100%; border: none;"
                                         scrolling="yes" frameborder="0" title="Form preview" marginheight="0"
-                                        marginwidth="0" allowfullscreen>
-                                    </iframe>
-                                    <div class="iframe-tabs" role="navigation" aria-label="Preview controls">
-                                        <a class="govuk-link govuk-link--no-visited-state iframe-tab maximise-button"
-                                            style="border-right: #007f3b 1px solid;" href="#" role="button"
-                                            aria-label="Maximise preview" title="Maximise preview" tabindex="0">
-                                            Maximise
-                                        </a>
-                                        <a class="govuk-link govuk-link--no-visited-state iframe-tab"
-                                            href="{{ item.url }}" target="_blank" rel="noopener noreferrer"
-                                            aria-label="Open preview in a new tab" title="Open preview in a new tab">
-                                            Open in a new tab
-                                        </a>
-                                    </div>
+                                        marginwidth="0" allowfullscreen></iframe>
                                 </div>
+                                {% if item.caption %}
+                                <span class="govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-1">{{
+                                    item.caption }}</span>
+                                {% endif %}
                             </div>
                             {% elif item.type == 'images' %}
+                            {% if item.imagesLabel %}
+                            <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ item.imagesLabel }}</span>
+                            {% endif %}
                             <div class="govuk-grid-row app-prose-scope">
-                                <div class="govuk-grid-column-{{ item.content.width | default('two-thirds') }}">
-                                    <figure
-                                        class="govuk-image {% if item.content.classes %}{{ item.content.classes }}{% endif %}">
-                                        {% if item.content.link %}
-                                        <a href="{{ item.content.link }}" class="govuk-link">
+                                {% if item.content is mapping %}
+                                <div class="govuk-grid-column-two-thirds">
+                                    <figure class="govuk-image">
+                                        <img src="{{ item.content.src }}" alt="{{ item.content.alt }}">
+                                        {% if item.content.caption %}
+                                        <figcaption>{{ item.content.caption }}</figcaption>
+                                        {% endif %}
+                                    </figure>
+                                </div>
+                                {% else %}
+                                {% for image in item.content %}
+                                <div class="govuk-grid-column-{{ image.width | default('two-thirds') }}">
+                                    <figure class="govuk-image {% if image.classes %}{{ image.classes }}{% endif %}">
+                                        {% if image.link %}
+                                        <a href="{{ image.link }}" class="govuk-link">
                                             {% endif %}
-                                            <img src="{{ item.content.src }}" alt="{{ item.content.alt }}" {% if
-                                                item.content.scale
-                                                %}style="width: {{ item.content.scale }}%; height: auto;" {% endif %} {%
-                                                if item.content.widthPx %}width="{{ item.content.widthPx }}" {% endif %}
-                                                {% if item.content.heightPx %}height="{{ item.content.heightPx }}" {%
-                                                endif %} {% if item.content.classes %}class="{{ item.content.classes }}"
-                                                {% endif %} />
-                                            {% if item.content.link %}
+                                            <img src="{{ image.src }}" alt="{{ image.alt }}" {% if image.scale
+                                                %}style="width: {{ image.scale }}%; height: auto;" {% endif %} {% if
+                                                image.widthPx %}width="{{ image.widthPx }}" {% endif %} {% if
+                                                image.heightPx %}height="{{ image.heightPx }}" {% endif %} {% if
+                                                image.classes %}class="{{ image.classes }}" {% endif %} />
+                                            {% if image.link %}
                                         </a>
                                         {% endif %}
-                                        {% if item.content.caption %}
+                                        {% if image.caption %}
                                         <figcaption>
-                                            {{ item.content.caption }}
+                                            {{ image.caption }}
                                         </figcaption>
                                         {% endif %}
                                     </figure>
                                 </div>
+                                {% endfor %}
+                                {% endif %}
                             </div>
+                            {% if item.caption %}
+                            <span class="govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-1">{{ item.caption
+                                }}</span>
+                            {% endif %}
+                            {% if item.showSectionBreak %}
+                            <hr
+                                class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
+                            {% endif %}
+                            {% endif %}
+                            {% if item.showSectionBreak %}
+                            <hr
+                                class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
                             {% endif %}
                             {% endfor %}
                             {% endif %}
@@ -624,9 +670,8 @@ items: breadcrumbs
                                     </div>
                                 </div>
                                 {% if section.caption %}
-                                <div class="markdown-content govuk-body"
-                                    data-markdown="{{ section.caption | replace('"', ' &quot;') | replace('\n', '\\n' )
-                                    }}"></div>
+                                <span class="govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-1">{{
+                                    section.caption }}</span>
                                 {% if section.showSectionBreak %}
                                 <hr
                                     class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">
@@ -636,6 +681,13 @@ items: breadcrumbs
                             {% endif %}
                         </div>
                     </div>
+                    {% elif section.type == 'insights' %}
+                    <h4 class="govuk-heading-s">Insights</h4>
+                    <ul class="govuk-list govuk-list--bullet">
+                        {% for insight in section.content %}
+                        <li>{{ insight }}</li>
+                        {% endfor %}
+                    </ul>
                     {% elif section.type == 'preview' %}
                     <div class="preview-section">
                         <span class="govuk-caption-m govuk-!-margin-bottom-1">{{ section.previewLabel |
@@ -662,8 +714,8 @@ items: breadcrumbs
                             </div>
                         </div>
                         {% if section.caption %}
-                        <div class="markdown-content govuk-body" data-markdown="{{ section.caption | replace('"', '
-                            &quot;') | replace('\n', '\\n' ) }}"></div>
+                        <span class="govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-1">{{ section.caption
+                            }}</span>
                         {% if section.showSectionBreak %}
                         <hr
                             class="govuk-section-break govuk-section-break--visible govuk-!-margin-top-6 govuk-!-margin-bottom-6">

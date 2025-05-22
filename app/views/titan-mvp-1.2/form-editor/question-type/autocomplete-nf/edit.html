@@ -110,6 +110,9 @@ activeLinkId: "nav-editor"
                             <h2 class="govuk-heading-m moj-add-another__heading" tabindex="-1">{{
                               commonTerms.form_editor.information_type.list.autocomplete.options.title }}</h2>
 
+                            <!-- Hidden input for options data -->
+                            <input type="hidden" id="autocompleteOptionsData" name="autocompleteOptionsData" value="[]">
+
                             <!-- autocomplete -->
                             <div class="govuk-form-group">
                               <label class="govuk-label govuk-label--s" for="csv-input">
@@ -323,6 +326,9 @@ activeLinkId: "nav-editor"
 
             // Process the CSV and get options
             const options = processCSV(csvInput);
+
+            // Update the hidden input with the processed options
+            document.getElementById("autocompleteOptionsData").value = JSON.stringify(options);
 
             // Reinitialise the autocomplete with the new options
             initialiseAutocomplete(options);
