@@ -2260,6 +2260,106 @@ router.get(
   }
 );
 
+// AI Compliance Check routes
+router.get(
+  "/titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-loading",
+  (req, res) => {
+    const formData = req.session.data || {};
+
+    res.render(
+      "titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-loading",
+      {
+        form: {
+          name: formData.formName || "Form name",
+          status: {
+            text: "Draft-Live",
+            color: "blue",
+          },
+        },
+      }
+    );
+  }
+);
+
+router.get(
+  "/titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-check",
+  async (req, res) => {
+    // Import the AI compliance checker
+    const AIComplianceChecker = require("../../services/ai-compliance-checker");
+    const complianceChecker = new AIComplianceChecker();
+
+    try {
+      // Load the real form data from the JSON file
+      const formData = AIComplianceChecker.loadDemoForm();
+
+      // Debug: Log what we loaded
+      console.log("Loaded form data:", {
+        name: formData.formName,
+        questionCount: formData.checkAnswersItems?.length || 0,
+        pages:
+          formData.checkAnswersItems?.filter((item) => item.type === "page")
+            .length || 0,
+        questions:
+          formData.checkAnswersItems?.filter((item) => item.type === "question")
+            .length || 0,
+      });
+
+      // Run the AI compliance analysis
+      const compliance = await complianceChecker.analyzeForm(formData);
+
+      // Generate additional recommendations
+      compliance.recommendations =
+        complianceChecker.generateRecommendations(compliance);
+
+      res.render(
+        "titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-check",
+        {
+          form: {
+            name: formData.name,
+            status: {
+              text: "Draft",
+              color: "orange",
+            },
+            team: {
+              email: formData.formDetails?.team?.email || "team@defra.gov.uk",
+            },
+          },
+          compliance: compliance,
+        }
+      );
+    } catch (error) {
+      console.error("AI compliance check error:", error);
+
+      // Fallback to error page or redirect
+      res.redirect("/titan-mvp-1.2/form-overview/manage-form/make-draft-live");
+    }
+  }
+);
+
+// Demo route for AI compliance check
+router.get(
+  "/titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-demo",
+  async (req, res) => {
+    const AIComplianceChecker = require("../../services/ai-compliance-checker");
+    const formData = AIComplianceChecker.loadDemoForm();
+    const checker = new AIComplianceChecker();
+    const compliance = await checker.analyzeForm(formData);
+    res.render(
+      "titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-demo",
+      {
+        form: {
+          name: formData.name,
+          status: {
+            text: "Demo",
+            color: "blue",
+          },
+        },
+        compliance,
+      }
+    );
+  }
+);
+
 // Live form overview route
 router.get("/titan-mvp-1.2/form-overview/live/index", (req, res) => {
   const formData = req.session.data || {};

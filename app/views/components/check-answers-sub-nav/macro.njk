@@ -2,7 +2,7 @@
 <nav class="moj-sub-navigation" aria-label="Sub navigation">
   <ul class="moj-sub-navigation__list" id="nav-list-{{ currentTab }}">
     <li class="moj-sub-navigation__item">
-      <a class="moj-sub-navigation__link" 
+      <a class="moj-sub-navigation__link"
          {% if currentTab == 'page-settings' %}aria-current="page"{% endif %}
          href="{{ baseUrl }}">
         Page settings
@@ -14,7 +14,7 @@
       <a class="moj-sub-navigation__link"
          {% if currentTab == 'declaration' %}aria-current="page"{% endif %}
          href="{{ baseUrl }}?tab=declaration">
-        Declaration text
+        Declaration
       </a>
     </li>
     {% endif %}
@@ -24,10 +24,10 @@
       <a class="moj-sub-navigation__link"
          {% if currentTab == 'sections' %}aria-current="page"{% endif %}
          href="{{ baseUrl }}?tab=sections">
-        Organize sections
+        Sections
       </a>
     </li>
     {% endif %}
   </ul>
 </nav>
-{% endmacro %} 
+{% endmacro %}

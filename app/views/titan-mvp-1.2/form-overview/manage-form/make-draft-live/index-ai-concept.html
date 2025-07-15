@@ -1,0 +1,96 @@
+{% extends "layouts/main.html" %}
+
+{% from "components/service-header/macro.njk" import serviceHeader %}
+
+{% block header %}
+{{ serviceHeader({
+organisationName: "Defra",
+productName: "Forms Designer",
+serviceName: "",
+accountName: "Chris Smith",
+homepageLink: "/",
+signOutLink: "/titan-mvp-1.2/onboarding/sign-out-confirmation",
+navigationItems: [
+{
+href: "/titan-mvp-1.2/library.html",
+text: "Forms library",
+id: "nav-library"
+},
+{
+href: "/titan-mvp-1.2/form-overview/draft/complete.html",
+text: "Overview",
+id: "nav-overview"
+},{
+href: "/titan-mvp-1.2/form-editor/listing",
+text: 'Editor',
+id: 'nav-editor'
+}],
+activeLinkId: "/"
+}) }}
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <span class="govuk-caption-xl">{{ form.name }}</span>
+        <h1 class="govuk-heading-xl">Are you sure you want to make the draft live?</h1>
+        <p class="govuk-body-l">Submitted forms will be sent to <a href="#" class="govuk-link">{{ form.team.email
+                }}</a>.</p>
+
+        {% from "govuk/components/button/macro.njk" import govukButton %}
+
+        <!-- AI Compliance Check Section -->
+        <div class="govuk-inset-text" style="margin: 30px 0;">
+            <h3 class="govuk-heading-s">AI Compliance Check</h3>
+            <p class="govuk-body">Before making your form live, you can run an AI-powered compliance check against GDS
+                standards. This will help identify potential issues and provide recommendations for improvement.</p>
+
+            <div class="govuk-button-group">
+                <a href="/titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-loading"
+                    class="govuk-button govuk-button--secondary">
+                    Run AI compliance check
+                </a>
+                <a href="/titan-mvp-1.2/form-overview/manage-form/make-draft-live/ai-compliance-demo"
+                    class="govuk-link govuk-link--no-visited-state">
+                    See demo with examples
+                </a>
+                <details class="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            What does the AI check?
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li><strong>Content:</strong> Form name length, technical language, unclear labels, next
+                                steps customization</li>
+                            <li><strong>Form Design:</strong> Field types, team email, custom validation needs</li>
+                            <li><strong>Form Structure:</strong> One thing per page, eligibility questions, question
+                                protocols, branching logic</li>
+                            <li><strong>Accessibility:</strong> Field labels, privacy notice customization</li>
+                            <li><strong>User Experience:</strong> Form length, user journey, mobile testing</li>
+                        </ul>
+                        <p class="govuk-body-s govuk-!-margin-top-2">
+                            <strong>Comprehensive Analysis:</strong> The AI analyzes your form content and provides
+                            specific examples of what needs to be fixed, with actionable recommendations.
+                        </p>
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div class="govuk-button-group">
+            <form method="post" action="/titan-mvp-1.2/form-overview/make-draft-live" novalidate>
+                <button type="submit" class="govuk-button" data-module="govuk-button">
+                    Make form live (skip compliance check)
+                </button>
+                <a href="/titan-mvp-1.2/form-overview/index">
+                    <button type="button" class="govuk-button govuk-button--secondary" data-module="govuk-button">
+                        Cancel
+                    </button>
+                </a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

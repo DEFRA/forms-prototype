@@ -2,17 +2,26 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 
 <span class="govuk-caption-l">Check answers</span>
-<h1 class="govuk-heading-l">Organize sections</h1>
+<h2 class="govuk-heading-l">Add and organise sections</h2>
 
-<p class="govuk-body">You can group related pages into sections to help break up particularly long pages. <p class='govuk-body'>When you add sections to the check answers page, each section appears with its own heading, making it easier for people to review their answers by topic.</p></p>
+<p class="govuk-body">You can group related pages into sections to help break up the check your answers page.
+
+<div>
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+{{ govukWarningText({
+  text: "Sections only change the order of questions on the check your answers page, not in the form itself.",
+  iconFallbackText: "Warning"
+}) }}
+</div>
 
 <form class="form" action="/titan-mvp-1.2/form-editor/listing" method="post">
   <div class="govuk-form-group">
     <label class="govuk-label govuk-label--m" for="section-heading">
-      Add section heading
+      Section heading
     </label>
     <div class="govuk-hint" id="section-heading-hint">
-      Add a heading to group related questions together
+      Add a heading to group related questions together, for example, 'Business details'
     </div>
     <input class="govuk-input" id="section-heading" name="sectionHeading" type="text" aria-describedby="section-heading-hint">
     <button type="button" class="govuk-button govuk-button--inverse govuk-!-margin-top-2 js-add-section-heading">
@@ -20,12 +29,23 @@
     </button>
   </div>
 
+
+<!-- Skip links for accessibility -->
+<a href="#tab-one" class="govuk-skip-link" data-module="govuk-skip-link">
+  Skip to page preview
+</a>
+
+<a href="#question-1" class="govuk-skip-link" data-module="govuk-skip-link">
+  Skip to page settings
+</a>
+
   <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
   <div id="organization-list" class="govuk-!-margin-top-4">
     <!-- Items will be populated by JavaScript -->
   </div>
 </form>
+
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
@@ -101,7 +121,113 @@
   // Initialize sections tab when DOM is loaded
   document.addEventListener('DOMContentLoaded', function () {
     initializeSectionsTab();
+    setupSectionHeadingPreview();
   });
+
+  // Setup real-time preview for section heading input
+  function setupSectionHeadingPreview() {
+    const sectionHeadingInput = document.getElementById('section-heading');
+    if (!sectionHeadingInput) {
+      console.log('Section heading input not found');
+      return;
+    }
+
+    console.log('Setting up section heading preview');
+
+    sectionHeadingInput.addEventListener('input', function() {
+      const headingText = this.value.trim();
+      console.log('Input event:', headingText);
+      updateSectionHeadingPreview(headingText);
+    });
+
+    // Add focus/blur highlighting
+    sectionHeadingInput.addEventListener('focus', function() {
+      console.log('Focus event triggered');
+      showPlaceholderSection();
+      highlightPreviewSection();
+    });
+
+    sectionHeadingInput.addEventListener('blur', function() {
+      console.log('Blur event triggered');
+      if (!this.value.trim()) {
+        clearSectionHeadingPreview();
+      }
+      removeHighlightFromPreviewSection();
+    });
+
+    // If input is already focused on page load
+    if (document.activeElement === sectionHeadingInput) {
+      console.log('Input already focused on page load');
+      showPlaceholderSection();
+      highlightPreviewSection();
+    }
+  }
+
+  // Show placeholder section when input is focused
+  function showPlaceholderSection() {
+    const sectionHeadingInput = document.getElementById('section-heading');
+    if (!sectionHeadingInput.value.trim()) {
+      console.log('Showing placeholder section');
+      updateSectionHeadingPreview('Section heading');
+    }
+  }
+
+  // Highlight the preview section
+  function highlightPreviewSection() {
+    const previewHeading = document.querySelector('.preview-section-heading');
+    console.log('Looking for preview heading:', previewHeading);
+    if (previewHeading) {
+      console.log('Adding highlight class');
+      previewHeading.classList.add('highlight');
+    } else {
+      console.log('No preview heading found to highlight');
+    }
+  }
+
+  // Remove highlight from preview section
+  function removeHighlightFromPreviewSection() {
+    const previewHeading = document.querySelector('.preview-section-heading');
+    console.log('Removing highlight from:', previewHeading);
+    if (previewHeading) {
+      previewHeading.classList.remove('highlight');
+    }
+  }
+
+  // Update preview with temporary section heading
+  function updateSectionHeadingPreview(headingText) {
+    console.log('updateSectionHeadingPreview called with:', headingText);
+    
+    // If headingText is empty (not "Section heading" placeholder), clear preview
+    if (!headingText) {
+      console.log('Clearing preview - empty heading');
+      clearSectionHeadingPreview();
+      return;
+    }
+
+    console.log('Creating preview section with title:', headingText);
+
+    // Create a temporary section for preview
+    const tempSection = {
+      id: 'preview-section',
+      title: headingText,
+      hideFromRespondents: false,
+      isPreview: true
+    };
+
+    // Temporarily add this section to the preview
+    const originalSections = [...sections];
+    sections = [tempSection, ...originalSections];
+    
+    renderPreview();
+    
+    // Restore original sections
+    sections = originalSections;
+  }
+
+  // Clear the preview section
+  function clearSectionHeadingPreview() {
+    renderPreview();
+  }
 
   function renderOrganizationList() {
     const container = document.getElementById('organization-list');
@@ -121,14 +247,12 @@
       const sectionDiv = document.createElement('div');
       sectionDiv.className = 'app-form-container govuk-!-margin-bottom-4';
       sectionDiv.innerHTML = `
-        <div class="govuk-!-margin-bottom-2">
+        <div class="govuk-!-margin-bottom-2" style="display: flex; justify-content: space-between; align-items: flex-start;">
           <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Section ${index + 1}: ${section.title}</h2>
-          <div style="text-align: right; margin-top: -36px;">
-            <button type="button" class="govuk-button govuk-button--warning js-remove-section" 
-                    data-section-id="${section.id}">
-              Remove section
-            </button>
-          </div>
+          <button type="button" class="govuk-button govuk-button--warning js-remove-section" 
+                  data-section-id="${section.id}">
+            Remove section
+          </button>
         </div>
         <ol class="gem-c-reorderable-list js-enabled section-items govuk-!-margin-bottom-4" data-section-id="${section.id}" data-module="reorderable-list">
           ${checkAnswersItems.filter(item => String(item.section) === String(section.id)).length === 0
@@ -153,11 +277,10 @@
                          name="hideSectionFromRespondents" type="checkbox" value="true" 
                          ${section.hideFromRespondents ? 'checked' : ''}>
                   <label class="govuk-label govuk-checkboxes__label" for="hide-section-${section.id}">
-                    Hide this heading from people filling in the form
+                    Hide section headings from pages in the form
                   </label>
                   <div id="section-visibility-hint-${section.id}" class="govuk-hint govuk-checkboxes__hint govuk-!-margin-bottom-2">
-                    It will still appear on the check answers page
-                  </div>
+Users will only see this section heading on the check your answers page                  </div>
                 </div>
               </div>
               <button type="submit" class="govuk-button govuk-!-margin-top-2 govuk-!-margin-bottom-0" id="settings-button-${section.id}">
@@ -277,14 +400,39 @@
 
     // Render sections first
     Object.values(groupedItems).forEach(group => {
+      const isPreviewSection = group.section.isPreview;
+      const headingClass = isPreviewSection ? 'govuk-heading-m preview-section-heading' : 'govuk-heading-m';
+      
       if (group.items.length > 0) {
-        // Always show section heading in preview (Check answers page)
-        html += `<h2 class="govuk-heading-m">${group.section.title}</h2>`;
+        // Show section with items
+        if (isPreviewSection) {
+          html += '<div class="border-left-container-preview">';
+        }
+        html += `<h2 class="${headingClass}">${group.section.title}</h2>`;
         html += '<div class="govuk-summary-list govuk-!-margin-bottom-9">';
         group.items.forEach(item => {
           html += renderPreviewItem(item);
         });
         html += '</div>';
+        if (isPreviewSection) {
+          html += '</div>';
+        }
+      } else {
+        // Show section even if empty (for both preview and real sections)
+        if (isPreviewSection) {
+          html += '<div class="border-left-container-preview">';
+        }
+        html += `<h2 class="${headingClass}">${group.section.title}</h2>`;
+        html += '<div class="govuk-summary-list govuk-!-margin-bottom-9">';
+        html += '<div class="govuk-summary-list__row">';
+        html += '<dt class="govuk-summary-list__key">No pages added yet</dt>';
+        html += '<dd class="govuk-summary-list__value">Pages added to this section will appear here</dd>';
+        html += '<dd class="govuk-summary-list__actions"></dd>';
+        html += '</div>';
+        html += '</div>';
+        if (isPreviewSection) {
+          html += '</div>';
+        }
       }
     });
 
@@ -376,6 +524,9 @@
           sections.push(newSection);
           input.value = '';
 
+          // Clear any preview highlighting
+          removeHighlightFromPreviewSection();
+          
           syncToSession();
           renderOrganizationList();
           renderPreview();
@@ -568,5 +719,16 @@
   .section-items:hover,
   .ungrouped-items:hover {
     border-color: #00703c;
+  }
+
+  /* Preview section highlighting */
+  .preview-section-heading {
+    background-color: #ffe5cc;
+    border-bottom: 2px solid #ffb266;
+  }
+
+  .border-left-container-preview {
+    border-left: 4px solid #ffb266;
+    padding-left: 20px;
   }
 </style>
