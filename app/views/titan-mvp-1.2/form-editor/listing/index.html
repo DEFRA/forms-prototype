@@ -219,6 +219,15 @@ activeLinkId: "nav-editor"
             <h2 id="search-filters-heading" class="govuk-heading-m govuk-!-margin-bottom-4">Filter pages by condition
             </h2>
 
+            <div id="search-buttons--header" class="govuk-button-group govuk-!-margin-bottom-4">
+                {{ govukButton({ text: "Apply filters", id: "apply-filters" }) }}
+                {{ govukButton({
+                text: "Clear filters",
+                href: "?page=1&name=&author=&organisation=&status=&sort=updated-newest",
+                classes: "govuk-button--secondary"
+                }) }}
+            </div>
+
             <div aria-labelledby="applied-filters-heading">
                 <h3 id="applied-filters-heading" style="display: none;" class="govuk-heading-s">Applied filters:</h3>
 

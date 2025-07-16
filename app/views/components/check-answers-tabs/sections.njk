@@ -78,7 +78,7 @@
                 { label: 'Business address', value: '123 Farm Lane, Rural Town' }
               ]
             },
-            { id: 2, type: 'question', key: 'Country for livestock', value: 'England', section: null },
+            { id: 2, type: 'question', key: 'Country for livestock', value: 'Answer goes here', section: null },
             { id: 3, type: 'question', key: 'Arrival date of livestock', value: '20 04 2024', section: null },
             {
               id: 4, type: 'page', key: 'Livestock information', value: 'Page with multiple questions', section: null, questions: [
@@ -410,7 +410,7 @@ Users will only see this section heading on the check your answers page         
     Object.values(groupedItems).forEach(group => {
       const isPreviewSection = group.section.isPreview;
       const headingClass = isPreviewSection ? 'govuk-heading-m preview-section-heading' : 'govuk-heading-m';
-      
+
       if (group.items.length > 0) {
         // Show section with items
         if (isPreviewSection) {
@@ -431,10 +431,11 @@ Users will only see this section heading on the check your answers page         
           html += '<div class="border-left-container-preview">';
         }
         html += `<h2 class="${headingClass}">${group.section.title}</h2>`;
+
         html += '<div class="govuk-summary-list govuk-!-margin-bottom-9">';
         html += '<div class="govuk-summary-list__row">';
-        html += '<dt class="govuk-summary-list__key">No pages added yet</dt>';
-        html += '<dd class="govuk-summary-list__value">Pages added to this section will appear here</dd>';
+        html += '<dt class="govuk-summary-list__key govuk-hint" style="font-weight: normal;">No pages in this section</dt>';
+        {# html += '<dd class="govuk-summary-list__value"></dd>'; #}
         html += '<dd class="govuk-summary-list__actions"></dd>';
         html += '</div>';
         html += '</div>';
@@ -534,7 +535,7 @@ Users will only see this section heading on the check your answers page         
 
           // Clear any preview highlighting
           removeHighlightFromPreviewSection();
-          
+
           syncToSession();
           renderOrganizationList();
           renderPreview();
