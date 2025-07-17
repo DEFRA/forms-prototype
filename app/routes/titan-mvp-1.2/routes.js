@@ -156,6 +156,33 @@ router.use((req, res, next) => {
         value: "Answer goes here",
         section: null,
       },
+      {
+        id: 13,
+        type: "guidance",
+        key: "Important information",
+        value: "Guidance page",
+        section: null,
+        guidanceText:
+          "Please ensure all information provided is accurate and up to date. This helps us process your application more efficiently.",
+      },
+      {
+        id: 14,
+        type: "guidance",
+        key: "Data protection notice",
+        value: "Guidance page",
+        section: null,
+        guidanceText:
+          "Your personal information will be processed in accordance with the Data Protection Act 2018. We will only use your data for the purposes stated in this application.",
+      },
+      {
+        id: 15,
+        type: "guidance",
+        key: "Application process",
+        value: "Guidance page",
+        section: null,
+        guidanceText:
+          "After submitting your application, we will review the information provided and may contact you for additional details. Processing typically takes 10-15 working days.",
+      },
     ];
   }
   if (!req.session.data.sections) {
@@ -5366,6 +5393,14 @@ router.get("/titan-mvp-1.2/test-choose-section-1", function (req, res) {
   });
 });
 
+// Test route to clear session data and see guidance page
+router.get("/titan-mvp-1.2/clear-session", function (req, res) {
+  req.session.data = {};
+  res.json({
+    message: "Session cleared. Refresh the page to see guidance page.",
+  });
+});
+
 // Test route for choose-section template
 router.get("/titan-mvp-1.2/test-choose-section", function (req, res) {
   const testItem = {
@@ -5446,6 +5481,33 @@ router.get(
           key: "Methodology statement",
           value: "1 file uploaded",
           section: null,
+        },
+        {
+          id: 13,
+          type: "guidance",
+          key: "Important information",
+          value: "Guidance page",
+          section: null,
+          guidanceText:
+            "Please ensure all information provided is accurate and up to date. This helps us process your application more efficiently.",
+        },
+        {
+          id: 14,
+          type: "guidance",
+          key: "Data protection notice",
+          value: "Guidance page",
+          section: null,
+          guidanceText:
+            "Your personal information will be processed in accordance with the Data Protection Act 2018. We will only use your data for the purposes stated in this application.",
+        },
+        {
+          id: 15,
+          type: "guidance",
+          key: "Application process",
+          value: "Guidance page",
+          section: null,
+          guidanceText:
+            "After submitting your application, we will review the information provided and may contact you for additional details. Processing typically takes 10-15 working days.",
         },
       ];
     }
@@ -5669,6 +5731,33 @@ router.get(
             key: "Methodology statement",
             value: "1 file uploaded",
             section: null,
+          },
+          {
+            id: 10,
+            type: "guidance",
+            key: "Important information",
+            value: "Guidance page",
+            section: null,
+            guidanceText:
+              "Please ensure all information provided is accurate and up to date. This helps us process your application more efficiently.",
+          },
+          {
+            id: 11,
+            type: "guidance",
+            key: "Data protection notice",
+            value: "Guidance page",
+            section: null,
+            guidanceText:
+              "Your personal information will be processed in accordance with the Data Protection Act 2018. We will only use your data for the purposes stated in this application.",
+          },
+          {
+            id: 12,
+            type: "guidance",
+            key: "Application process",
+            value: "Guidance page",
+            section: null,
+            guidanceText:
+              "After submitting your application, we will review the information provided and may contact you for additional details. Processing typically takes 10-15 working days.",
           },
         ];
         console.log(
@@ -5969,6 +6058,33 @@ router.get(
           key: "Methodology statement",
           value: "1 file uploaded",
           section: null,
+        },
+        {
+          id: 10,
+          type: "guidance",
+          key: "Important information",
+          value: "Guidance page",
+          section: null,
+          guidanceText:
+            "Please ensure all information provided is accurate and up to date. This helps us process your application more efficiently.",
+        },
+        {
+          id: 11,
+          type: "guidance",
+          key: "Data protection notice",
+          value: "Guidance page",
+          section: null,
+          guidanceText:
+            "Your personal information will be processed in accordance with the Data Protection Act 2018. We will only use your data for the purposes stated in this application.",
+        },
+        {
+          id: 12,
+          type: "guidance",
+          key: "Application process",
+          value: "Guidance page",
+          section: null,
+          guidanceText:
+            "After submitting your application, we will review the information provided and may contact you for additional details. Processing typically takes 10-15 working days.",
         },
       ];
       console.log(

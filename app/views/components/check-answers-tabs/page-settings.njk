@@ -1,8 +1,8 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-<span class="govuk-caption-l">Check answers</span>
-<h1 class="govuk-heading-l">Page settings</h1>
+{# <span class="govuk-caption-l">Check answers</span> #}
+<h1 class="govuk-heading-l">Check answers page overview</h1>
 
 <form class="form" action="/titan-mvp-1.2/form-editor/listing" method="post">
   {{ govukSummaryList({
@@ -66,21 +66,24 @@
         const declarationValue = document.getElementById('declaration-value');
         const declarationAction = document.getElementById('declaration-action');
 
-        // Handle declaration text
-        if (data.declarationText && data.declarationText.trim() !== '') {
+        // Handle declaration text and option
+        if (data.declarationOption === 'no-declaration') {
+          // Always show the link if user said no
+          declarationValue.innerHTML = '<a href="/titan-mvp-1.2/form-editor/check-answers/settings-modular?tab=declaration" class="govuk-link govuk-link--no-visited-state">Add declaration text</a>';
+          declarationAction.style.display = 'none'; // Hide the actions column when no declaration
+        } else if (data.declarationOption === 'yes-declaration' && data.declarationText && data.declarationText.trim() !== '') {
           // Show declaration text preview (truncated if too long)
           const preview = data.declarationText.length > 50
             ? data.declarationText.substring(0, 50) + '...'
             : data.declarationText;
           declarationValue.innerHTML = preview;
-
           // Update action link to "Change"
           declarationAction.textContent = 'Change';
           declarationAction.href = '/titan-mvp-1.2/form-editor/check-answers/settings-modular?tab=declaration';
         } else {
-          // No declaration text - show "Enter declaration text" link
+          // Yes selected but no text
           declarationValue.innerHTML = '<a href="/titan-mvp-1.2/form-editor/check-answers/settings-modular?tab=declaration" class="govuk-link govuk-link--no-visited-state">Add declaration text</a>';
-          declarationAction.style.display = 'none'; // Hide the actions column when no declaration
+          declarationAction.style.display = 'none'; // Hide the actions column when no declaration text
         }
 
         // Handle sections

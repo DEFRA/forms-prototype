@@ -1,19 +1,18 @@
 {% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
 
 <span class="govuk-caption-l">Check answers</span>
 
 <form class="form" action="/titan-mvp-1.2/form-editor/check-answers/settings-modular" method="post">
   <input type="hidden" name="currentTab" value="declaration">
-  <input type="hidden" name="declarationOption" value="yes-declaration">
-  <input type="hidden" name="autoSetDeclaration" value="true">
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
+  {% set textHtml %}
   {{ govukTextarea({
     label: {
       text: "Declaration text",
-      classes: "govuk-label--l",
-      isPageHeading: true
+      classes: "govuk-label--m"
     },
     hint: {
       text: "Use a declaration if you need users to declare or agree to something before they submit the form"
@@ -81,17 +80,45 @@
 <code class="lang-md">[Apply now](https://www.gov.uk/example)</code></pre>
     </div>
   </details>
+  {% endset %}
+
+  {{ govukRadios({
+    name: "declarationOption",
+    fieldset: {
+      legend: {
+        text: "Do users need to make a declaration?",
+        isPageHeading: true,
+        classes: "govuk-fieldset__legend--l"
+      }
+    },
+    hint: {
+      text: "Use a declaration if you need users to declare or agree to something before they submit the form"
+    },
+    items: [
+      {
+        value: "no-declaration",
+        text: "No"
+      },
+      {
+        value: "yes-declaration",
+        text: "Yes",
+        conditional: {
+          html: textHtml
+        }
+      }
+    ]
+  }) }}
 
   <div class="govuk-button-group">
     {{ govukButton({
-      text: "Accept and send",
+      text: "Save",
       type: "submit",
       id: "continue-button"
     }) }}
 
-    <a href="/titan-mvp-1.2/form-editor/check-answers/settings-modular" class="govuk-link govuk-link--no-visited-state">
+    {# <a href="/titan-mvp-1.2/form-editor/check-answers/settings-modular" class="govuk-link govuk-link--no-visited-state">
       Cancel
-    </a>
+    </a> #}
   </div>
 </form>
 
@@ -100,19 +127,16 @@
     const textarea = document.getElementById('check-answers-guidance-text-input');
     const guidanceParagraph = document.getElementById('guidance-paragraph');
     const continueButton = document.getElementById('continue-button');
+    const noDeclarationRadio = document.querySelector('input[value="no-declaration"]');
+    const yesDeclarationRadio = document.querySelector('input[value="yes-declaration"]');
 
     // Load existing declaration text from session
     loadDeclarationText();
 
-    // Automatically set button text to "Accept and send" since we're on the declaration tab
-    if (continueButton) {
-      continueButton.textContent = "Save";
-    }
-
-    // Also update the main button on the settings page
-    const mainButton = document.getElementById('once-button');
-    if (mainButton) {
-      mainButton.textContent = "Accept and send";
+    // Event listener for radio buttons to show/hide guidance paragraph
+    if (noDeclarationRadio && yesDeclarationRadio) {
+      noDeclarationRadio.addEventListener('change', toggleGuidanceVisibility);
+      yesDeclarationRadio.addEventListener('change', toggleGuidanceVisibility);
     }
 
     // Save declaration text to session when user types
@@ -137,9 +161,21 @@
       fetch('/titan-mvp-1.2/form-editor/check-answers/get-session-data')
         .then(response => response.json())
         .then(data => {
+          // Load declaration text
           if (data.declarationText && textarea) {
             textarea.value = data.declarationText;
             updateGuidanceParagraph(data.declarationText);
+          }
+          
+          // Load and restore radio button selection
+          if (data.declarationOption) {
+            if (data.declarationOption === 'no-declaration' && noDeclarationRadio) {
+              noDeclarationRadio.checked = true;
+            } else if (data.declarationOption === 'yes-declaration' && yesDeclarationRadio) {
+              yesDeclarationRadio.checked = true;
+            }
+            // Trigger the visibility toggle to show/hide the textarea based on selection
+            toggleGuidanceVisibility();
           }
         })
         .catch(error => {
@@ -174,6 +210,19 @@
         }
       } else {
         guidanceParagraph.textContent = markdownText;
+      }
+    }
+
+    // Toggle guidance paragraph visibility based on selected radio button
+    function toggleGuidanceVisibility() {
+      if (yesDeclarationRadio.checked) {
+        if (guidanceParagraph) {
+          guidanceParagraph.style.display = "block"; // Show guidance paragraph if "Yes" is selected
+        }
+      } else if (noDeclarationRadio.checked) {
+        if (guidanceParagraph) {
+          guidanceParagraph.style.display = "none"; // Hide guidance paragraph if "No" is selected
+        }
       }
     }
 
