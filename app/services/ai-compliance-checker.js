@@ -549,7 +549,7 @@ class AIComplianceChecker {
         inappropriateFieldTypes.push({
           question: question.label,
           currentType: fieldType,
-          suggestedType: "EmailAddressField",
+          suggestedType: "email field",
           reason: "Email validation and formatting",
         });
       }
@@ -564,7 +564,7 @@ class AIComplianceChecker {
         inappropriateFieldTypes.push({
           question: question.label,
           currentType: fieldType,
-          suggestedType: "TelephoneNumberField",
+          suggestedType: "phone number field",
           reason: "Phone number formatting and validation",
         });
       }
@@ -574,7 +574,7 @@ class AIComplianceChecker {
         inappropriateFieldTypes.push({
           question: question.label,
           currentType: fieldType,
-          suggestedType: "DatePartsField",
+          suggestedType: "date field",
           reason: "Date validation and user-friendly input",
         });
       }
@@ -590,7 +590,7 @@ class AIComplianceChecker {
         inappropriateFieldTypes.push({
           question: question.label,
           currentType: fieldType,
-          suggestedType: "NumberField",
+          suggestedType: "number field",
           reason: "Numeric validation and formatting",
         });
       }
@@ -600,7 +600,7 @@ class AIComplianceChecker {
         inappropriateFieldTypes.push({
           question: question.label,
           currentType: fieldType,
-          suggestedType: "AddressField",
+          suggestedType: "address field",
           reason: "Structured address input",
         });
       }
@@ -610,15 +610,15 @@ class AIComplianceChecker {
       designIssues.push({
         severity: "Medium",
         category: "Field types",
-        title: "Inappropriate field types detected",
-        description: `Found ${inappropriateFieldTypes.length} fields that could use more specific field types for better UX.`,
+        title: "Some fields could use better field types",
+        description: `Found ${inappropriateFieldTypes.length} fields that could be improved by using more specific field types.`,
         recommendation:
-          "Use appropriate field types for better user experience, validation, and accessibility.",
+          "Using the right field type helps users enter information correctly and provides better validation.",
         example: inappropriateFieldTypes
           .slice(0, 3)
           .map(
             (item) =>
-              `"${item.question}" should be ${item.suggestedType} instead of ${item.currentType} (${item.reason})`
+              `"${item.question}" - consider using a ${item.suggestedType} for better user experience`
           )
           .join("\n"),
         formExamples: inappropriateFieldTypes.map((item) => item.question),
@@ -642,14 +642,16 @@ class AIComplianceChecker {
     if (fieldsNeedingCustomValidation.length > 0) {
       designIssues.push({
         severity: "Low",
-        category: "Field types",
-        title: "Consider custom validation for specific fields",
-        description: `Found ${fieldsNeedingCustomValidation.length} fields that may need custom validation rules.`,
+        category: "Field validation",
+        title: "Some fields might need specific validation rules",
+        description: `Found ${fieldsNeedingCustomValidation.length} fields that may need special validation to ensure users enter information in the correct format.`,
         recommendation:
-          "Review if these fields need custom validation beyond standard field types.",
+          "Consider adding validation rules to help users enter information in the right format.",
         example: fieldsNeedingCustomValidation
           .slice(0, 3)
-          .map((field) => `"${field.label}" may need format validation`)
+          .map(
+            (field) => `"${field.label}" - check if it needs format validation`
+          )
           .join("\n"),
         formExamples: fieldsNeedingCustomValidation.map((field) => field.label),
         source: this.gdsStandards.formDesign.validation.source,
@@ -787,23 +789,7 @@ class AIComplianceChecker {
       structureScore -= 10;
     }
 
-    // Check form length and suggest breaking into sections
-    const totalQuestions = formContent.questions.length;
-    if (totalQuestions > 15) {
-      structureIssues.push({
-        severity: "Medium",
-        category: "Form structure",
-        title: "Long form detected",
-        description: `Form has ${totalQuestions} questions which may be overwhelming for users.`,
-        recommendation:
-          "Consider breaking the form into logical sections or multiple steps.",
-        example:
-          "Group related questions into sections:\n• Registration details\n• Site information\n• Contact details\n• Supporting documents",
-        formExample: `${totalQuestions} total questions`,
-        source: this.gdsStandards.formStructure.fieldOptimization.source,
-      });
-      structureScore -= 15;
-    }
+    // Note: Form length check moved to analyzeUserExperience to avoid duplication
 
     analysis.categories.formStructure.issues = structureIssues;
     analysis.categories.formStructure.score = Math.max(0, structureScore);

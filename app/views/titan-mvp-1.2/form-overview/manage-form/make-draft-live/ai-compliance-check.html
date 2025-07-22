@@ -39,7 +39,7 @@ navigationItems: [
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full-from-desktop">
                 <h1 class="x-govuk-masthead__title">
-                    Results of AI compliance check
+                    Results of AI review
                 </h1>
 
 
@@ -247,7 +247,7 @@ navigationItems: [
                             <details class="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
-                                        Show affected content
+                                        Impacted content
                                     </span>
                                 </summary>
                                 <div class="govuk-details__text">
@@ -260,12 +260,12 @@ navigationItems: [
                             </details>
                         </div>
                         {% endif %}
-                        {% if issue.source %}
+                        {# {% if issue.source %}
                         <div class="govuk-!-margin-top-2">
                             <a href="{{ issue.source }}" class="govuk-link govuk-body-s" target="_blank"
                                 rel="noopener noreferrer">See guidance</a>
                         </div>
-                        {% endif %}
+                        {% endif %} #}
                     </div>
                 </div>
                 {% endfor %}
@@ -341,7 +341,7 @@ navigationItems: [
                                 <details class="govuk-details">
                                     <summary class="govuk-details__summary">
                                         <span class="govuk-details__summary-text">
-                                            Show affected content
+                                            Impacted content
                                         </span>
                                     </summary>
                                     <div class="govuk-details__text">
@@ -354,12 +354,12 @@ navigationItems: [
                                 </details>
                             </div>
                             {% endif %}
-                            {% if issue.source %}
+                            {# {% if issue.source %}
                             <div class="govuk-!-margin-top-2">
                                 <a href="{{ issue.source }}" class="govuk-link govuk-body-s" target="_blank"
                                     rel="noopener noreferrer">See guidance</a>
                             </div>
-                            {% endif %}
+                            {% endif %} #}
                         </div>
                     </div>
                     {% endfor %}
@@ -436,7 +436,7 @@ navigationItems: [
                                 <details class="govuk-details">
                                     <summary class="govuk-details__summary">
                                         <span class="govuk-details__summary-text">
-                                            Show affected content
+                                            Impacted content
                                         </span>
                                     </summary>
                                     <div class="govuk-details__text">
@@ -449,12 +449,12 @@ navigationItems: [
                                 </details>
                             </div>
                             {% endif %}
-                            {% if issue.source %}
+                            {# {% if issue.source %}
                             <div class="govuk-!-margin-top-2">
                                 <a href="{{ issue.source }}" class="govuk-link govuk-body-s" target="_blank"
                                     rel="noopener noreferrer">See guidance</a>
                             </div>
-                            {% endif %}
+                            {% endif %} #}
                         </div>
                     </div>
                     {% endfor %}
@@ -530,7 +530,7 @@ navigationItems: [
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
-                                                Show affected content
+                                                Impacted content
                                             </span>
                                         </summary>
                                         <div class="govuk-details__text">
@@ -543,12 +543,12 @@ navigationItems: [
                                     </details>
                                 </div>
                                 {% endif %}
-                                {% if issue.source %}
+                                {# {% if issue.source %}
                                 <div class="govuk-!-margin-top-2">
                                     <a href="{{ issue.source }}" class="govuk-link govuk-body-s" target="_blank"
                                         rel="noopener noreferrer">See guidance</a>
                                 </div>
-                                {% endif %}
+                                {% endif %} #}
                             </div>
                         </div>
                         {% endfor %}
@@ -626,7 +626,7 @@ navigationItems: [
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
-                                                Show affected content
+                                                Impacted content
                                             </span>
                                         </summary>
                                         <div class="govuk-details__text">
@@ -639,12 +639,12 @@ navigationItems: [
                                     </details>
                                 </div>
                                 {% endif %}
-                                {% if issue.source %}
+                                {# {% if issue.source %}
                                 <div class="govuk-!-margin-top-2">
                                     <a href="{{ issue.source }}" class="govuk-link govuk-body-s" target="_blank"
                                         rel="noopener noreferrer">See guidance</a>
                                 </div>
-                                {% endif %}
+                                {% endif %} #}
                             </div>
                         </div>
                         {% endfor %}
@@ -693,7 +693,7 @@ navigationItems: [
                 {% endif %} #}
 
                 <!-- Action Buttons -->
-                <div class="govuk-button-group govuk-!-margin-top-6">
+                {# <div class="govuk-button-group govuk-!-margin-top-6">
                     {% if compliance.passed %}
                     <form method="post" action="/titan-mvp-1.2/form-overview/make-draft-live" novalidate>
                         <button type="submit" class="govuk-button" data-module="govuk-button">
@@ -709,7 +709,7 @@ navigationItems: [
                     <a href="/titan-mvp-1.2/form-overview/index" class="govuk-button govuk-button--secondary">
                         Back to overview
                     </a>
-                </div>
+                </div> #}
 
 
             </div>
@@ -717,17 +717,25 @@ navigationItems: [
     </div>
 
     <div class="govuk-grid-column-one-third">
-        <div>
-            <h2 class="govuk-heading-m">Export Results</h2>
+        <div style="background-color: #f3f2f1; padding: 15px;">
+            <h2 class="govuk-heading-m">Manage form</h2>
 
-
-            <a href="/titan-mvp-1.2/form-overview/manage-form/migrate-confirmation"
+            <a href="/titan-mvp-1.2/form-editor/listing"
                 class="gem-c-button govuk-button gem-c-button-publishing--secondary-quiet"
-                style="width: 100%; margin-bottom: 15px;">Download PDF report</a>
+                style="width: 100%; margin-bottom: 15px;">Edit draft</a>
+
+
+
+            <a href="/titan-mvp-1.2/form-overview/manage-form/make-draft-live/passed-validation">
+                <button type="submit" class="govuk-button" data-module="govuk-button"
+                    style="width: 100%; margin-bottom: 15px;">
+                    Make form live
+                </button>
+            </a>
 
         </div>
 
-        <div class="govuk-card govuk-card--contained">
+        {# <div class="govuk-card govuk-card--contained">
             <div class="govuk-card__content">
                 <h2 class="govuk-heading-s">What was checked?</h2>
                 <ul class="govuk-list govuk-list--bullet govuk-body-s">
@@ -764,7 +772,7 @@ navigationItems: [
                     team.</p>
                 <a href="#" class="govuk-link govuk-body-s">Contact support</a>
             </div>
-        </div>
+        </div> #}
     </div>
 </div>
 {% endblock %}

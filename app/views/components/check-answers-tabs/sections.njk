@@ -24,7 +24,7 @@
       Add a heading to group related questions together, for example, 'Business details'
     </div>
     <input class="govuk-input" id="section-heading" name="sectionHeading" type="text" aria-describedby="section-heading-hint">
-    <button type="button" class="govuk-button govuk-button--inverse govuk-!-margin-top-2 js-add-section-heading">
+    <button type="button" class="govuk-button govuk-!-margin-top-2 js-add-section-heading">
       + Add section heading
     </button>
   </div>
@@ -249,9 +249,9 @@
     // Only show "Sections" label if there are sections
     if (sections.length > 0) {
       container.innerHTML = `
-        <label class="govuk-label govuk-label--m">
-          Sections
-        </label>
+        <h2 class="govuk-heading-m govuk-!-margin-bottom-6">
+          Pages assigned to sections
+        </h2>
       `;
     }
 
@@ -261,7 +261,7 @@
       sectionDiv.className = 'app-form-container govuk-!-margin-bottom-4';
       sectionDiv.innerHTML = `
         <div class="govuk-!-margin-bottom-2" style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <h2 class="govuk-heading-s govuk-!-margin-bottom-2">Section ${index + 1}: ${section.title}</h2>
+          <h2 class="govuk-summary-card__title">Section ${index + 1}: ${section.title}</h2>
           <button type="button" class="govuk-button govuk-button--warning js-remove-section" 
                   data-section-id="${section.id}">
             Remove section
@@ -281,7 +281,7 @@
             <input type="hidden" name="sectionId" value="${section.id}">
             <fieldset class="govuk-fieldset" aria-describedby="section-visibility-hint-${section.id}">
               <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
-                <h2 class="govuk-fieldset__heading">Settings</h2>
+                <h3 class="govuk-fieldset__heading--m govuk-!-margin-bottom-0">Settings</h3>
               </legend>
           
               <div class="govuk-checkboxes govuk-checkboxes--small" data-module="govuk-checkboxes">
@@ -315,7 +315,7 @@ Users will only see this section heading on the check your answers page         
       ungroupedDiv.className = 'govuk-summary-card govuk-!-margin-bottom-4';
       ungroupedDiv.innerHTML = `
         <div class="govuk-summary-card__title-wrapper">
-          <h2 class="govuk-summary-card__title">Ungrouped pages</h2>
+          <h2 class="govuk-summary-card__title">Unassigned pages</h2>
         </div>
         <div class="govuk-summary-card__content">
           <ol class="gem-c-reorderable-list js-enabled ungrouped-items" data-module="reorderable-list">
@@ -350,21 +350,15 @@ Users will only see this section heading on the check your answers page         
                 <p class="govuk-body fauxlabel item-label-display">
                   ${item.key}
                 </p>
-                ${isMultiQuestionPage ?
-          `<p class="govuk-body-s govuk-!-margin-top-0 govuk-!-margin-bottom-0" style="color: #505a5f;">
-                    Page with ${item.questions.length} questions
-                  </p>` :
-          ``
-        }
               </div>
             </div>
             <div class="gem-c-reorderable-list__actions" style="display: flex; flex-direction: column; margin-left: 15px;">
               ${isInSection ? `
                 <a href="#" class="govuk-link govuk-link--destructive govuk-link--no-visited-state js-remove-from-section" 
-                    role="button" aria-label="Remove from section">Ungroup</a>
+                    role="button" aria-label="Unassign from section">Unassign</a>
               ` : `
                 <a href="/titan-mvp-1.2/form-editor/check-answers/choose-section?item=${item.id}" class="govuk-link govuk-link--destructive govuk-link govuk-link--no-visited-state js-add-to-section" 
-                    role="button" aria-label="Add to section">Add to section</a>
+                    role="button" aria-label="Assign to section">Assign to section</a>
               `}
             </div>
           </div>
@@ -386,24 +380,17 @@ Users will only see this section heading on the check your answers page         
                 <p class="govuk-body fauxlabel item-label-display">
                   ${item.key}
                 </p>
-                ${isMultiQuestionPage ?
-          `<p class="govuk-body-s govuk-!-margin-top-0 govuk-!-margin-bottom-0" style="color: #505a5f;">
-                    Page with ${item.questions.length} questions
-                  </p>` :
-          `<p class="govuk-body-s govuk-!-margin-top-0 govuk-!-margin-bottom-0" style="color: #505a5f;">
-                  </p>`
-        }
               </div>
             </div>
             <div class="gem-c-reorderable-list__actions" style="display: flex; flex-direction: column; margin-left: 15px;">
               <!-- PoC: Inline section assignment form -->
-              <form method="post" action="/titan-mvp-1.2/form-editor/check-answers/assign-section" style="display: flex; align-items: center; gap: 8px;">
+              <form method="post" action="/titan-mvp-1.2/form-editor/check-answers/assign-section" style="display: flex; align-items: unset; gap: 8px;">
                 <input type="hidden" name="itemId" value="${item.id}">
                 <select class="govuk-select" name="sectionId" required style="margin-right: 8px;">
                   <option value="">Select section</option>
                   ${sections.map(section => `<option value="${section.id}">${section.title || section.name}</option>`).join('')}
                 </select>
-                <button type="submit" class="govuk-button govuk-button--secondary ">Add</button>
+                <button type="submit" class="govuk-button govuk-button--secondary ">Assign</button>
               </form>
             </div>
           </div>
@@ -484,12 +471,29 @@ Users will only see this section heading on the check your answers page         
   function renderPreviewItem(item) {
     // Check if this is a page with multiple questions
     if (item.type === 'page' && item.questions && item.questions.length > 1) {
-      // Render each question as a separate row
-      let html = '';
+      // Render page heading first, then each question as a separate row
+      let html = `
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key" style="font-weight: bold; color: #00703c;">
+            ${item.key}
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Page with multiple questions
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link govuk-link--no-visited-state" href="#" style="color: #b1b4b6; cursor: default;"
+               onclick="event.preventDefault(); event.stopPropagation(); this.blur(); return false;">
+              Change<span class="govuk-visually-hidden"> ${item.key.toLowerCase()}</span>
+            </a>
+          </dd>
+        </div>
+      `;
+
+      // Render each question as a separate row with indentation
       item.questions.forEach((question, index) => {
         html += `
           <div class="govuk-summary-list__row">
-            <dt class="govuk-summary-list__key">
+            <dt class="govuk-summary-list__key" style="padding-left: 20px;">
               ${question.label}
             </dt>
             <dd class="govuk-summary-list__value">
@@ -681,7 +685,7 @@ Users will only see this section heading on the check your answers page         
 
   /* Only show move cursor for section items */
   .section-items .gem-c-reorderable-list__item:hover {
-    cursor: move;
+    {# cursor: move; #}
   }
 
   /* Keep default cursor for ungrouped items */
@@ -743,6 +747,17 @@ Users will only see this section heading on the check your answers page         
     border-color: #6f777b;
   }
 
+  /* Style for multi-question page headings in preview */
+  .govuk-summary-list__key[style*="font-weight: bold"] {
+    border-left: 3px solid #00703c;
+    padding-left: 15px !important;
+  }
+
+  /* Style for multi-question page indicators in organization list */
+  .gem-c-reorderable-list__item[data-item-type="page"] .govuk-body-s[style*="color: #00703c"] {
+    margin-bottom: 8px;
+  }
+
   .govuk-summary-card__actions {
     display: flex;
     gap: 10px;
@@ -767,8 +782,9 @@ Users will only see this section heading on the check your answers page         
   .section-items,
   .ungrouped-items {
     min-height: 50px;
-    padding: 10px;
-    border: 2px dashed #ccc;
+    {# padding: 10px; #}
+    {# padding-left: 0; #}
+    {# border: 2px dashed #ccc; #}
     border-radius: 4px;
     transition: border-color 0.2s;
   }

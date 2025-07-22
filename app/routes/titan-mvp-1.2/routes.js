@@ -74,10 +74,15 @@ router.use((req, res, next) => {
     req.session.data.checkAnswersItems = [
       {
         id: 1,
-        type: "question",
-        key: "Business registered with RPA",
-        value: "Answer goes here",
+        type: "page",
+        key: "Business details",
+        value: "Page with multiple questions",
         section: null,
+        questions: [
+          { label: "Business registered with RPA", value: "Yes" },
+          { label: "Business name", value: "Doe Farms Ltd" },
+          { label: "Business address", value: "123 Farm Lane, Rural Town" },
+        ],
       },
       {
         id: 2,
@@ -90,74 +95,63 @@ router.use((req, res, next) => {
         id: 3,
         type: "question",
         key: "Arrival date of livestock",
-        value: "Answer goes here",
+        value: "20 04 2024",
         section: null,
       },
       {
         id: 4,
-        type: "question",
-        key: "Type of livestock",
-        value: "Answer goes here",
+        type: "page",
+        key: "Livestock information",
+        value: "Page with multiple questions",
         section: null,
+        questions: [
+          { label: "Type of livestock", value: "Cow" },
+          { label: "Number of animals", value: "25" },
+          { label: "Breed", value: "Holstein Friesian" },
+        ],
       },
       {
         id: 5,
         type: "question",
         key: "Applicant's name",
-        value: "Answer goes here",
+        value: "John Doe",
         section: null,
       },
       {
         id: 6,
-        type: "question",
-        key: "Business name",
-        value: "Answer goes here",
+        type: "page",
+        key: "Contact details",
+        value: "Page with multiple questions",
         section: null,
+        questions: [
+          { label: "Main phone number", value: "07700 900457" },
+          { label: "Email address", value: "john.doe@example.com" },
+          { label: "Alternative contact", value: "Jane Doe - 07700 900458" },
+        ],
       },
       {
         id: 7,
         type: "question",
-        key: "Main phone number",
-        value: "Answer goes here",
+        key: "Business purpose",
+        value: "Livestock farming",
         section: null,
       },
       {
         id: 8,
         type: "question",
-        key: "Email address",
-        value: "Answer goes here",
+        key: "National Grid field number",
+        value: "NG123456",
         section: null,
       },
       {
         id: 9,
         type: "question",
-        key: "Business address",
-        value: "Answer goes here",
+        key: "Methodology statement",
+        value: "1 file uploaded",
         section: null,
       },
       {
         id: 10,
-        type: "question",
-        key: "Business purpose",
-        value: "Answer goes here",
-        section: null,
-      },
-      {
-        id: 11,
-        type: "question",
-        key: "National Grid field number",
-        value: "Answer goes here",
-        section: null,
-      },
-      {
-        id: 12,
-        type: "question",
-        key: "Methodology statement",
-        value: "Answer goes here",
-        section: null,
-      },
-      {
-        id: 13,
         type: "guidance",
         key: "Important information",
         value: "Guidance page",
@@ -166,7 +160,7 @@ router.use((req, res, next) => {
           "Please ensure all information provided is accurate and up to date. This helps us process your application more efficiently.",
       },
       {
-        id: 14,
+        id: 11,
         type: "guidance",
         key: "Data protection notice",
         value: "Guidance page",
@@ -175,7 +169,7 @@ router.use((req, res, next) => {
           "Your personal information will be processed in accordance with the Data Protection Act 2018. We will only use your data for the purposes stated in this application.",
       },
       {
-        id: 15,
+        id: 12,
         type: "guidance",
         key: "Application process",
         value: "Guidance page",
@@ -5395,9 +5389,33 @@ router.get("/titan-mvp-1.2/test-choose-section-1", function (req, res) {
 
 // Test route to clear session data and see guidance page
 router.get("/titan-mvp-1.2/clear-session", function (req, res) {
-  req.session.data = {};
+  console.log("=== CLEARING SESSION DATA ===");
+
+  // Clear the checkAnswersItems and sections from session
+  delete req.session.data.checkAnswersItems;
+  delete req.session.data.sections;
+
+  console.log("Session data cleared");
   res.json({
-    message: "Session cleared. Refresh the page to see guidance page.",
+    message:
+      "Session data cleared successfully. Refresh the page to see the default structure with pages containing multiple questions.",
+    cleared: true,
+  });
+});
+
+// Debug route to see current session data
+router.get("/titan-mvp-1.2/debug-session", function (req, res) {
+  console.log("=== DEBUGGING SESSION DATA ===");
+  console.log(
+    "checkAnswersItems:",
+    JSON.stringify(req.session.data.checkAnswersItems, null, 2)
+  );
+  console.log("sections:", JSON.stringify(req.session.data.sections, null, 2));
+
+  res.json({
+    checkAnswersItems: req.session.data.checkAnswersItems || [],
+    sections: req.session.data.sections || [],
+    message: "Session data logged to console",
   });
 });
 
@@ -5427,63 +5445,84 @@ router.get(
       req.session.data.checkAnswersItems = [
         {
           id: 1,
-          key: "Business registered with RPA",
-          value: "Yes",
+          type: "page",
+          key: "Business details",
+          value: "Page with multiple questions",
           section: null,
+          questions: [
+            { label: "Business registered with RPA", value: "Yes" },
+            { label: "Business name", value: "Doe Farms Ltd" },
+            { label: "Business address", value: "123 Farm Lane, Rural Town" },
+          ],
         },
         {
           id: 2,
+          type: "question",
           key: "Country for livestock",
           value: "England",
           section: null,
         },
         {
           id: 3,
+          type: "question",
           key: "Arrival date of livestock",
           value: "20 04 2024",
           section: null,
         },
-        { id: 4, key: "Type of livestock", value: "Cow", section: null },
-        { id: 5, key: "Applicant's name", value: "John Doe", section: null },
-        { id: 6, key: "Business name", value: "Doe Farms Ltd", section: null },
+        {
+          id: 4,
+          type: "page",
+          key: "Livestock information",
+          value: "Page with multiple questions",
+          section: null,
+          questions: [
+            { label: "Type of livestock", value: "Cow" },
+            { label: "Number of animals", value: "25" },
+            { label: "Breed", value: "Holstein Friesian" },
+          ],
+        },
+        {
+          id: 5,
+          type: "question",
+          key: "Applicant's name",
+          value: "John Doe",
+          section: null,
+        },
+        {
+          id: 6,
+          type: "page",
+          key: "Contact details",
+          value: "Page with multiple questions",
+          section: null,
+          questions: [
+            { label: "Main phone number", value: "07700 900457" },
+            { label: "Email address", value: "john.doe@example.com" },
+            { label: "Alternative contact", value: "Jane Doe - 07700 900458" },
+          ],
+        },
         {
           id: 7,
-          key: "Main phone number",
-          value: "07700 900457",
-          section: null,
-        },
-        {
-          id: 8,
-          key: "Email address",
-          value: "john.doe@example.com",
-          section: null,
-        },
-        {
-          id: 9,
-          key: "Business address",
-          value: "123 Farm Lane, Rural Town",
-          section: null,
-        },
-        {
-          id: 10,
+          type: "question",
           key: "Business purpose",
           value: "Livestock farming",
           section: null,
         },
         {
-          id: 11,
+          id: 8,
+          type: "question",
           key: "National Grid field number",
           value: "NG123456",
           section: null,
         },
         {
-          id: 12,
+          id: 9,
+          type: "question",
           key: "Methodology statement",
           value: "1 file uploaded",
           section: null,
         },
         {
-          id: 13,
+          id: 10,
           type: "guidance",
           key: "Important information",
           value: "Guidance page",
@@ -5492,7 +5531,7 @@ router.get(
             "Please ensure all information provided is accurate and up to date. This helps us process your application more efficiently.",
         },
         {
-          id: 14,
+          id: 11,
           type: "guidance",
           key: "Data protection notice",
           value: "Guidance page",
@@ -5501,7 +5540,7 @@ router.get(
             "Your personal information will be processed in accordance with the Data Protection Act 2018. We will only use your data for the purposes stated in this application.",
         },
         {
-          id: 15,
+          id: 12,
           type: "guidance",
           key: "Application process",
           value: "Guidance page",
@@ -5831,6 +5870,547 @@ router.post(
     );
   }
 );
+
+// AI-powered section-based form creation routes
+router.get("/titan-mvp-1.2/ai/section-based-form-creation", (req, res) => {
+  // Initialize session data if it doesn't exist
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/section-based-form-creation", {
+    data: req.session.data,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/section-based-form-creation", (req, res) => {
+  // Initialize session data if it doesn't exist
+  req.session.data = req.session.data || {};
+
+  // Store all the form data
+  const formData = {
+    wireframeUpload: req.body.wireframeUpload,
+    questionProtocol: req.body.questionProtocol,
+    referenceLinks: req.body.referenceLinks,
+    pageDescription: req.body.pageDescription,
+    formAim: req.body.formAim,
+    conditionalLogic: req.body.conditionalLogic,
+    assembledPrompt: req.body.assembledPrompt,
+  };
+
+  // Update session data
+  req.session.data = {
+    ...req.session.data,
+    aiFormData: formData,
+    formDetails: {
+      ...req.session.data.formDetails,
+      aiGenerated: true,
+      lastUpdated: new Date().toISOString(),
+    },
+  };
+
+  // Log the assembled prompt for debugging
+  console.log("Assembled AI prompt:", req.body.assembledPrompt);
+
+  // For now, redirect to a success page or back to library
+  // In a real implementation, this would send the prompt to an AI service
+  res.redirect("/titan-mvp-1.2/ai/form-creation-success");
+});
+
+// Debug route to check session data
+router.get("/titan-mvp-1.2/ai/debug-session", (req, res) => {
+  res.json({
+    sessionData: req.session.data,
+    sessionId: req.sessionID,
+    hasFormAim: !!req.session.data?.formAim,
+    hasPageDescription: !!req.session.data?.pageDescription,
+    hasReferenceLinks: !!req.session.data?.referenceLinks,
+    hasQuestionProtocol: !!req.session.data?.questionProtocol,
+    hasWireframeUpload: !!req.session.data?.wireframeUpload,
+    hasConditionalLogic: !!req.session.data?.conditionalLogic,
+    formAimValue: req.session.data?.formAim,
+    pageDescriptionValue: req.session.data?.pageDescription,
+  });
+});
+
+// Test route to manually set session data
+router.get("/titan-mvp-1.2/ai/test-set-session", (req, res) => {
+  req.session.data = req.session.data || {};
+  req.session.data.formAim = "Test form aim from debug route";
+  req.session.data.formAimStarted = true;
+  req.session.data.pageDescription = "Test page description from debug route";
+  req.session.data.pageDescriptionStarted = true;
+
+  console.log("=== TEST SET SESSION ===");
+  console.log("Session data set:", JSON.stringify(req.session.data, null, 2));
+
+  res.json({
+    message: "Session data set",
+    sessionData: req.session.data,
+  });
+});
+
+// Test route to immediately retrieve session data
+router.get("/titan-mvp-1.2/ai/test-get-session", (req, res) => {
+  console.log("=== TEST GET SESSION ===");
+  console.log(
+    "Session data retrieved:",
+    JSON.stringify(req.session.data, null, 2)
+  );
+
+  res.json({
+    message: "Session data retrieved",
+    sessionData: req.session.data,
+    formAim: req.session.data?.formAim,
+    pageDescription: req.session.data?.pageDescription,
+  });
+});
+
+// AI form creation success page
+router.get("/titan-mvp-1.2/ai/form-creation-success", (req, res) => {
+  const formData = req.session.data?.aiFormData;
+
+  if (!formData) {
+    return res.redirect("/titan-mvp-1.2/library");
+  }
+
+  res.render("titan-mvp-1.2/ai/form-creation-success", {
+    data: req.session.data,
+    formData: formData,
+  });
+});
+
+// Tasklist-based AI form creation routes
+router.get("/titan-mvp-1.2/ai/tasklist-form-creation", (req, res) => {
+  console.log("=== TASKLIST ROUTE HIT ===");
+  console.log(
+    "Session data before initialization:",
+    JSON.stringify(req.session.data, null, 2)
+  );
+
+  // Preserve existing session data and only initialize if it doesn't exist
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+
+  console.log(
+    "Session data after initialization:",
+    JSON.stringify(req.session.data, null, 2)
+  );
+  console.log("Session data keys:", Object.keys(req.session.data));
+  console.log("Form data present:", {
+    formAim: !!req.session.data.formAim,
+    pageDescription: !!req.session.data.pageDescription,
+    referenceLinks: !!req.session.data.referenceLinks,
+    questionProtocol: !!req.session.data.questionProtocol,
+    wireframeUpload: !!req.session.data.wireframeUpload,
+    conditionalLogic: !!req.session.data.conditionalLogic,
+  });
+
+  console.log("AI Form data present:", {
+    formAim: !!req.session.data.aiFormData?.formAim,
+    pageDescription: !!req.session.data.aiFormData?.pageDescription,
+    referenceLinks: !!req.session.data.aiFormData?.referenceLinks,
+    questionProtocol: !!req.session.data.aiFormData?.questionProtocol,
+    wireframeUpload: !!req.session.data.aiFormData?.wireframeUpload,
+    conditionalLogic: !!req.session.data.aiFormData?.conditionalLogic,
+  });
+
+  console.log(
+    "Task statuses:",
+    req.session.data.aiFormData?.taskStatuses || {}
+  );
+
+  res.render("titan-mvp-1.2/ai/tasklist-form-creation", {
+    data: req.session.data,
+    // Also pass individual fields for easier access
+    formAim: req.session.data.formAim,
+    pageDescription: req.session.data.pageDescription,
+    referenceLinks: req.session.data.referenceLinks,
+    questionProtocol: req.session.data.questionProtocol,
+    wireframeUpload: req.session.data.wireframeUpload,
+    conditionalLogic: req.session.data.conditionalLogic,
+    formAimStarted: req.session.data.formAimStarted,
+    pageDescriptionStarted: req.session.data.pageDescriptionStarted,
+    referenceLinksStarted: req.session.data.referenceLinksStarted,
+    questionProtocolStarted: req.session.data.questionProtocolStarted,
+    wireframeUploadStarted: req.session.data.wireframeUploadStarted,
+    conditionalLogicStarted: req.session.data.conditionalLogicStarted,
+    // Pass task statuses
+    taskStatuses: req.session.data.aiFormData?.taskStatuses || {},
+  });
+});
+
+// Individual task routes
+router.get("/titan-mvp-1.2/ai/task/question-protocol", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/task/question-protocol", {
+    data: req.session.data,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/task/question-protocol", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Debug: Log the saved data
+  console.log("=== QUESTION PROTOCOL POST ROUTE ===");
+  console.log("Question protocol saved:", req.body.questionProtocol);
+  console.log("Task status:", req.body.taskStatus);
+  console.log("Return to task list:", req.body.returnToTaskList);
+
+  // Store the question protocol data
+  req.session.data.questionProtocol = req.body.questionProtocol;
+  req.session.data.questionProtocolStarted = true;
+
+  // Handle task status
+  if (req.body.taskStatus) {
+    if (!req.session.data.aiFormData) {
+      req.session.data.aiFormData = {};
+    }
+    if (!req.session.data.aiFormData.taskStatuses) {
+      req.session.data.aiFormData.taskStatuses = {};
+    }
+    req.session.data.aiFormData.taskStatuses.questionProtocol =
+      req.body.taskStatus;
+    console.log("Task status saved:", req.body.taskStatus);
+  }
+
+  // Check if user wants to return to task list
+  if (req.body.returnToTaskList) {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  } else {
+    // Continue to next task or back to task list
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  }
+});
+
+// Wireframe upload task routes
+router.get("/titan-mvp-1.2/ai/task/wireframe", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/task/wireframe", {
+    data: req.session.data,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/task/wireframe", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Debug: Log the saved data
+  console.log("=== WIREFRAME POST ROUTE ===");
+  console.log("Wireframe upload saved:", req.body.wireframeUpload);
+  console.log("Task status:", req.body.taskStatus);
+  console.log("Return to task list:", req.body.returnToTaskList);
+
+  // Store the wireframe upload data
+  req.session.data.wireframeUpload = req.body.wireframeUpload;
+  req.session.data.wireframeUploadStarted = true;
+
+  // Handle task status
+  if (req.body.taskStatus) {
+    if (!req.session.data.aiFormData) {
+      req.session.data.aiFormData = {};
+    }
+    if (!req.session.data.aiFormData.taskStatuses) {
+      req.session.data.aiFormData.taskStatuses = {};
+    }
+    req.session.data.aiFormData.taskStatuses.wireframe = req.body.taskStatus;
+    console.log("Task status saved:", req.body.taskStatus);
+  }
+
+  // Check if user wants to return to task list
+  if (req.body.returnToTaskList) {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  } else {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  }
+});
+
+// Reference links task routes
+router.get("/titan-mvp-1.2/ai/task/reference-links", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/task/reference-links", {
+    data: req.session.data,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/task/reference-links", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Debug: Log the saved data
+  console.log("=== REFERENCE LINKS POST ROUTE ===");
+  console.log("Reference links saved:", req.body.referenceLinks);
+  console.log("Task status:", req.body.taskStatus);
+  console.log("Return to task list:", req.body.returnToTaskList);
+
+  // Store the reference links data
+  req.session.data.referenceLinks = req.body.referenceLinks;
+  req.session.data.referenceLinksStarted = true;
+
+  // Handle task status
+  if (req.body.taskStatus) {
+    if (!req.session.data.aiFormData) {
+      req.session.data.aiFormData = {};
+    }
+    if (!req.session.data.aiFormData.taskStatuses) {
+      req.session.data.aiFormData.taskStatuses = {};
+    }
+    req.session.data.aiFormData.taskStatuses.referenceLinks =
+      req.body.taskStatus;
+    console.log("Task status saved:", req.body.taskStatus);
+  }
+
+  // Check if user wants to return to task list
+  if (req.body.returnToTaskList) {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  } else {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  }
+});
+
+// Page description task routes
+router.get("/titan-mvp-1.2/ai/task/page-description", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/task/page-description", {
+    data: req.session.data,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/task/page-description", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Debug: Log the saved data
+  console.log("=== PAGE DESCRIPTION POST ROUTE ===");
+  console.log("Page description saved:", req.body.pageDescription);
+  console.log("Task status:", req.body.taskStatus);
+  console.log("Return to task list:", req.body.returnToTaskList);
+
+  // Store the page description data
+  req.session.data.pageDescription = req.body.pageDescription;
+  req.session.data.pageDescriptionStarted = true;
+
+  // Handle task status
+  if (req.body.taskStatus) {
+    if (!req.session.data.aiFormData) {
+      req.session.data.aiFormData = {};
+    }
+    if (!req.session.data.aiFormData.taskStatuses) {
+      req.session.data.aiFormData.taskStatuses = {};
+    }
+    req.session.data.aiFormData.taskStatuses.pageDescription =
+      req.body.taskStatus;
+    console.log("Task status saved:", req.body.taskStatus);
+  }
+
+  // Check if user wants to return to task list
+  if (req.body.returnToTaskList) {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  } else {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  }
+});
+
+// Form aim task routes
+router.get("/titan-mvp-1.2/ai/task/form-aim", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/task/form-aim", {
+    data: req.session.data,
+    formAim: req.session.data.formAim,
+    formAimStarted: req.session.data.formAimStarted,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/task/form-aim", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Debug: Log the saved data
+  console.log("=== FORM AIM POST ROUTE ===");
+  console.log("Form aim saved:", req.body.formAim);
+  console.log("Task status:", req.body.taskStatus);
+  console.log("Return to task list:", req.body.returnToTaskList);
+  console.log(
+    "Session data before save:",
+    JSON.stringify(req.session.data, null, 2)
+  );
+
+  // Store the form aim data in a separate AI data object
+  if (!req.session.data.aiFormData) {
+    req.session.data.aiFormData = {};
+  }
+  req.session.data.aiFormData.formAim = req.body.formAim;
+  req.session.data.aiFormData.formAimStarted = true;
+
+  // Also store in the main session for backward compatibility
+  req.session.data.formAim = req.body.formAim;
+  req.session.data.formAimStarted = true;
+
+  // Handle task status
+  if (req.body.taskStatus) {
+    if (!req.session.data.aiFormData.taskStatuses) {
+      req.session.data.aiFormData.taskStatuses = {};
+    }
+    req.session.data.aiFormData.taskStatuses.formAim = req.body.taskStatus;
+    console.log("Task status saved:", req.body.taskStatus);
+  }
+
+  console.log(
+    "Session data after save:",
+    JSON.stringify(req.session.data, null, 2)
+  );
+
+  // Check if user wants to return to task list
+  if (req.body.returnToTaskList) {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  } else {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  }
+});
+
+// Conditional logic task routes
+router.get("/titan-mvp-1.2/ai/task/conditional-logic", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/task/conditional-logic", {
+    data: req.session.data,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/task/conditional-logic", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Debug: Log the saved data
+  console.log("=== CONDITIONAL LOGIC POST ROUTE ===");
+  console.log("Conditional logic saved:", req.body.conditionalLogic);
+  console.log("Task status:", req.body.taskStatus);
+  console.log("Return to task list:", req.body.returnToTaskList);
+
+  // Store the conditional logic data
+  req.session.data.conditionalLogic = req.body.conditionalLogic;
+  req.session.data.conditionalLogicStarted = true;
+
+  // Handle task status
+  if (req.body.taskStatus) {
+    if (!req.session.data.aiFormData) {
+      req.session.data.aiFormData = {};
+    }
+    if (!req.session.data.aiFormData.taskStatuses) {
+      req.session.data.aiFormData.taskStatuses = {};
+    }
+    req.session.data.aiFormData.taskStatuses.conditionalLogic =
+      req.body.taskStatus;
+    console.log("Task status saved:", req.body.taskStatus);
+  }
+
+  // Check if user wants to return to task list
+  if (req.body.returnToTaskList) {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  } else {
+    res.redirect("/titan-mvp-1.2/ai/tasklist-form-creation");
+  }
+});
+
+// Review task route
+router.get("/titan-mvp-1.2/ai/task/review", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Assemble the prompt from all completed tasks
+  const sections = [
+    { title: "Form Aim", key: "formAim" },
+    { title: "Page descriptions", key: "pageDescription" },
+    { title: "Page conditions", key: "conditionalLogic" },
+    { title: "Wireframe Upload", key: "wireframeUpload" },
+    { title: "Reference Links", key: "referenceLinks" },
+  ];
+
+  let assembledPrompt = "";
+  sections.forEach((section) => {
+    const value = req.session.data[section.key] || "";
+    if (value.trim()) {
+      assembledPrompt += `## ${section.title}\n\n${value}\n\n`;
+    }
+  });
+
+  res.render("titan-mvp-1.2/ai/task/review", {
+    data: req.session.data,
+    assembledPrompt: assembledPrompt,
+  });
+});
+
+router.post("/titan-mvp-1.2/ai/task/review", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Store all the form data
+  const formData = {
+    wireframeUpload: req.session.data.wireframeUpload,
+    questionProtocol: req.session.data.questionProtocol,
+    referenceLinks: req.session.data.referenceLinks,
+    pageDescription: req.session.data.pageDescription,
+    formAim: req.session.data.formAim,
+    conditionalLogic: req.session.data.conditionalLogic,
+    assembledPrompt: req.body.assembledPrompt,
+  };
+
+  // Update session data
+  req.session.data = {
+    ...req.session.data,
+    aiFormData: formData,
+    formDetails: {
+      ...req.session.data.formDetails,
+      aiGenerated: true,
+      lastUpdated: new Date().toISOString(),
+    },
+  };
+
+  // Log the assembled prompt for debugging
+  console.log("Tasklist assembled AI prompt:", req.body.assembledPrompt);
+
+  // Redirect to loading screen
+  res.redirect("/titan-mvp-1.2/ai/task/form-creation-loading");
+});
+
+// Form creation loading screen
+router.get("/titan-mvp-1.2/ai/task/form-creation-loading", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  res.render("titan-mvp-1.2/ai/task/form-creation-loading", {
+    data: req.session.data,
+  });
+});
+
+// Form creation results page
+router.get("/titan-mvp-1.2/ai/form-creation-results", (req, res) => {
+  req.session.data = req.session.data || {};
+
+  // Generate mock form statistics for demonstration
+  const formStats = {
+    totalPages: 5,
+    totalFields: 12,
+    contentPages: 3,
+    textFields: 6,
+    choiceFields: 3,
+    dateFields: 2,
+    fileFields: 1,
+    conditionalLogic: 2,
+  };
+
+  const formName = req.session.data.formName || "My Form";
+  const creationDate = new Date().toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  res.render("titan-mvp-1.2/ai/form-creation-results", {
+    data: req.session.data,
+    formStats: formStats,
+    formName: formName,
+    creationDate: creationDate,
+  });
+});
 
 // Catch-all route for any .html file in titan-mvp-1.2 (must be last)
 router.get("/titan-mvp-1.2/*", function (req, res, next) {
