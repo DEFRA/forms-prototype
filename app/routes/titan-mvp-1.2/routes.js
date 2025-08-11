@@ -824,59 +824,410 @@ router.get("/titan-mvp-1.2/form-editor/listing.html", function (req, res) {
 
 // Add route for listing-v2
 router.get("/titan-mvp-1.2/form-editor/listing-v2", function (req, res) {
-  const formPages = req.session.data["formPages"] || [];
+  let formPages = req.session.data["formPages"] || [];
   const formData = req.session.data || {};
+
+  // If no form pages exist, create some dummy pages
+  if (formPages.length === 0) {
+    formPages = [
+      {
+        pageId: 1,
+        pageType: "question",
+        pageHeading: "Business registration details",
+        questions: [
+          {
+            questionId: 1,
+            label: "Is your business registered with RPA?",
+            hint: "Select yes if you have an RPA registration number",
+            type: "list",
+            subType: "radios",
+            options: [
+              { value: "yes", text: "Yes" },
+              { value: "no", text: "No" },
+            ],
+          },
+        ],
+        order: 1,
+      },
+      {
+        pageId: 2,
+        pageType: "question",
+        pageHeading: "Livestock information",
+        questions: [
+          {
+            questionId: 2,
+            label: "What type of livestock are you registering?",
+            hint: "Select all that apply",
+            type: "list",
+            subType: "checkboxes",
+            options: [
+              { value: "cattle", text: "Cattle" },
+              { value: "sheep", text: "Sheep" },
+              { value: "pigs", text: "Pigs" },
+              { value: "poultry", text: "Poultry" },
+            ],
+          },
+        ],
+        order: 2,
+      },
+      {
+        pageId: 3,
+        pageType: "question",
+        pageHeading: "Contact details",
+        questions: [
+          {
+            questionId: 3,
+            label: "Business name",
+            hint: "Enter your registered business name",
+            type: "text",
+            subType: "short-answer-nf",
+          },
+          {
+            questionId: 4,
+            label: "Contact email address",
+            hint: "We'll use this to send confirmation",
+            type: "email",
+          },
+          {
+            questionId: 5,
+            label: "Main phone number",
+            hint: "Include area code",
+            type: "phone",
+          },
+        ],
+        order: 3,
+      },
+      {
+        pageId: 4,
+        pageType: "guidance",
+        guidanceOnlyHeadingInput: "Important information",
+        guidanceOnlyGuidanceTextInput:
+          "Before proceeding, please ensure you have all necessary documentation ready including your business registration certificate and any relevant permits. This form should take approximately 10-15 minutes to complete.",
+        order: 4,
+      },
+      {
+        pageId: 5,
+        pageType: "question",
+        pageHeading: "Location details",
+        questions: [
+          {
+            questionId: 6,
+            label: "Business address",
+            hint: "Enter your main business address",
+            type: "address",
+          },
+          {
+            questionId: 7,
+            label: "National Grid reference",
+            hint: "If applicable, enter the grid reference for your location",
+            type: "text",
+            subType: "short-answer-nf",
+          },
+        ],
+        order: 5,
+      },
+      {
+        pageId: 6,
+        pageType: "question",
+        pageHeading: "Documentation",
+        questions: [
+          {
+            questionId: 8,
+            label: "Upload methodology statement",
+            hint: "PDF, Word or image files accepted. Maximum 10MB.",
+            type: "file",
+          },
+        ],
+        order: 6,
+      },
+    ];
+
+    // Store the dummy pages in session
+    req.session.data["formPages"] = formPages;
+  }
+
   // Ensure each question inside each page has its own options array
   formPages.forEach((page) => {
-    page.questions.forEach((question) => {
-      if (question.subType === "radios" || question.subType === "checkboxes") {
-        question.options = question.options || [];
-      }
-    });
+    if (page.questions) {
+      page.questions.forEach((question) => {
+        if (
+          question.subType === "radios" ||
+          question.subType === "checkboxes"
+        ) {
+          question.options = question.options || [];
+        }
+      });
+    }
   });
+
   // Get all sections
   const sections = formData.sections || [];
   // Clear the success flag after showing it
   if (formData.showUploadSuccess) {
     delete req.session.data.showUploadSuccess;
   }
+
   res.render("titan-mvp-1.2/form-editor/listing-v2", {
     formPages,
     sections,
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Employee Onboarding",
     },
+    data: formData,
     request: req,
   });
 });
 
 // Add .html route for listing-v2
 router.get("/titan-mvp-1.2/form-editor/listing-v2.html", function (req, res) {
-  const formPages = req.session.data["formPages"] || [];
+  let formPages = req.session.data["formPages"] || [];
   const formData = req.session.data || {};
+
+  // If no form pages exist, create some dummy pages
+  if (formPages.length === 0) {
+    formPages = [
+      {
+        pageId: 1,
+        pageType: "question",
+        pageHeading: "Business registration details",
+        questions: [
+          {
+            questionId: 1,
+            label: "Is your business registered with RPA?",
+            hint: "Select yes if you have an RPA registration number",
+            type: "list",
+            subType: "radios",
+            options: [
+              { value: "yes", text: "Yes" },
+              { value: "no", text: "No" },
+            ],
+          },
+        ],
+        order: 1,
+      },
+      {
+        pageId: 2,
+        pageType: "question",
+        pageHeading: "Livestock information",
+        questions: [
+          {
+            questionId: 2,
+            label: "What type of livestock are you registering?",
+            hint: "Select all that apply",
+            type: "list",
+            subType: "checkboxes",
+            options: [
+              { value: "cattle", text: "Cattle" },
+              { value: "sheep", text: "Sheep" },
+              { value: "pigs", text: "Pigs" },
+              { value: "poultry", text: "Poultry" },
+            ],
+          },
+        ],
+        order: 2,
+      },
+      {
+        pageId: 3,
+        pageType: "question",
+        pageHeading: "Contact details",
+        questions: [
+          {
+            questionId: 3,
+            label: "Business name",
+            hint: "Enter your registered business name",
+            type: "text",
+            subType: "short-answer-nf",
+          },
+          {
+            questionId: 4,
+            label: "Contact email address",
+            hint: "We'll use this to send confirmation",
+            type: "email",
+          },
+          {
+            questionId: 5,
+            label: "Main phone number",
+            hint: "Include area code",
+            type: "phone",
+          },
+        ],
+        order: 3,
+      },
+      {
+        pageId: 4,
+        pageType: "guidance",
+        guidanceOnlyHeadingInput: "Important information",
+        guidanceOnlyGuidanceTextInput:
+          "Before proceeding, please ensure you have all necessary documentation ready including your business registration certificate and any relevant permits. This form should take approximately 10-15 minutes to complete.",
+        order: 4,
+      },
+      {
+        pageId: 5,
+        pageType: "question",
+        pageHeading: "Location details",
+        questions: [
+          {
+            questionId: 6,
+            label: "Business address",
+            hint: "Enter your main business address",
+            type: "address",
+          },
+          {
+            questionId: 7,
+            label: "National Grid reference",
+            hint: "If applicable, enter the grid reference for your location",
+            type: "text",
+            subType: "short-answer-nf",
+          },
+        ],
+        order: 5,
+      },
+      {
+        pageId: 6,
+        pageType: "question",
+        pageHeading: "Documentation",
+        questions: [
+          {
+            questionId: 8,
+            label: "Upload methodology statement",
+            hint: "PDF, Word or image files accepted. Maximum 10MB.",
+            type: "file",
+          },
+        ],
+        order: 6,
+      },
+    ];
+
+    // Store the dummy pages in session
+    req.session.data["formPages"] = formPages;
+  }
+
   // Ensure each question inside each page has its own options array
   formPages.forEach((page) => {
-    page.questions.forEach((question) => {
-      if (question.subType === "radios" || question.subType === "checkboxes") {
-        question.options = question.options || [];
-      }
-    });
+    if (page.questions) {
+      page.questions.forEach((question) => {
+        if (
+          question.subType === "radios" ||
+          question.subType === "checkboxes"
+        ) {
+          question.options = question.options || [];
+        }
+      });
+    }
   });
+
   // Get all sections
   const sections = formData.sections || [];
   // Clear the success flag after showing it
   if (formData.showUploadSuccess) {
     delete req.session.data.showUploadSuccess;
   }
+
   res.render("titan-mvp-1.2/form-editor/listing-v2", {
     formPages,
     sections,
     form: {
-      name: formData.formName || "Form name",
+      name: formData.formName || "Employee Onboarding",
     },
+    data: formData,
     request: req,
   });
 });
+
+// Add route for what-happens-next-settings
+router.get(
+  "/titan-mvp-1.2/form-editor/what-happens-next-settings",
+  function (req, res) {
+    const formData = req.session.data || {};
+
+    // If this is a draft form, populate with draft settings
+    if (formData.formDetails?.hasDraft) {
+      // Set draft form settings
+      if (!formData.draftSettings) {
+        formData.draftSettings = {
+          nextSteps:
+            "We will call you within 5 working days to discuss your application.",
+          submissionType: "human-only",
+          submissionVersion: "3",
+          notificationEmail: "notify@defra.gov.uk",
+        };
+        req.session.data = formData;
+      }
+    }
+
+    res.render("titan-mvp-1.2/form-editor/what-happens-next-settings", {
+      data: formData.draftSettings || formData,
+      form: {
+        name: formData.formName || "Employee Onboarding",
+      },
+      request: req,
+    });
+  }
+);
+
+// Add .html route for what-happens-next-settings
+router.get(
+  "/titan-mvp-1.2/form-editor/what-happens-next-settings.html",
+  function (req, res) {
+    const formData = req.session.data || {};
+
+    // If this is a draft form, populate with draft settings
+    if (formData.formDetails?.hasDraft) {
+      // Set draft form settings
+      if (!formData.draftSettings) {
+        formData.draftSettings = {
+          nextSteps:
+            "We will call you within 5 working days to discuss your application.",
+          submissionType: "human-only",
+          submissionVersion: "3",
+          notificationEmail: "notify@defra.gov.uk",
+        };
+        req.session.data = formData;
+      }
+    }
+
+    res.render("titan-mvp-1.2/form-editor/what-happens-next-settings", {
+      data: formData.draftSettings || formData,
+      request: req,
+    });
+  }
+);
+
+// Add POST route for what-happens-next-settings
+router.post(
+  "/titan-mvp-1.2/form-editor/what-happens-next-settings",
+  function (req, res) {
+    const formData = req.session.data || {};
+
+    // Initialize draftSettings if it doesn't exist
+    if (!formData.draftSettings) {
+      formData.draftSettings = {};
+    }
+
+    // Update draft settings based on what was submitted
+    if (req.body.nextSteps !== undefined) {
+      formData.draftSettings.nextSteps = req.body.nextSteps;
+    }
+
+    if (req.body.submissionType !== undefined) {
+      formData.draftSettings.submissionType = req.body.submissionType;
+    }
+
+    if (req.body.submissionVersion !== undefined) {
+      formData.draftSettings.submissionVersion = req.body.submissionVersion;
+    }
+
+    if (req.body.notificationEmail !== undefined) {
+      formData.draftSettings.notificationEmail = req.body.notificationEmail;
+    }
+
+    // Save to session
+    req.session.data = formData;
+
+    // Redirect back to the same page to show updated values
+    res.redirect("/titan-mvp-1.2/form-editor/what-happens-next-settings");
+  }
+);
 
 // Page type selection
 router.get("/titan-mvp-1.2/form-editor/page-type.html", function (req, res) {
@@ -1784,8 +2135,26 @@ router.get("/titan-mvp-1.2/form-overview/index/", (req, res) => {
   });
 });
 
-// Route handler for index-tabs page
+// Route handler for Livestock registration form
 router.get("/titan-mvp-1.2/form-overview/simplified/index-tabs", (req, res) => {
+  // Check if this is specifically for Livestock registration
+  if (req.query.form === "livestock-registration") {
+    // Set up session data for Livestock registration form
+    req.session.data = {
+      formName: "Livestock registration",
+      formDetails: {
+        organisation: "Defra",
+        teamName: "Livestock team",
+        email: "livestock@defra.gov.uk",
+        wentLiveAt: "11 August 2025, 10:30am by Chris Smith",
+        nextSteps:
+          "We will call you within 5 working days to discuss your application.",
+        notificationEmail: "notify@defra.gov.uk",
+        hasDraft: false,
+      },
+    };
+  }
+
   const formData = req.session.data || {};
 
   // Create the preview URL
@@ -1796,38 +2165,177 @@ router.get("/titan-mvp-1.2/form-overview/simplified/index-tabs", (req, res) => {
     .replace(/^-|-$/g, "");
 
   const previewUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/preview/draft/${urlFriendlyName}`;
+  const liveUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/live/${urlFriendlyName}`;
+
+  // Check if we should show live-draft status (after creating a draft)
+  const shouldShowLiveDraft = formData.formDetails?.hasDraft === true;
 
   // Create the form object that the templates expect
   const form = {
-    name: formData.formName || "Form name",
+    name: formData.formName || "Employee Onboarding",
     status: {
-      text: "Draft",
-      color: "orange",
+      text: shouldShowLiveDraft ? "Live-Draft" : "Live",
+      color: shouldShowLiveDraft ? "blue" : "green",
     },
     previewUrl: previewUrl,
-    createdAt: formData.formDetails?.createdAt || new Date().toISOString(),
-    updatedAt: formData.formDetails?.lastUpdated || new Date().toISOString(),
+    liveUrl: liveUrl,
+    wentLiveAt:
+      formData.formDetails?.wentLiveAt || "8 May 2024, 2:45pm by Emily Wong",
     organisation: {
-      name: formData.formDetails?.organisation || "Not set",
+      name: formData.formDetails?.organisation || "Defra",
     },
     team: {
-      name: formData.formDetails?.teamName || "Not set",
-      email: formData.formDetails?.email || "Not set",
+      name: formData.formDetails?.teamName || "Dev team",
+      email: formData.formDetails?.email || "eng@acme.com",
     },
     support: {
-      phone: formData.formDetails?.support?.phone,
-      email: formData.formDetails?.support?.email,
+      phone: formData.formDetails?.support?.phone || "987654321",
+      email: formData.formDetails?.support?.email || "support@defra.com",
       link: formData.formDetails?.support?.link,
     },
-    nextSteps: formData.formDetails?.nextSteps,
+    nextSteps:
+      formData.formDetails?.nextSteps ||
+      "We will call you within 5 working days to discuss your application.",
     privacyNotice: formData.formDetails?.privacyNotice,
-    notificationEmail: formData.formDetails?.notificationEmail,
+    notificationEmail:
+      formData.formDetails?.notificationEmail || "notify@defra.gov.uk",
   };
+
+  // Add draft settings if they exist
+  const draftSettings = formData.draftSettings || {};
 
   res.render("titan-mvp-1.2/form-overview/simplified/index-tabs", {
     form: form,
+    draftSettings: draftSettings,
     pageName: `Overview - ${form.name}`,
   });
+});
+
+// Add .html route for index-tabs
+router.get(
+  "/titan-mvp-1.2/form-overview/simplified/index-tabs.html",
+  (req, res) => {
+    const formData = req.session.data || {};
+
+    // Create the preview URL
+    const urlFriendlyName = (formData.formName || "Form name")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+
+    const previewUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/preview/draft/${urlFriendlyName}`;
+    const liveUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/live/${urlFriendlyName}`;
+
+    // Check if we should show live-draft status (after creating a draft)
+    const shouldShowLiveDraft = formData.formDetails?.hasDraft === true;
+
+    // Create the form object that the templates expect
+    const form = {
+      name: formData.formName || "Employee Onboarding",
+      status: {
+        text: shouldShowLiveDraft ? "Live-Draft" : "Live",
+        color: shouldShowLiveDraft ? "blue" : "green",
+      },
+      previewUrl: previewUrl,
+      liveUrl: liveUrl,
+      wentLiveAt:
+        formData.formDetails?.wentLiveAt || "8 May 2024, 2:45pm by Emily Wong",
+      organisation: {
+        name: formData.formDetails?.organisation || "Defra",
+      },
+      team: {
+        name: formData.formDetails?.teamName || "Dev team",
+        email: formData.formDetails?.email || "eng@acme.com",
+      },
+      support: {
+        phone: formData.formDetails?.support?.phone || "987654321",
+        email: formData.formDetails?.support?.email || "support@defra.com",
+        link: formData.formDetails?.support?.link,
+      },
+      nextSteps:
+        formData.formDetails?.nextSteps ||
+        "We will call you within 5 working days to discuss your application.",
+      privacyNotice: formData.formDetails?.privacyNotice,
+      notificationEmail:
+        formData.formDetails?.notificationEmail || "notify@defra.gov.uk",
+    };
+
+    // Add draft settings if they exist
+    const draftSettings = formData.draftSettings || {};
+
+    res.render("titan-mvp-1.2/form-overview/simplified/index-tabs", {
+      form: form,
+      draftSettings: draftSettings,
+      pageName: `Overview - ${form.name}`,
+    });
+  }
+);
+
+// Route handler for live-only page
+router.get("/titan-mvp-1.2/form-overview/live-only", (req, res) => {
+  const formData = req.session.data || {};
+
+  // Create the preview URL
+  const urlFriendlyName = (formData.formName || "Form name")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const previewUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/preview/live/${urlFriendlyName}`;
+  const liveUrl = `https://forms-runner.prototype.cdp-int.defra.cloud/live/${urlFriendlyName}`;
+
+  // Create the form object that the templates expect for a live form
+  const form = {
+    name: formData.formName || "Employee Onboarding",
+    status: {
+      text: "Live",
+      color: "green",
+    },
+    previewUrl: previewUrl,
+    liveUrl: liveUrl,
+    wentLiveAt:
+      formData.formDetails?.wentLiveAt || "8 May 2024, 2:45pm by Emily Wong",
+    organisation: {
+      name: formData.formDetails?.organisation || "Defra",
+    },
+    team: {
+      name: formData.formDetails?.teamName || "Dev team",
+      email: formData.formDetails?.email || "eng@acme.com",
+    },
+    support: {
+      phone: formData.formDetails?.support?.phone || "987654321",
+      email: formData.formDetails?.support?.email || "support@defra.com",
+      link: formData.formDetails?.support?.link,
+    },
+    nextSteps:
+      formData.formDetails?.nextSteps ||
+      "We will send a confirmation email to the email address you provided.",
+    privacyNotice: formData.formDetails?.privacyNotice,
+    notificationEmail:
+      formData.formDetails?.notificationEmail || "notify@defra.gov.uk",
+  };
+
+  res.render("titan-mvp-1.2/form-overview/live-only", {
+    form: form,
+    pageName: `Live Overview - ${form.name}`,
+  });
+});
+
+// Route handler for creating a draft from live form
+router.get("/titan-mvp-1.2/form-overview/live-draft", (req, res) => {
+  const formData = req.session.data || {};
+
+  // Set the hasDraft flag to true to show live-draft status
+  if (!formData.formDetails) {
+    formData.formDetails = {};
+  }
+  formData.formDetails.hasDraft = true;
+  req.session.data = formData;
+
+  // Redirect back to the index-tabs page to show both draft and live tabs
+  res.redirect("/titan-mvp-1.2/form-overview/simplified/index-tabs");
 });
 
 // Add POST route handler for saving page changes

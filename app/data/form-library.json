@@ -1,6 +1,24 @@
 {
   "items": [
     {
+      "name": "Livestock registration",
+      "path": "titan-mvp-1.2/form-overview/simplified/index-tabs?form=livestock-registration",
+      "organisation": "Defra",
+      "status": "live",
+      "created": {
+        "date": "2025-08-11",
+        "name": "Chris Smith"
+      },
+      "updated": {
+        "date": "2025-08-11",
+        "name": "Chris Smith"
+      },
+      "published": {
+        "date": "2025-08-11",
+        "name": "Chris Smith"
+      }
+    },
+    {
       "name": "Avian wildlife: casualty veterinary examination certificate",
       "path": "forms/form-home/report-a-dead-wild-bird-published",
       "organisation": "Animal and Plant Health Agency – APHA",

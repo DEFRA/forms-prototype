@@ -35,7 +35,7 @@ activeLinkId: "nav-editor"
             style="border-bottom:1px solid white; margin-bottom: 0;">
 
         <h1 class="govuk-heading-l--inverse x-govuk-masthead__title">
-            <span class="govuk-caption-l" style="color: white;">{{ form.name }}
+            <span class="govuk-caption-l" style="color: white;">Livestock registration
             </span>
             Add and edit pages
         </h1>
@@ -1241,32 +1241,39 @@ activeLinkId: "nav-editor"
                             </li>
                         </ul>
                     </div>
-                    {% if data['nextSteps'] or data['notificationEmail'] %}
                     <div class="govuk-summary-card__content">
                         <dl class="govuk-summary-list">
-                            {% if data['nextSteps'] %}
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">Next steps</dt>
                                 <dd class="govuk-summary-list__value">
-                                    {% if data['nextSteps'].length > 150 %}
-                                    {{ data['nextSteps'].substring(0, 150) }}...
+                                    {% set nextSteps = data['nextSteps'] or data.formDetails?.nextSteps or 'We will call
+                                    you within 5 working days to discuss your application.' %}
+                                    {% if nextSteps.length > 150 %}
+                                    {{ nextSteps.substring(0, 150) }}...
                                     {% else %}
-                                    {{ data['nextSteps'] }}
+                                    {{ nextSteps }}
                                     {% endif %}
                                 </dd>
                             </div>
-                            {% endif %}
-                            {% if data['notificationEmail'] %}
                             <div class="govuk-summary-list__row">
                                 <dt class="govuk-summary-list__key">Notification email</dt>
                                 <dd class="govuk-summary-list__value">
-                                    {{ data['notificationEmail'] }}
+                                    {{ data['notificationEmail'] or data.formDetails?.notificationEmail or
+                                    'notify@defra.gov.uk' }}
                                 </dd>
                             </div>
-                            {% endif %}
+                            <div class="govuk-summary-list__row">
+                                <dt class="govuk-summary-list__key">How forms are sent</dt>
+                                <dd class="govuk-summary-list__value">
+                                    {% if data['submissionType'] == 'machine-readable' %}
+                                    Machine readable format (v{{ data['submissionVersion'] or '3' }})
+                                    {% else %}
+                                    Human readable format
+                                    {% endif %}
+                                </dd>
+                            </div>
                         </dl>
                     </div>
-                    {% endif %}
                 </div>
             </div>
 

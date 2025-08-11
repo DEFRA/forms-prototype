@@ -18,7 +18,8 @@ navigationItems: [
 { href: "/titan-mvp-1.2/library", text: "Forms library", id: "nav-library" },
 { href: "/titan-mvp-1.2/form-overview/simplified/index-tabs.html", text: "Overview", id: "nav-overview" },
 { href: "/titan-mvp-1.2/form-editor/listing", text: "Editor", id: "nav-editor", active: true }
-]
+],
+activeLinkId: "nav-editor"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
@@ -36,7 +37,7 @@ navigationItems: [
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full-from-desktop">
                 <h1 class="x-govuk-masthead__title">
-                    Form name
+                    Livestock registration
                 </h1>
             </div>
         </div>
@@ -87,6 +88,26 @@ navigationItems: [
                                         <!-- Tab Content -->
                                         {% set whatHappensNextData = data %}
 
+                                        <!-- Draft Form Notice -->
+                                        {# {% if request.session.data.formDetails.hasDraft %}
+                                        <div class="govuk-notification-banner govuk-notification-banner--blue"
+                                            role="alert" aria-labelledby="govuk-notification-banner-title"
+                                            data-module="govuk-notification-banner">
+                                            <div class="govuk-notification-banner__header">
+                                                <h2 class="govuk-notification-banner__title"
+                                                    id="govuk-notification-banner-title">
+                                                    Draft form settings
+                                                </h2>
+                                            </div>
+                                            <div class="govuk-notification-banner__content">
+                                                <p class="govuk-notification-banner__heading">
+                                                    You are editing the draft version of this form. These settings will
+                                                    only apply to the draft and will not affect the live form.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        {% endif %} #}
+
                                         <!-- Page Overview Content -->
                                         <div id="page-overview-content">
                                             <h1 class="govuk-heading-l">What happens next overview</h1>
@@ -103,17 +124,15 @@ navigationItems: [
                                             },
                                             value: {
                                             html: '<span id="next-steps-summary">' + (whatHappensNextData.nextSteps or
-                                                '<a href="#" onclick="navigateToNextSteps(); return false;"
-                                                    class="govuk-link govuk-link--no-visited-state">Enter next
-                                                    steps</a>') + '</span>'
+                                                'We will call you within 5 working days to discuss your application.') +
+                                                '</span>'
                                             },
                                             actions: {
                                             items: [
                                             {
                                             html: '<a href="#" onclick="navigateToNextSteps(); return false;"
                                                 class="govuk-link govuk-link--no-visited-state"
-                                                id="next-steps-summary-action">' + (whatHappensNextData.nextSteps and
-                                                'Change' or '') + '</a>'
+                                                id="next-steps-summary-action">Change</a>'
                                             }
                                             ]
                                             }
@@ -125,21 +144,18 @@ navigationItems: [
                                             value: {
                                             html: '<span id="submission-type-summary">' +
                                                 (whatHappensNextData.submissionType == 'machine-readable' and
-                                                'Machine readable only' + (whatHappensNextData.submissionVersion and '
-                                                (v' + whatHappensNextData.submissionVersion + ')' or '') or
-                                                whatHappensNextData.submissionType == 'human-only' and 'Human only
-                                                (as-is today)' or
-                                                '<a href="#" onclick="navigateToNotificationEmail(); return false;"
-                                                    class="govuk-link govuk-link--no-visited-state">Choose submission
-                                                    type</a>') + '</span>'
+                                                'Machine readable format (v' + (whatHappensNextData.submissionVersion or
+                                                '3') + ')' or
+                                                whatHappensNextData.submissionType == 'human-only' and 'Human readable
+                                                format' or
+                                                'Machine readable format (v3)') + '</span>'
                                             },
                                             actions: {
                                             items: [
                                             {
                                             html: '<a href="#" onclick="navigateToNotificationEmail(); return false;"
                                                 class="govuk-link govuk-link--no-visited-state"
-                                                id="submission-type-summary-action">' +
-                                                (whatHappensNextData.submissionType and 'Change' or '') + '</a>'
+                                                id="submission-type-summary-action">Change</a>'
                                             }
                                             ]
                                             }
@@ -150,18 +166,15 @@ navigationItems: [
                                             },
                                             value: {
                                             html: '<span id="notification-email-summary">' +
-                                                (whatHappensNextData.notificationEmail or '<a href="#"
-                                                    onclick="navigateToNotificationEmail(); return false;"
-                                                    class="govuk-link govuk-link--no-visited-state">Enter email
-                                                    address</a>') + '</span>'
+                                                (whatHappensNextData.notificationEmail or 'notify@defra.gov.uk') +
+                                                '</span>'
                                             },
                                             actions: {
                                             items: [
                                             {
                                             html: '<a href="#" onclick="navigateToNotificationEmail(); return false;"
                                                 class="govuk-link govuk-link--no-visited-state"
-                                                id="notification-email-summary-action">' +
-                                                (whatHappensNextData.notificationEmail and 'Change' or '') + '</a>'
+                                                id="notification-email-summary-action">Change</a>'
                                             }
                                             ]
                                             }
@@ -235,7 +248,8 @@ navigationItems: [
                                                 isPageHeading: false
                                                 },
 
-                                                value: data['nextSteps'] or ''
+                                                value: data['nextSteps'] or 'We will call you within 5 working days to
+                                                discuss your application.'
                                                 }) }}
 
                                                 {% from "govuk/components/details/macro.njk" import govukDetails %}
@@ -311,8 +325,7 @@ navigationItems: [
                                                 text: "Human-readable format for manual processing",
                                                 classes: "govuk-hint"
                                                 },
-                                                checked: data['submissionType'] == 'human-only' or not
-                                                data['submissionType']
+                                                checked: data['submissionType'] == 'human-only'
                                                 },
                                                 {
                                                 value: "machine-readable",
@@ -320,7 +333,8 @@ navigationItems: [
                                                 hint: {
                                                 text: "Structured data format for automated processing"
                                                 },
-                                                checked: data['submissionType'] == 'machine-readable',
+                                                checked: data['submissionType'] == 'machine-readable' or not
+                                                data['submissionType'],
                                                 conditional: {
                                                 html: '<div class="govuk-form-group" id="version-selection">
                                                     <fieldset class="govuk-fieldset">
@@ -330,42 +344,46 @@ navigationItems: [
                                                         </legend>
                                                         <div class="govuk-radios" data-module="govuk-radios">
                                                             <div class="govuk-radios__item">
-                                                                <input class="govuk-radios__input" id="version-1-3"
+                                                                <input class="govuk-radios__input" id="version-3"
                                                                     name="submissionVersion" type="radio"
-                                                                    value="1.3" ' + (data[' submissionVersion']=='1.3'
-                                                                    or not data['submissionVersion'] and 'checked' or ''
-                                                                    )
+                                                                    value="3" ' + (data[' submissionVersion']=='3' or
+                                                                    not data['submissionVersion'] and 'checked' or '' )
                                                                     + '>
-                                                                <label class="govuk-label govuk-radios__label" for="version-1-3">
-                                                                    v1.3 (latest)
+                                                                <label class="govuk-label govuk-radios__label"
+                                                                    for="version-3">
+                                                                    v3 (latest)
                                                                 </label>
                                                             </div>
                                                             <div class="govuk-radios__item">
-                                                                <input class="govuk-radios__input" id="version-1-2" name="submissionVersion" type="radio" value="1.2" '
-                                                                    + (data['submissionVersion']=='1.2' and 'checked'
-                                                                    or '' )
-                                                                    + '>
-                                                                <label class="govuk-label govuk-radios__label" for="version-1-2">
-                                                                    v1.2
+                                                                <input class="govuk-radios__input" id="version-2"
+                                                                    name="submissionVersion" type="radio" value="2" ' +
+                                                                    (data['submissionVersion']=='2' and 'checked' or ''
+                                                                    ) + '>
+                                                                <label class="govuk-label govuk-radios__label"
+                                                                    for="version-2">
+                                                                    v2
                                                                 </label>
                                                             </div>
                                                             <div class="govuk-radios__item">
-                                                                <input class="govuk-radios__input" id="version-1-1" name="submissionVersion" type="radio" value="1.1" '
-                                                                    + (data['submissionVersion']=='1.1' and 'checked'
-                                                                    or '' ) + '>
-                                                                <label class="govuk-label govuk-radios__label" for="version-1-1">
-                                                                    v1.1
+                                                                <input class="govuk-radios__input" id="version-1"
+                                                                    name="submissionVersion" type="radio" value="1" ' +
+                                                                    (data['submissionVersion']=='1' and 'checked' or ''
+                                                                    ) + '>
+                                                                <label class="govuk-label govuk-radios__label"
+                                                                    for="version-1">
+                                                                    v1
                                                                 </label>
                                                             </div>
                                                         </div>
                                                     </fieldset>
-                                                </div>' } } ] }) }} {{ govukInput({ label: { text: "What email address should submitted forms be sent
-                                                                to?" , classes: "govuk-label--m" }, hint: {
+                                                </div>' } } ] }) }} {{ govukInput({ label: { text: "What email address
+                                                should submitted forms be sent
+                                                to?" , classes: "govuk-label--m" }, hint: {
                                                                     text: "Used to send submitted forms for processing"
                                                                     }, id: "notification-email" ,
                                                                     name: "notificationEmail" , type: "email" , value:
-                                                                    data['notificationEmail'] or '' , attributes: {
-                                                                    pattern: ".*@.*\\.gov\\.uk$" ,
+                                                                    data['notificationEmail'] or 'notify@defra.gov.uk' ,
+                                                                    attributes: { pattern: ".*@.*\\.gov\\.uk$" ,
                                                                     title: "Email address must end with .gov.uk" } }) }}
                                                                     {{ govukButton({ text: "Save" , attributes: {
                                                                     id: "notification-email-submit" } }) }} </form>
