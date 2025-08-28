@@ -1,27 +1,23 @@
 {% extends "layouts/main.html" %}
 {% from "components/product-service-header/macro.njk" import productServiceHeader %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
 
 {% block pageTitle %}
 Defra Form Designer – {{ serviceName }} – GOV.UK Prototype Kit
 {% endblock %}
 
-{# {% block beforeContent %}
-{{ govukBackLink({
-text: "Back",
-href: "javascript:window.history.back()"
-}) }}
-{% endblock %} #}
-
 {% block header %}
-{{ productServiceHeader({
+{{ serviceHeader({
 organisationName: "Defra",
 productName: "Form Designer",
 serviceName: "",
 homepageLink: "/titan-mvp-1.2/product-pages/homepage",
-signInLink: "/titan-mvp-1.2/onboarding/sign-in",
+signInLink: "/titan-mvp-1.2/library",
+navigationBackgroundColor: "#0a8631",
+navigationInverse: true,
+showSupportLink: false,
 navigationItems: [
 { href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
-
 { href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
 { href: "/titan-mvp-1.2/product-pages/features", text: "Features", id: "nav-features" },
 { href: "/titan-mvp-1.2/product-pages/resources", text: "Resources", id: "nav-resources" },
@@ -58,13 +54,10 @@ activeLinkId: ""
 
                         <h2 class="govuk-card__heading govuk-heading-m" style="margin-top: 0; ">
                             <a href="/titan-mvp-1.2/product-pages/release-notes"
-                                class="govuk-link govuk-link--no-visited-state govuk-link--inverse"
-                                style="color: white !important;">What's
+                                class="govuk-link govuk-link--no-visited-state govuk-link--inverse">What's
                                 new</a>
                         </h2>
-
-
-                        <div class="govuk-!-text-align-left govuk-!-margin-bottom-4">
+                        <div class="govuk-!-text-align-left govuk-!-margin-bottom-2">
                             <time class="govuk-body-s" datetime="2025-06-14T14:01:00.000Z"
                                 style="color: white!important;">14 June 2025</time>
                         </div>
@@ -72,15 +65,7 @@ activeLinkId: ""
                         <p class="govuk-body" style="color: white!important;">
                             New conditions and accessibility improvements and updates to preview panel functionality.
                         </p>
-
-
                     </div>
-
-                    {# <p class="govuk-body"
-                        style="color: white; margin-bottom: 0!important; padding-bottom: 0!important;">
-                        <a href="#" class="govuk-link--no-visited-state govuk-link--inverse">Read the full
-                            release notes</a>.
-                    </p> #}
                 </div>
             </div>
         </div>
@@ -131,9 +116,8 @@ activeLinkId: ""
                 <div class="govuk-grid-row govuk-!-margin-bottom-6">
                     <div class="govuk-grid-column-two-thirds">
                         <h3 class="govuk-heading-m">Build accessible forms</h3>
-                        <p class="govuk-body">Create pages with GOV.UK components, validation and guidance built in.
-                            Build forms
-                            that meet accessibility standards and provide a great user experience.</p>
+                        <p class="govuk-body">Create pages with GOV.UK components, validation and accessibility
+                            features built in.</p>
                         {# <p class="govuk-body">
                             <a class="govuk-link--no-visited-state" href="/titan-mvp-1.2/product-pages/features">Read
                                 more about
@@ -304,7 +288,7 @@ activeLinkId: ""
                 {# Feature 7: Add another pattern #}
                 <div class="govuk-grid-row govuk-!-margin-bottom-6">
                     <div class="govuk-grid-column-two-thirds">
-                        <h3 class="govuk-heading-m">Collect the same information for several items</h3>
+                        <h3 class="govuk-heading-m">Repeating questions</h3>
                         <p class="govuk-body">
                             Based on the <a href="https://design-system.dwp.gov.uk/patterns/add-another-thing"
                                 class="govuk-link--no-visited-state govuk-link--no-visited-state">DWP Design System
@@ -312,14 +296,10 @@ activeLinkId: ""
                                 another
                                 thing'
                                 pattern</a>,
-                            this pattern is used when people need to give the same details about more than one
-                            thing.
-                            For
-                            example,
-                            dependants, vehicles or conditions. The questions repeat one item at a time, and users
-                            can
-                            review,
-                            change or remove items before moving on. This keeps the journey simple and clear.
+                            get repeated sets of data from users with repeating questions. Design the question once and
+                            set the number of times you
+                            want users to answer it.
+
                         </p>
                         {# <p class="govuk-body">
                             <a class="govuk-link--no-visited-state" href="/titan-mvp-1.2/product-pages/features">Learn
@@ -394,7 +374,7 @@ activeLinkId: ""
                 {# Feature 9: Developer plugin #}
                 <div class="govuk-grid-row govuk-!-margin-bottom-6">
                     <div class="govuk-grid-column-two-thirds">
-                        <p class="govuk-body">The DEFRA Forms Engine Plugin is built on top of the Hapi framework,
+                        <p class="govuk-body">The Defra Forms Engine Plugin is built on top of the Hapi framework,
                             so it
                             slots
                             neatly into apps you're already running there. It removes the need to hand-code every

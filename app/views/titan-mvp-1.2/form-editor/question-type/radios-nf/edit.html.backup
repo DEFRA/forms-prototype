@@ -6,7 +6,7 @@
 {% block header %}
 {{ serviceHeader({
 organisationName: "Defra",
-productName: "Forms Designer",
+productName: "Form Designer",
 serviceName: "",
 containerClasses: containerClasses,
 accountName: "Chris Smith",
@@ -944,7 +944,7 @@ activeLinkId: "nav-editor"
 								${newOptionHint.value}
 							</p>
 							` : ''}
-							<input type="hidden" id="option-${newIndex + 1}-label" class="option-label-input-hidden" 
+							<input type="hidden" id="option-${newIndex + 1}-label" class="option-label-input-hidden"
 								name="option[${newIndex + 1}][option_label]" value="${labelValue}">
 							<input type="hidden" id="option-${newIndex + 1}-hint" class="option-hint-input"
 								name="option[${newIndex + 1}][option_hint]" value="${newOptionHint.value}">
@@ -1447,11 +1447,11 @@ activeLinkId: "nav-editor"
 			const editFormHTML = `
 				<div class="edit-option-form govuk-!-margin-bottom-6">
 					<h2 class="govuk-heading-m">Edit option</h2>
-					
+
 					<!-- Option Value (Label) -->
 					<div class="govuk-form-group">
 						<label class="govuk-label govuk-label--m" for="edit-option-label">Item</label>
-						<input class="govuk-input" id="edit-option-label" name="edit-label" type="text" 
+						<input class="govuk-input" id="edit-option-label" name="edit-label" type="text"
 							value="${labelInput.value}">
 					</div>
 
@@ -1459,7 +1459,7 @@ activeLinkId: "nav-editor"
 					<div class="govuk-form-group">
 						<label class="govuk-label govuk-label--m" for="edit-option-hint">Hint text (optional)</label>
 						<div class="govuk-hint">Use single short sentence without a full stop</div>
-						<input class="govuk-input" id="edit-option-hint" name="edit-hint" type="text" 
+						<input class="govuk-input" id="edit-option-hint" name="edit-hint" type="text"
 							value="${hintInput.value}">
 					</div>
 
@@ -1473,7 +1473,7 @@ activeLinkId: "nav-editor"
 							<div class="govuk-form-group">
 								<label class="govuk-label govuk-label--m" for="edit-option-value">Unique identifier (optional)</label>
 								<div class="govuk-hint">Used in databases to identify the item</div>
-								<input class="govuk-input" id="edit-option-value" name="edit-value" type="text" 
+								<input class="govuk-input" id="edit-option-value" name="edit-value" type="text"
 									value="${listItem.querySelector('.option-value-input')?.value || ''}">
 							</div>
 						</div>
@@ -1728,7 +1728,7 @@ activeLinkId: "nav-editor"
 
 				newCondition.innerHTML = `
 					<!-- Remove link positioned absolutely in top right -->
-					<a href="#" class="govuk-link govuk-link--no-visited-state govuk-link--destructive govuk-!-font-size-16" 
+					<a href="#" class="govuk-link govuk-link--no-visited-state govuk-link--destructive govuk-!-font-size-16"
 						onclick="event.preventDefault(); removeCondition(this);"
 						style="position: absolute; top: 15px; right: 15px;">
 							<svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1745,11 +1745,11 @@ activeLinkId: "nav-editor"
 							<option value="OR">OR</option>
 						</select>
 					</div>
-					
+
 					<div class="govuk-form-group">
 						<label class="govuk-label" for="condition-question-${conditionCount}">Select a question</label>
-						<select class="govuk-select condition-question" 
-								id="condition-question-${conditionCount}" 
+						<select class="govuk-select condition-question"
+								id="condition-question-${conditionCount}"
 								name="question-${conditionCount}">
 							${questionSelect.innerHTML}
 						</select>
@@ -1767,8 +1767,8 @@ activeLinkId: "nav-editor"
 					<div class="govuk-form-group">
 						<label class="govuk-label" for="condition-value-${conditionCount}">Select a value</label>
 						<div class="condition-value-container">
-							<select class="govuk-select condition-value" 
-									id="condition-value-${conditionCount}" 
+							<select class="govuk-select condition-value"
+									id="condition-value-${conditionCount}"
 									name="value-${conditionCount}">
 								<option value="">Select a value</option>
 							</select>
@@ -2080,7 +2080,7 @@ activeLinkId: "nav-editor"
 				newCondition.style.background = '#f3f2f1';
 
 				newCondition.innerHTML = `
-					<a href="#" class="govuk-link govuk-link--no-visited-state govuk-link--destructive govuk-!-font-size-16" 
+					<a href="#" class="govuk-link govuk-link--no-visited-state govuk-link--destructive govuk-!-font-size-16"
 						onclick="event.preventDefault(); removeCondition(this);"
 						style="position: absolute; top: 15px; right: 15px;">
 						<svg class="govuk-!-margin-right-1" style="position: relative; top: 2px" width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -2097,11 +2097,11 @@ activeLinkId: "nav-editor"
 							<option value="OR">OR</option>
 						</select>
 					</div>
-					
+
 					<div class="govuk-form-group">
 						<label class="govuk-label" for="condition-question-${conditionCount}">Select a question</label>
-						<select class="govuk-select condition-question" 
-								id="condition-question-${conditionCount}" 
+						<select class="govuk-select condition-question"
+								id="condition-question-${conditionCount}"
 								name="question-${conditionCount}">
 							${questionSelect.innerHTML}
 						</select>
@@ -2119,8 +2119,8 @@ activeLinkId: "nav-editor"
 					<div class="govuk-form-group">
 						<label class="govuk-label" for="condition-value-${conditionCount}">Select a value</label>
 						<div class="condition-value-container">
-							<select class="govuk-select condition-value" 
-									id="condition-value-${conditionCount}" 
+							<select class="govuk-select condition-value"
+									id="condition-value-${conditionCount}"
 									name="value-${conditionCount}">
 								<option value="">Select a value</option>
 							</select>

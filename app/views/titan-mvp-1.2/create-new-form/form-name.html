@@ -1,7 +1,25 @@
 {% extends "layouts/main.html" %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
+
 
 {% block pageTitle %}
 {{ commonTerms.form_editor.create_new_form.form_name.title }} - Create a new form
+{% endblock %}
+
+{% block header %}
+{{ serviceHeader({
+organisationName: "Defra",
+productName: "Forms designer",
+serviceName: "",
+accountName: "Chris Smith",
+homepageLink: "/",
+signOutLink: "/titan-mvp-1.2/onboarding/sign-out-confirmation",
+navigationItems: [{
+href: "#",
+text: "Library",
+id: "titan-mvp-1.2/library"
+}]
+}) }}
 {% endblock %}
 
 {% block beforeContent %}

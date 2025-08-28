@@ -5710,6 +5710,218 @@ router.get(
   }
 );
 
+// Custom address plugin routes to override the plugin's default behavior
+// These routes use local templates instead of the plugin's templates
+router.get("/dwp-find-an-address-plugin/start", (req, res) => {
+  res.redirect("/dwp-find-an-address-plugin");
+});
+
+router.get("/dwp-find-an-address-plugin", (req, res) => {
+  res.render("titan-mvp-1.2/dwp-find-an-address-plugin/index.njk");
+});
+
+router.post("/dwp-find-an-address-plugin", (req, res) => {
+  const { searchString, postcode } = req.body;
+  if (!postcode && !searchString) {
+    res.render("titan-mvp-1.2/dwp-find-an-address-plugin/index.njk", {
+      error: "Enter a postcode, the first line of an address, or both.",
+    });
+  } else {
+    if (!postcode) {
+      // Import the utility functions from the plugin
+      const {
+        getAddressesSearchString,
+      } = require("find-an-address-plugin/utils/getData");
+      getAddressesSearchString(searchString).then((data) => {
+        if (data.length > 0) {
+          if (data.length == 1) {
+            req.session.data.address = data;
+            res.render(
+              "titan-mvp-1.2/dwp-find-an-address-plugin/confirm-address.njk",
+              {
+                addressData: data[0],
+              }
+            );
+          } else {
+            req.session.data.results = data;
+            req.session.data.postcode = postcode;
+            res.render(
+              "titan-mvp-1.2/dwp-find-an-address-plugin/address-select-multi.njk",
+              {
+                addressData: data,
+              }
+            );
+          }
+        } else {
+          res.render("titan-mvp-1.2/dwp-find-an-address-plugin/no-address.njk");
+        }
+      });
+    }
+
+    if (!searchString) {
+      // Import the utility functions from the plugin
+      const {
+        getAddressesPostcode,
+      } = require("find-an-address-plugin/utils/getData");
+      getAddressesPostcode(postcode).then((data) => {
+        if (data.length > 0) {
+          if (data.length == 1) {
+            req.session.data.address = data;
+            res.render(
+              "titan-mvp-1.2/dwp-find-an-address-plugin/confirm-address.njk",
+              {
+                addressData: data,
+              }
+            );
+          } else {
+            req.session.data.results = data;
+            req.session.data.postcode = postcode;
+            res.render(
+              "titan-mvp-1.2/dwp-find-an-address-plugin/address-select-multi.njk",
+              {
+                addressData: data,
+              }
+            );
+          }
+        } else {
+          res.render("titan-mvp-1.2/dwp-find-an-address-plugin/no-address.njk");
+        }
+      });
+    }
+
+    if (postcode && searchString) {
+      // Import the utility functions from the plugin
+      const {
+        getAddressesPostcode,
+      } = require("find-an-address-plugin/utils/getData");
+      getAddressesPostcode(postcode).then((data) => {
+        if (data.length > 0) {
+          const filteredAddresses = data.filter((item) => {
+            if (item.indexOf(searchString.toUpperCase()) !== -1) {
+              return item;
+            }
+          });
+          if (filteredAddresses.length > 0) {
+            if (filteredAddresses.length == 1) {
+              req.session.data.address = filteredAddresses[0];
+              req.session.data.results = filteredAddresses;
+              res.render(
+                "titan-mvp-1.2/dwp-find-an-address-plugin/confirm-address.njk",
+                {
+                  addressData: filteredAddresses,
+                }
+              );
+            } else {
+              req.session.data.results = filteredAddresses;
+              req.session.data.postcode = postcode;
+              req.session.data.searchString = searchString;
+              res.render(
+                "titan-mvp-1.2/dwp-find-an-address-plugin/address-select-multi.njk",
+                {
+                  addressData: filteredAddresses,
+                }
+              );
+            }
+          } else {
+            res.render(
+              "titan-mvp-1.2/dwp-find-an-address-plugin/no-address.njk"
+            );
+          }
+        } else {
+          res.render("titan-mvp-1.2/dwp-find-an-address-plugin/no-address.njk");
+        }
+      });
+    }
+  }
+});
+
+router.post("/dwp-find-an-address-plugin/confirm-address", (req, res) => {
+  const address = req.body["select-an-address"];
+  if (address) {
+    req.session.data.address = address;
+    res.redirect(req.body.find_an_address_exit_url || "/");
+  } else {
+    res.redirect("/dwp-find-an-address-plugin/address-select-multi");
+  }
+});
+
+router.post("/dwp-find-an-address-plugin/manual-entry", (req, res) => {
+  const addressLine1 = req.body["address-line-1"];
+  const addressLine2 = req.body["address-line-2"];
+  const townCity = req.body["town-city"];
+  const postcode = req.body["postcode"];
+
+  const error = {
+    addressLineError:
+      addressLine1 == "" ? "Enter the first line of the address" : undefined,
+    townOrCityError: townCity == "" ? "Enter the town or city" : undefined,
+    postcodeError: postcode == "" ? "Enter the postcode" : undefined,
+  };
+
+  if (error.addressLineError || error.townOrCityError || error.postcodeError) {
+    res.render("titan-mvp-1.2/dwp-find-an-address-plugin/manual-entry.njk", {
+      error,
+    });
+  } else {
+    res.render(
+      "titan-mvp-1.2/dwp-find-an-address-plugin/manual-confirm-address.njk",
+      {
+        addressLine1: addressLine1,
+        addressLine2: addressLine2,
+        townCity: townCity,
+        postcode: postcode,
+      }
+    );
+  }
+});
+
+router.get("/dwp-find-an-address-plugin/manual-entry", (req, res) => {
+  res.render("titan-mvp-1.2/dwp-find-an-address-plugin/manual-entry.njk");
+});
+
+router.get("/dwp-find-an-address-plugin/address-select-multi", (req, res) => {
+  const addressData = req.session.data.results || [];
+  const postcode = req.session.data.postcode || "";
+  const searchString = req.session.data.searchString || "";
+
+  res.render(
+    "titan-mvp-1.2/dwp-find-an-address-plugin/address-select-multi.njk",
+    {
+      addressData: addressData,
+      data: {
+        postcode: postcode,
+        searchString: searchString,
+        results: addressData,
+      },
+    }
+  );
+});
+
+router.post("/dwp-find-an-address-plugin/address-select-multi", (req, res) => {
+  const selectedAddress = req.body["select-an-address"];
+
+  if (selectedAddress && selectedAddress !== "") {
+    // Store the selected address in session
+    req.session.data.address = selectedAddress;
+    // Redirect to confirm-address page to show the selected address
+    res.redirect("/dwp-find-an-address-plugin/confirm-address");
+  } else {
+    // If no address selected, redirect back to selection page with error
+    res.redirect("/dwp-find-an-address-plugin/address-select-multi");
+  }
+});
+
+router.get("/dwp-find-an-address-plugin/test", (req, res) => {
+  res.sendFile(
+    process.cwd() +
+      "/app/views/titan-mvp-1.2/dwp-find-an-address-plugin/test-address-select.html"
+  );
+});
+
+const findAddressPlugin = require("find-an-address-plugin");
+
+findAddressPlugin(router);
+
 //--------------------------------------
 // Edit an existing guidance page
 //--------------------------------------

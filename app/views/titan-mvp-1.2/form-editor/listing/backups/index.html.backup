@@ -9,7 +9,7 @@
 {% block header %}
 {{ serviceHeader({
 organisationName: "Defra",
-productName: "Forms Designer",
+productName: "Form Designer",
 serviceName: "",
 containerClasses: containerClasses,
 accountName: "Chris Smith",
@@ -1326,7 +1326,7 @@ activeLinkId: "nav-editor"
                             <p class="govuk-body fauxlabel option-label-display" id="option-${newIndex + 1}-label-display">
                                 ${labelValue}
                             </p>
-                            <input type="hidden" id="option-${newIndex + 1}-label" class="option-label-input-hidden" 
+                            <input type="hidden" id="option-${newIndex + 1}-label" class="option-label-input-hidden"
                                 name="option[${newIndex + 1}][option_label]" value="${labelValue}">
                             <input type="hidden" id="option-${newIndex + 1}-hint" class="option-hint-input"
                                 name="option[${newIndex + 1}][option_hint]" value="${hintValue}">

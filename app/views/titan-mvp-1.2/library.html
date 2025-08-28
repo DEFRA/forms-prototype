@@ -5,17 +5,15 @@
 {% block header %}
 {{ serviceHeader({
 organisationName: "Defra",
-productName: "Forms Designer",
+productName: "Form Designer",
 serviceName: "",
 accountName: "Chris Smith",
 homepageLink: "/",
 signOutLink: "/titan-mvp-1.2/onboarding/sign-out-confirmation",
-navigationItems: [{
-href: "/titan-mvp-1.2/library",
-text: "Forms library",
-id: "nav-library",
-active: true
-}]
+navigationItems: [
+{ href: "/titan-mvp-1.2/library", text: "Forms library", id: "nav-library" }
+],
+activeLinkId: "nav-library"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">

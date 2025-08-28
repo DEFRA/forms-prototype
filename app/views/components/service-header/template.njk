@@ -30,6 +30,10 @@ Component options:
   - signOutLink (string): Option to overwrite the default signed out page. Defaults to "https://home.account.gov.uk/sign-out"
   - homepageLink (string): Option to overwrite the default GOV.UK link. Defaults to "https://home.account.gov.uk/"
   - containerClasses (string): Classes that can be added to the inner container, useful if you want to make the header full width (optional)
+  - navigationBackgroundColor (string): Custom background color for the navigation section (optional, defaults to #f8f9fa)
+  - navigationInverse (boolean): Whether to use inverse styling for navigation (optional, defaults to false)
+  - supportLink (string): URL for the support link (optional, defaults to "/titan-mvp-1.2/product-pages/support")
+  - showSupportLink (boolean): Whether to show the support link (optional, defaults to true)
 #}
 {% set govukRebrand = true %}
 
@@ -131,41 +135,58 @@ Component options:
       </nav>
     </div>
   </div>
-  {% if params.serviceName or params.navigationItems %}
   <!-- Start of service navigation -->
-  <div class="govuk-service-navigation" data-module="govuk-service-navigation" style="background-color: #f4f8fb; border-bottom: 1px solid #b1b4b6;">
+  {%- set navBgColor = params.navigationBackgroundColor if params.navigationBackgroundColor else "#f8f9fa" -%}
+  {%- set navBorderColor = "#ffffff" if params.navigationInverse else "#d1d5db" -%}
+  {%- set navTextColor = "#ffffff" if params.navigationInverse else "#008531" -%}
+  {%- set navClasses = "govuk-service-navigation" -%}
+  {%- if params.navigationInverse -%}
+    {%- set navClasses = navClasses + " govuk-service-navigation--inverse" -%}
+  {%- endif -%}
+  <div class="{{ navClasses }}" data-module="govuk-service-navigation" style="background-color: {{ navBgColor }}; border-bottom: 1px solid {{ navBorderColor }};">
     <div class="govuk-width-container {%- if params.containerClasses %} {{ params.containerClasses }}{% endif %}">
       <div class="govuk-service-navigation__container">
         {%- if params.serviceName %}
         <!-- The name of your service goes here -->
-        <h2 class="service-header__heading">{{ params.serviceName }}</h2>
+        <h2 class="service-header__heading" {%- if params.navigationInverse -%} style="color: {{ navTextColor }};" {%- endif -%}>{{ params.serviceName }}</h2>
         {% endif %}
-        {%- if params.navigationItems %}
         <div>
           <nav aria-label="{{ params.serviceName | default("Menu", true) }}" class="govuk-service-navigation__wrapper">
-            <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" style="color: #008531;">
+            <button type="button" class="govuk-service-navigation__toggle govuk-js-service-navigation-toggle" aria-controls="navigation" style="color: {{ navTextColor }};">
               Menu
             </button>
             <ul class="govuk-service-navigation__list" id="navigation" style="font-weight: 700;">
-              {%- for item in params.navigationItems %}
-              <!-- Use the "govuk-service-navigation__item--active" modifier class on the li to visually highlight the page the user is currently viewing -->
-              <li class="govuk-service-navigation__item {{ 'govuk-service-navigation__item--active' if (item.id == params.activeLinkId) else '' }}">
-                <!-- Use the aria-current="page" attribute on the anchor tag -->
-                <a class="govuk-service-navigation__link"
-                  {%- if (item.id == params.activeLinkId) -%} aria-current="page" {%- endif %}
-                  href="{{item.href}}"
-                  style="color: #008531;">
-                  {{item.text}}
-                </a>
-              </li>
-              {%- endfor %}
+              {%- if params.navigationItems %}
+                {%- for item in params.navigationItems %}
+                <!-- Use the "govuk-service-navigation__item--active" modifier class on the li to visually highlight the page the user is currently viewing -->
+                <li class="govuk-service-navigation__item {{ 'govuk-service-navigation__item--active' if (item.id == params.activeLinkId) else '' }}">
+                  <!-- Use the aria-current="page" attribute on the anchor tag -->
+                  <a class="govuk-service-navigation__link"
+                    {%- if (item.id == params.activeLinkId) -%} aria-current="page" {%- endif %}
+                    href="{{item.href}}"
+                    style="color: {{ navTextColor }};">
+                    {{item.text}}
+                  </a>
+                </li>
+                {%- endfor %}
+              {%- endif %}
+              
+              <!-- Support link (controlled by showSupportLink parameter) -->
+              {%- if params.showSupportLink is not defined or params.showSupportLink -%}
+                {%- set supportUrl = params.supportLink if params.supportLink else "/titan-mvp-1.2/product-pages/support" -%}
+                <li class="govuk-service-navigation__item">
+                  <a class="govuk-service-navigation__link"
+                    href="{{ supportUrl }}"
+                    style="color: {{ navTextColor }};">
+                    Support
+                  </a>
+                </li>
+              {%- endif %}
             </ul>
           </nav>
         </div>
-        {% endif %}
       </div>
     </div>
   </div>
   <!-- End of service navigation -->
-  {% endif %}
 </header>

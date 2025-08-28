@@ -13,7 +13,8 @@ organisationName: "Defra",
 productName: "Form Designer",
 serviceName: "",
 homepageLink: "/titan-mvp-1.2/product-pages/homepage",
-signInLink: "/titan-mvp-1.2/onboarding/sign-in",
+signInLink: "/titan-mvp-1.2/library",
+showSupportLink: false,
 navigationItems: [
 { href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
 { href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
@@ -63,76 +64,45 @@ activeLinkId: "nav-resources"
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-quarter app-contents-list--sticky govuk-!-padding-right-0">
-        {% set contents = [
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/does-this-need-to-be-a-form",
-        text: "Does this need to be a form?"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/accessibility-and-inclusion",
+
+
+
+
+
+        {{ xGovukSubNavigation({
+        visuallyHiddenTitle: "Section navigation",
+        items: [{
+        text: "Good form design guide",
+        href: "/titan-mvp-1.2/product-pages/resources",
+        parent: true,
+        children: [{
+        text: "Does this need to be a form?",
+        href: "/titan-mvp-1.2/product-pages/resources/does-this-need-to-be-a-form"
+        }, {
         text: "Accessibility and inclusion",
-        items: [
-        {
-        href: "#common-usability-problems-in-forms",
-        text: "Common usability problems in forms"
-        },
-        {
-        href: "#different-access-needs-can-clash",
-        text: "Different access needs can clash"
-        },
-        {
-        href: "#making-accessible-forms",
-        text: "Making accessible forms"
-        },
-        {
-        href: "#accessibility-statement-for-forms",
-        text: "Accessibility statement for forms"
-        },
-        {
-        href: "#assistive-technology",
-        text: "Assistive technology"
-        },
-        {
-        href: "#asking-for-personal-information",
-        text: "Asking for personal information"
-        },
-        {
-        href: "#assisted-digital",
-        text: "Assisted digital"
-        },
-        {
-        href: "#when-to-use-a-paper-form",
-        text: "When to use a paper form"
-        }
-        ]
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/working-with-subject-matter-experts",
-        text: "Working with subject matter experts (SMEs)"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/question-protocols",
-        text: "Question protocols"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/prototyping-a-form",
-        text: "Prototyping a form"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/form-pages-on-govuk",
-        text: "Form pages on GOV.UK"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/peer-reviewing-forms",
-        text: "Peer reviewing forms"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/resources/privacy-notices",
-        text: "Privacy notices"
-        }
-        ] %}
-        {{ contentsListWithBody({ contents: contents, alternative_line_style: true, activeHref:
-        "/titan-mvp-1.2/product-pages/resources/accessibility-and-inclusion" }) }}
+        href: "/titan-mvp-1.2/product-pages/resources/accessibility-and-inclusion",
+        current: true
+        }, {
+        text: "Working with subject matter experts (SMEs)",
+        href: "/titan-mvp-1.2/product-pages/resources/working-with-subject-matter-experts"
+        }, {
+        text: "Question protocols",
+        href: "/titan-mvp-1.2/product-pages/resources/question-protocols"
+        }, {
+        text: "Prototyping a form",
+        href: "/titan-mvp-1.2/product-pages/resources/prototyping-a-form"
+        }, {
+        text: "Form pages on GOV.UK",
+        href: "/titan-mvp-1.2/product-pages/resources/form-pages-on-govuk"
+        }, {
+        text: "Peer reviewing forms",
+        href: "/titan-mvp-1.2/product-pages/resources/peer-reviewing-forms"
+        }, {
+        text: "Privacy notices",
+        href: "/titan-mvp-1.2/product-pages/resources/privacy-notices"
+        }]
+        }]
+        }) }}
     </div>
     <div class="govuk-grid-column-two-thirds">
         <div class="app-prose-scope">

@@ -6,7 +6,7 @@
 {% block header %}
 {{ serviceHeader({
 organisationName: "Defra",
-productName: "Forms Designer",
+productName: "Form Designer",
 serviceName: "",
 containerClasses: containerClasses,
 accountName: "Chris Smith",
@@ -283,16 +283,16 @@ activeLinkId: "nav-editor"
 
             const newOptionHTML = `
                 <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" 
-                           id="preview-option-1" 
-                           name="checkboxPreview" 
-                           type="checkbox" 
+                    <input class="govuk-checkboxes__input"
+                           id="preview-option-1"
+                           name="checkboxPreview"
+                           type="checkbox"
                            value="${optionValue || 'default-value'}">
-                    <label class="govuk-label govuk-checkboxes__label" 
+                    <label class="govuk-label govuk-checkboxes__label"
                            for="preview-option-1">
                         ${optionLabelValue || 'Option label'}
                     </label>
-                    <div id="preview-option-1-hint" 
+                    <div id="preview-option-1-hint"
                          class="govuk-hint govuk-checkboxes__hint">
                     </div>
                 </div>

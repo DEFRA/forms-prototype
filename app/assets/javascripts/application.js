@@ -375,3 +375,71 @@ window.addEventListener("scroll", () => {
 
 // Update active state on load
 window.addEventListener("load", updateContentsListActiveState);
+
+// Service Header Navigation Toggle
+class ServiceHeaderNavigation {
+  constructor() {
+    this.init();
+  }
+
+  init() {
+    // Service navigation toggle
+    const serviceNavToggle = document.querySelector(
+      ".govuk-js-service-navigation-toggle"
+    );
+    const serviceNavList = document.querySelector(
+      ".govuk-service-navigation__list"
+    );
+
+    if (serviceNavToggle && serviceNavList) {
+      serviceNavToggle.addEventListener("click", () => {
+        const isOpen = serviceNavList.classList.contains(
+          "govuk-js-service-navigation--open"
+        );
+
+        if (isOpen) {
+          serviceNavList.classList.remove("govuk-js-service-navigation--open");
+          serviceNavToggle.setAttribute("aria-expanded", "false");
+          serviceNavToggle.textContent = "Menu";
+        } else {
+          serviceNavList.classList.add("govuk-js-service-navigation--open");
+          serviceNavToggle.setAttribute("aria-expanded", "true");
+          serviceNavToggle.textContent = "Hide menu";
+        }
+      });
+    }
+
+    // One Login navigation toggle
+    const oneLoginNavToggle = document.querySelector(
+      ".cross-service-header__button"
+    );
+    const oneLoginNavList = document.querySelector(
+      ".one-login-header__nav__list"
+    );
+
+    if (oneLoginNavToggle && oneLoginNavList) {
+      oneLoginNavToggle.addEventListener("click", () => {
+        const isOpen = oneLoginNavList.classList.contains(
+          "one-login-header__nav--open"
+        );
+
+        if (isOpen) {
+          oneLoginNavList.classList.remove("one-login-header__nav--open");
+          oneLoginNavToggle.classList.remove(
+            "cross-service-header__button--open"
+          );
+          oneLoginNavToggle.setAttribute("aria-expanded", "false");
+        } else {
+          oneLoginNavList.classList.add("one-login-header__nav--open");
+          oneLoginNavToggle.classList.add("cross-service-header__button--open");
+          oneLoginNavToggle.setAttribute("aria-expanded", "true");
+        }
+      });
+    }
+  }
+}
+
+// Initialize service header navigation
+document.addEventListener("DOMContentLoaded", () => {
+  new ServiceHeaderNavigation();
+});

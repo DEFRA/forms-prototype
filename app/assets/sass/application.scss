@@ -3,6 +3,9 @@
 // https://prototype-kit.service.gov.uk/docs/adding-css-javascript-and-images
 //
 
+// Import component styles
+@import "components/service-header";
+
 // Add extra styles here
 
 // Custom active navigation link underline color
@@ -40,6 +43,32 @@
 // Alternative: Target only the rebranded footer specifically
 .govuk-footer.govuk-footer--rebrand {
   border-top-color: #008531 !important;
+}
+
+// Global styling for xGovukSubNavigation component
+.x-govuk-sub-navigation {
+  .x-govuk-sub-navigation__link {
+    color: #008531 !important; // Using the same green color as your other components
+  }
+
+  .x-govuk-sub-navigation__link:hover {
+    color: #006a28 !important; // Darker green for hover state
+  }
+
+  .x-govuk-sub-navigation__section-item--current .x-govuk-sub-navigation__link {
+    color: #006a28 !important; // Darker green for current/active state
+  }
+
+  // Make all left borders DEFRA green
+  .x-govuk-sub-navigation__section-item {
+    border-left-color: #008531 !important;
+  }
+
+  // Ensure nested children also have green borders
+  .x-govuk-sub-navigation__section--nested
+    .x-govuk-sub-navigation__section-item {
+    border-left-color: #008531 !important;
+  }
 }
 
 // // To make things wide globally
@@ -232,25 +261,7 @@ $defra-link-colour-hover: govuk-shade($defra-link-colour, 50%);
   display: inline-table;
 }
 
-.service-header__nav-list-item-link {
-  font-weight: bold;
-  &:link,
-  &:visited {
-    color: $defra-link-colour;
-  }
-
-  &:hover {
-    color: $defra-link-colour-hover;
-  }
-
-  &:focus {
-    color: $govuk-focus-text-colour;
-  }
-}
-
-.service-header__nav-list-item.service-header__nav-list-item--active {
-  border-color: $defra-brand-colour;
-}
+// Legacy service header styles removed - now handled by _service-header.scss
 
 @include govuk-media-query($from: desktop) {
   .app-display-until-desktop {
@@ -278,6 +289,388 @@ $defra-link-colour-hover: govuk-shade($defra-link-colour, 50%);
 // Hide duplicate pagination ellipses
 .govuk-pagination__item--ellipses + .govuk-pagination__item--ellipses {
   display: none;
+}
+
+// Ensure pagination links get proper GOV.UK focus styling
+.govuk-pagination__link:focus,
+.govuk-pagination__link:focus .govuk-pagination__link-text,
+.govuk-pagination__link:focus .govuk-pagination__link-label {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Override any existing pagination link styles that might be interfering
+.govuk-pagination__link:focus *,
+.govuk-pagination__link:focus .govuk-pagination__link-text,
+.govuk-pagination__link:focus .govuk-pagination__link-label,
+.govuk-pagination__link:focus .govuk-pagination__link-title {
+  color: #0b0c0c !important;
+}
+
+// Target all pagination elements on focus to ensure text color changes
+.govuk-pagination__link:focus .govuk-pagination__link-label,
+.govuk-pagination__link:focus .govuk-pagination__link-title,
+.govuk-pagination__link:focus .govuk-pagination__icon,
+.govuk-pagination__link:focus span,
+.govuk-pagination__link:focus a {
+  color: #0b0c0c !important;
+}
+
+// Force override for any inline styles or inherited colors
+.govuk-pagination__link:focus,
+.govuk-pagination__link:focus * {
+  color: #0b0c0c !important;
+}
+
+// Target the pagination items themselves to ensure focus styling works
+.govuk-pagination__item:focus-within .govuk-pagination__link,
+.govuk-pagination__item:focus-within .govuk-pagination__link *,
+.govuk-pagination__prev:focus-within .govuk-pagination__link,
+.govuk-pagination__prev:focus-within .govuk-pagination__link *,
+.govuk-pagination__next:focus-within .govuk-pagination__link,
+.govuk-pagination__next:focus-within .govuk-pagination__link * {
+  color: #0b0c0c !important;
+}
+
+// Additional specificity for pagination elements
+.govuk-pagination__link:focus .govuk-pagination__link-label,
+.govuk-pagination__link:focus .govuk-pagination__link-title,
+.govuk-pagination__link:focus .govuk-pagination__icon {
+  color: #0b0c0c !important;
+}
+
+// Maximum specificity override for pagination focus states
+html body .govuk-pagination__link:focus,
+html body .govuk-pagination__link:focus *,
+html body .govuk-pagination__item:focus-within .govuk-pagination__link,
+html body .govuk-pagination__item:focus-within .govuk-pagination__link * {
+  color: #0b0c0c !important;
+}
+
+// Target the specific pagination structure with maximum specificity
+html body .govuk-pagination .govuk-link.govuk-pagination__link:focus,
+html body .govuk-pagination .govuk-link.govuk-pagination__link:focus *,
+html
+  body
+  .govuk-pagination
+  .govuk-link.govuk-pagination__link:focus
+  .govuk-pagination__link-title,
+html
+  body
+  .govuk-pagination
+  .govuk-link.govuk-pagination__link:focus
+  .govuk-pagination__icon {
+  color: #0b0c0c !important;
+}
+
+// Override any existing govuk-link focus styles for pagination
+.govuk-pagination .govuk-link:focus,
+.govuk-pagination .govuk-link:focus * {
+  color: #0b0c0c !important;
+}
+
+// Force override for all govuk-link focus states with maximum specificity
+html body .govuk-link:focus,
+html body .govuk-link:focus *,
+html body a.govuk-link:focus,
+html body a.govuk-link:focus * {
+  color: #0b0c0c !important;
+}
+
+// Additional specificity for any nested elements
+html body .govuk-link:focus span,
+html body .govuk-link:focus strong,
+html body .govuk-link:focus em,
+html body .govuk-link:focus b,
+html body .govuk-link:focus i {
+  color: #0b0c0c !important;
+}
+
+// Maximum specificity for pagination - override any GOV.UK Frontend styles
+html body .govuk-pagination .govuk-pagination__link.govuk-link:focus,
+html body .govuk-pagination .govuk-pagination__link.govuk-link:focus *,
+html
+  body
+  .govuk-pagination
+  .govuk-pagination__link.govuk-link:focus
+  .govuk-pagination__link-title,
+html
+  body
+  .govuk-pagination
+  .govuk-pagination__link.govuk-link:focus
+  .govuk-pagination__link-label,
+html
+  body
+  .govuk-pagination
+  .govuk-pagination__link.govuk-link:focus
+  .govuk-pagination__icon {
+  color: #0b0c0c !important;
+}
+
+// Target the specific pagination structure that GOV.UK Frontend generates
+html
+  body
+  .govuk-pagination--block
+  .govuk-pagination__prev
+  .govuk-pagination__link:focus,
+html
+  body
+  .govuk-pagination--block
+  .govuk-pagination__next
+  .govuk-pagination__link:focus,
+html
+  body
+  .govuk-pagination--block
+  .govuk-pagination__prev
+  .govuk-pagination__link:focus
+  *,
+html
+  body
+  .govuk-pagination--block
+  .govuk-pagination__next
+  .govuk-pagination__link:focus
+  * {
+  color: #0b0c0c !important;
+}
+
+// Use attribute selectors for maximum specificity override
+html body a[class*="govuk-pagination__link"][class*="govuk-link"]:focus,
+html body a[class*="govuk-pagination__link"][class*="govuk-link"]:focus *,
+html body a[class*="govuk-link"]:focus,
+html body a[class*="govuk-link"]:focus * {
+  color: #0b0c0c !important;
+}
+
+// Final fallback - target everything with pagination classes
+html body [class*="govuk-pagination"] [class*="govuk-link"]:focus,
+html body [class*="govuk-pagination"] [class*="govuk-link"]:focus * {
+  color: #0b0c0c !important;
+}
+
+// x-govuk sub-navigation focus styling
+html body .x-govuk-sub-navigation__link:focus,
+html body .x-govuk-sub-navigation__link:focus *,
+html
+  body
+  .x-govuk-sub-navigation__section-item
+  .x-govuk-sub-navigation__link:focus,
+html
+  body
+  .x-govuk-sub-navigation__section-item
+  .x-govuk-sub-navigation__link:focus
+  * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Target nested elements within x-govuk sub-navigation
+html body .x-govuk-sub-navigation__link:focus span,
+html body .x-govuk-sub-navigation__link:focus strong,
+html body .x-govuk-sub-navigation__link:focus em,
+html body .x-govuk-sub-navigation__link:focus b,
+html body .x-govuk-sub-navigation__link:focus i {
+  color: #0b0c0c !important;
+}
+
+// Additional specificity for x-govuk components
+html body [class*="x-govuk"] [class*="sub-navigation"] [class*="link"]:focus,
+html body [class*="x-govuk"] [class*="sub-navigation"] [class*="link"]:focus * {
+  color: #0b0c0c !important;
+}
+
+// x-govuk masthead focus styling
+html body .x-govuk-masthead .govuk-link:focus,
+html body .x-govuk-masthead .govuk-link:focus *,
+html body .x-govuk-masthead .govuk-link--inverse:focus,
+html body .x-govuk-masthead .govuk-link--inverse:focus * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Target any other x-govuk components that might have links
+html body [class*="x-govuk"] [class*="link"]:focus,
+html body [class*="x-govuk"] [class*="link"]:focus * {
+  color: #0b0c0c !important;
+}
+
+// Comprehensive override for all GOV.UK component links
+html body [class*="govuk"] [class*="link"]:focus,
+html body [class*="govuk"] [class*="link"]:focus *,
+html body [class*="govuk"] a:focus,
+html body [class*="govuk"] a:focus * {
+  color: #0b0c0c !important;
+}
+
+// Ensure all focusable elements within GOV.UK components get proper styling
+html body [class*="govuk"] *:focus,
+html body [class*="govuk"] *:focus * {
+  color: #0b0c0c !important;
+}
+
+// Ensure all GOV.UK links get proper focus styling
+.govuk-link:focus {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Special focus styling for inverse links (like the "What's new" link)
+.govuk-link--inverse:focus,
+.govuk-link--inverse:focus * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Target inverse links within specific components
+.govuk-card--feature .govuk-link--inverse:focus,
+.govuk-card--feature .govuk-link--inverse:focus * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Maximum specificity for inverse links
+html body .govuk-link--inverse:focus,
+html body .govuk-link--inverse:focus *,
+html body .govuk-card .govuk-link--inverse:focus,
+html body .govuk-card .govuk-link--inverse:focus * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Focus styling for other GOV.UK link variants
+.govuk-link--no-visited-state:focus,
+.govuk-link--no-visited-state:focus *,
+.govuk-link--destructive:focus,
+.govuk-link--destructive:focus *,
+.govuk-link--secondary:focus,
+.govuk-link--secondary:focus * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Maximum specificity for all link variants
+html body .govuk-link--no-visited-state:focus,
+html body .govuk-link--no-visited-state:focus *,
+html body .govuk-link--destructive:focus,
+html body .govuk-link--destructive:focus *,
+html body .govuk-link--secondary:focus,
+html body .govuk-link--secondary:focus * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Override inline styles for the "What's new" link specifically
+html body .govuk-card--feature .govuk-card__heading .govuk-link--inverse:focus,
+html
+  body
+  .govuk-card--feature
+  .govuk-card__heading
+  .govuk-link--inverse:focus
+  *,
+html
+  body
+  .govuk-card--feature
+  .govuk-card__heading
+  .govuk-link--no-visited-state:focus,
+html
+  body
+  .govuk-card--feature
+  .govuk-card__heading
+  .govuk-link--no-visited-state:focus
+  * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Target the specific homepage structure
+html
+  body
+  .govuk-card.govuk-card--feature
+  .govuk-card__content
+  .govuk-card__heading
+  .govuk-link:focus,
+html
+  body
+  .govuk-card.govuk-card--feature
+  .govuk-card__content
+  .govuk-card__heading
+  .govuk-link:focus
+  * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Use attribute selectors to override inline styles
+html body a[href*="release-notes"]:focus,
+html body a[href*="release-notes"]:focus * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Ultimate override for any inline styles on focus
+html body a:focus[style*="color"],
+html body a:focus[style*="color"] *,
+html body a:focus[style*="!important"],
+html body a:focus[style*="!important"] * {
+  color: #0b0c0c !important;
+  background-color: #ffdd00 !important;
+  box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c !important;
+  border-color: #0b0c0c !important;
+  outline: 3px solid transparent !important;
+  outline-offset: 0 !important;
+}
+
+// Target any element with inline color styles on focus
+html body *:focus[style*="color"],
+html body *:focus[style*="color"] * {
+  color: #0b0c0c !important;
 }
 
 .app-field-group {
@@ -319,18 +712,7 @@ $defra-link-colour-hover: govuk-shade($defra-link-colour, 50%);
   }
 }
 
-// Fix spacing below account menu at small sizes
-.cross-service-header__button {
-  padding-bottom: govuk-spacing(2);
-
-  &::before {
-    transform: translateY(-75%) rotate(135deg);
-  }
-
-  &.cross-service-header__button--open::before {
-    transform: translateY(-25%) rotate(-45deg);
-  }
-}
+// Legacy cross-service-header styles removed - now handled by _service-header.scss
 
 // Allow header elements to stack at small sizes
 .one-login-header__container {
@@ -382,17 +764,9 @@ $defra-link-colour-hover: govuk-shade($defra-link-colour, 50%);
   }
 }
 
-// Hide empty <h2> without service header `params.pageName`
-@include govuk-media-query($until: tablet) {
-  .service-header__heading:empty {
-    display: none;
-    font-size: 19px;
-  }
-}
+// Legacy service-header styles removed - now handled by _service-header.scss
 
-.service-header {
-  border-bottom: 1px solid #b1b4b6 !important;
-}
+// Legacy service-header styles removed - now handled by _service-header.scss
 
 // Customise tag to fit into header product name
 .app-tag--env {
@@ -1472,10 +1846,10 @@ code.lang-md {
   }
 
   a:focus {
-    // color: $govuk-focus-text-colour;
-    background-color: $govuk-focus-colour;
-    // box-shadow: 0 -2px $govuk-focus-colour, 0 4px $govuk-focus-text-colour;
-    // border-color: $govuk-focus-text-colour;
+    color: #0b0c0c;
+    background-color: #ffdd00;
+    box-shadow: 0 -2px #ffdd00, 0 4px #0b0c0c;
+    border-color: #0b0c0c;
   }
 }
 
@@ -1887,7 +2261,7 @@ code.lang-md {
     }
 
     .app-prose-scope &:focus {
-      color: $govuk-focus-text-colour;
+      color: #0b0c0c;
     }
 
     // Extend the touch area of the <a> to fill the entire tab
@@ -1977,7 +2351,7 @@ code.lang-md {
     }
 
     .app-prose-scope &:focus {
-      color: $govuk-focus-text-colour;
+      color: #0b0c0c;
     }
   }
 }
@@ -3285,9 +3659,9 @@ to
 }
 
 .tooltip:focus {
-  background-color: $govuk-focus-colour;
-  color: $govuk-focus-text-colour;
-  border-bottom: 3px solid $govuk-focus-text-colour;
+  background-color: #ffdd00;
+  color: #0b0c0c;
+  border-bottom: 3px solid #0b0c0c;
   outline: none;
   box-shadow: none;
 }
@@ -3308,33 +3682,7 @@ to
    #PRODUCT SERVICE HEADER STYLES
    ========================================================================== */
 
-.product-service-header {
-  .product-one-login-header {
-    background-color: #0a8631;
-
-    border-bottom: 1px solid white;
-
-    .one-login-header__container {
-      background-color: #0a8631;
-    }
-  }
-
-  .product-service-navigation {
-    background-color: #0a8631;
-
-    border-bottom-color: white;
-
-    .product-nav-link {
-      color: white;
-      font-weight: normal;
-    }
-
-    // Override active link styling for product pages
-    .service-header__nav-list-item--active {
-      border-color: white !important;
-    }
-  }
-}
+// Legacy product service header styles removed - now handled by _service-header.scss
 
 .govuk-inset-text--cta {
   border-left: 4px solid #00703c;

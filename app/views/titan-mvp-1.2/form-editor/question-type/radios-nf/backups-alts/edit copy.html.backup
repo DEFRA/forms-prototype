@@ -7,7 +7,7 @@
 {% block header %}
 {{ serviceHeader({
 organisationName: "Defra",
-productName: "Forms Designer",
+productName: "Form Designer",
 serviceName: "",
 containerClasses: containerClasses,
 accountName: "Chris Smith",
@@ -772,7 +772,7 @@ activeLinkId: "nav-editor"
               <input class="govuk-radios__input" id="listPreview-option${index}" name="listPreview" type="radio" value="option${index}">
               <label class="govuk-label govuk-radios__label" for="listPreview-option${index}" value="data['Option ${index + 1}']">Option ${index + 1}</label>
             </div>
-            
+
           `;
       radioList.insertAdjacentHTML('beforeend', newRadioHTML);
     };

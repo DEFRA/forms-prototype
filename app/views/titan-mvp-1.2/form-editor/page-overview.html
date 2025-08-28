@@ -11,16 +11,17 @@
 {% block header %}
 {{ serviceHeader({
 organisationName: "Defra",
-productName: "Forms Designer",
+productName: "Form Designer",
 serviceName: "",
 containerClasses: containerClasses,
 accountName: "Chris Smith",
 homepageLink: "/",
 signOutLink: "/titan-mvp-1.2/onboarding/sign-out-confirmation",
+activeLinkId: "nav-editor",
 navigationItems: [
 { href: "/titan-mvp-1.2/library", text: "Forms library", id: "nav-library" },
 { href: "/titan-mvp-1.2/form-overview/index", text: "Overview", id: "nav-overview" },
-{ href: "/titan-mvp-1.2/form-editor/listing", text: "Editor", id: "nav-editor", active: true }
+{ href: "/titan-mvp-1.2/form-editor/listing", text: "Editor", id: "nav-editor" }
 ]
 }) }}
 

@@ -1,7 +1,7 @@
 {% extends "layouts/main.html" %}
 {% from "components/service-header/macro.njk" import serviceHeader %}
 {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
-{% from "components/contents-list-with-body.njk" import contentsListWithBody %}
+
 {% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
 
 {% block pageTitle %}
@@ -14,7 +14,8 @@ organisationName: "Defra",
 productName: "Form Designer",
 serviceName: "",
 homepageLink: "/titan-mvp-1.2/product-pages/homepage",
-signInLink: "/titan-mvp-1.2/onboarding/sign-in",
+signInLink: "/titan-mvp-1.2/library",
+showSupportLink: false,
 navigationItems: [
 { href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
 { href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
@@ -54,11 +55,7 @@ activeLinkId: "nav-get-started"
                     <span class="govuk-caption-l" style="color: white;">Getting started guide</span>
                     Make a form live checklist
                 </h1>
-                <div class="govuk-body" style="color: white; margin-top: 1em;">
-                    <span class="govuk-tag govuk-tag--grey">Guide</span>
-                    <span style="margin-left: 1em;">Follow our step-by-step process to create and publish your
-                        forms</span>
-                </div>
+
             </div>
         </div>
     </div>
@@ -68,76 +65,28 @@ activeLinkId: "nav-get-started"
 {% block content %}
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-one-quarter app-contents-list--sticky govuk-!-padding-right-0">
-        {% set contents = [
-        {
-        href: "/titan-mvp-1.2/product-pages/get-started/get-access",
-        text: "Get access to the Defra Form Designer"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/get-started/make-a-form-live-checklist",
+        {{ xGovukSubNavigation({
+        visuallyHiddenTitle: "Section navigation",
+        items: [{
+        text: "Get started",
+        href: "/titan-mvp-1.2/product-pages/get-started",
+        parent: true,
+        children: [{
+        text: "Get access to the Defra Form Designer",
+        href: "/titan-mvp-1.2/product-pages/get-started/get-access"
+        }, {
         text: "Make a form live checklist",
-        items: [
-        {
-        href: "#step-1",
-        text: "Forms criteria"
-        },
-        {
-        href: "#step-2",
-        text: "Success measures"
-        },
-        {
-        href: "#step-3",
-        text: "Agree timescales"
-        },
-        {
-        href: "#step-4",
-        text: "Wireframe"
-        },
-        {
-        href: "#step-5",
-        text: "Build your form using the Defra Form Designer"
-        },
-        {
-        href: "#step-6",
-        text: "Review of your form by the Defra Forms team"
-        },
-        {
-        href: "#step-7",
-        text: "Set up a mailbox to receive form submissions"
-        },
-        {
-        href: "#step-8",
-        text: "Data protection impact assessment"
-        },
-        {
-        href: "#step-9",
-        text: "Privacy notice"
-        },
-        {
-        href: "#step-10",
-        text: "How users will find your form"
-        },
-        {
-        href: "#step-11",
-        text: "Make the form live"
-        },
-        {
-        href: "#step-12",
-        text: "Support"
-        }
-        ]
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/get-started/form-suitability-criteria",
-        text: "Form suitability criteria"
-        },
-        {
-        href: "/titan-mvp-1.2/product-pages/get-started/measuring-success",
-        text: "Measuring the success of your form"
-        }
-        ] %}
-        {{ contentsListWithBody({ contents: contents, alternative_line_style: true, activeHref:
-        "/titan-mvp-1.2/product-pages/get-started/make-a-form-live-checklist" }) }}
+        href: "/titan-mvp-1.2/product-pages/get-started/make-a-form-live-checklist",
+        current: true
+        }, {
+        text: "Form suitability criteria",
+        href: "/titan-mvp-1.2/product-pages/get-started/form-suitability-criteria"
+        }, {
+        text: "Measuring the success of your form",
+        href: "/titan-mvp-1.2/product-pages/get-started/measuring-success"
+        }]
+        }]
+        }) }}
     </div>
     <div class="govuk-grid-column-two-thirds">
         <div class="app-prose-scope">

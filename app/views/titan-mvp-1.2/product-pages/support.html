@@ -11,7 +11,8 @@ organisationName: "Defra",
 productName: "Form Designer",
 serviceName: "",
 homepageLink: "/titan-mvp-1.2/product-pages/homepage",
-signInLink: "/titan-mvp-1.2/onboarding/sign-in",
+signInLink: "/titan-mvp-1.2/library",
+showSupportLink: false,
 navigationItems: [
 { href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
 { href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
@@ -26,6 +27,13 @@ activeLinkId: "nav-support"
 inverse: true,
 title: {
 text: "Support"
+},
+description: {
+html: "If you're taking part in private beta, ask for support by sending a message to the <a
+    href='https://teams.microsoft.com/l/channel/19:sLNy297i1n0fiPYsGJb3UoOITYURp7PtMx8iFwEfJWs1%40thread.tacv2/General?groupId=346d8ebd-c7b8-47d3-b178-e6a9b31c8fc2&tenantId=770a2450-0227-4c62-90c7-4e38537f1102'
+    class='govuk-link govuk-link--inverse govuk-link--no-visited-state'>Microsoft Teams channel</a> or <a
+    href='https://defra-digital-team.slack.com/archives/C080WP62PJP'
+    class='govuk-link govuk-link--inverse govuk-link--no-visited-state'>Defra Slack channel</a>."
 }
 }) }}
 {% endblock %}
@@ -35,32 +43,18 @@ text: "Support"
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-        <p class="govuk-body">If you're taking part in private beta, ask for support by sending a message to the:</p>
-        <ul class="govuk-list govuk-list--bullet">
-            <li><a href="https://teams.microsoft.com/l/channel/19:sLNy297i1n0fiPYsGJb3UoOITYURp7PtMx8iFwEfJWs1%40thread.tacv2/General?groupId=346d8ebd-c7b8-47d3-b178-e6a9b31c8fc2&tenantId=770a2450-0227-4c62-90c7-4e38537f1102"
-                    class="govuk-link">Microsoft Teams</a></li>
-            <li><a href="https://defra-digital-team.slack.com/archives/C080WP62PJP" class="govuk-link">Defra Slack</a>
-            </li>
-        </ul>
+
 
         <h2 class="govuk-heading-l">Support hours</h2>
         <p class="govuk-body">We are available to support you between 9am and 5pm Monday to Friday.</p>
 
         <h2 class="govuk-heading-l">General questions</h2>
-        <p class="govuk-body">For general questions about Defra Forms, speak to Mark Duncan or Phil Hargreaves.</p>
+        <p class="govuk-body">For general questions about Defra Forms, use the shared mailbox at <a
+                href="mailto:defraforms@defra.gov.uk" class="govuk-link">defraforms@defra.gov.uk</a>.</p>
 
-        <h3 class="govuk-heading-m">Mark Duncan</h3>
-        <p class="govuk-body">Product Manager for Defra Forms<br>
-            <a href="mailto:mark.duncan@defra.gov.uk" class="govuk-link">mark.duncan@defra.gov.uk</a>
-        </p>
 
-        <h3 class="govuk-heading-m">Phil Hargreaves</h3>
-        <p class="govuk-body">Delivery Lead for Defra Forms<br>
-            <a href="mailto:phil.hargreaves@defra.gov.uk" class="govuk-link">phil.hargreaves@defra.gov.uk</a>
-        </p>
 
-        <p class="govuk-body">Or use the Defra Forms shared mailbox at <a href="mailto:defraforms@defra.gov.uk"
-                class="govuk-link">defraforms@defra.gov.uk</a>.</p>
+
 
 
     </div>
