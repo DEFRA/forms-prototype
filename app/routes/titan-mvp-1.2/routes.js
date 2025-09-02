@@ -773,6 +773,16 @@ router.get("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
   });
 });
 
+// Error scenarios page for location form
+router.get(
+  "/titan-mvp-1.2/form-editor/location/wreck-errors",
+  function (req, res) {
+    res.render("titan-mvp-1.2/form-editor/location/wreck-errors", {
+      serviceName: "Form Editor",
+    });
+  }
+);
+
 router.post("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
   const errors = {};
   const errorSummary = [];
