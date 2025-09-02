@@ -14,16 +14,16 @@ accountName: "Chris Smith",
 homepageLink: "/",
 signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
-{ href: "/titan-mvp-1/library.html", text: "Forms library", id: "nav-library" },
-{ href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/titan-mvp-1/form-editor/listing", text: "Editor", id: "nav-editor" } ],
+{ href: "/titan-mvp-1.2/library.html", text: "Forms library", id: "nav-library" },
+{ href: "/titan-mvp-1.2/form-overview/index", text: "Overview", id: "nav-overview" },
+{ href: "/titan-mvp-1.2/form-editor/listing", text: "Editor", id: "nav-editor" } ],
 activeLinkId: "nav-editor"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
   <div class="govuk-width-container">
     {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text: "Back to add
-    and edit pages", href: "/titan-mvp-1/form-editor/listing.html" }) }}
+    and edit pages", href: "/titan-mvp-1.2/form-editor/listing.html" }) }}
 
     <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
       style="border-bottom: 1px solid white; margin-bottom: 0" />
@@ -35,7 +35,7 @@ activeLinkId: "nav-editor"
           {{ form.name }}
         </h1>
 
-        <a href="/titan-mvp-1/form-editor/questiontype.html" role="button" draggable="false"
+        <a href="/titan-mvp-1.2/form-editor/questiontype.html" role="button" draggable="false"
           class="govuk-button govuk-button--inverse" data-module="govuk-button">
           Add new page
         </a>
@@ -82,7 +82,8 @@ activeLinkId: "nav-editor"
                         <span class="govuk-caption-l">Page #</span>
                         <h1 class="govuk-heading-l">Edit guidance page</h1>
 
-                        <form class="form" action="/titan-mvp-1/form-editor/templates/guidance/overview" method="post">
+                        <form class="form" action="/titan-mvp-1.2/form-editor/templates/guidance/overview"
+                          method="post">
                           <!-- Page Heading Input -->
                           {{ govukInput({
                           label: {
@@ -189,7 +190,7 @@ activeLinkId: "nav-editor"
                             }) }}
 
                             <p class="govuk-body">
-                              <a href="/titan-mvp-1/form-editor/templates/delete/{{ currentPage.pageId }}"
+                              <a href="/titan-mvp-1.2/form-editor/templates/delete/{{ currentPage.pageId }}"
                                 class="govuk-link govuk-link--no-visited-state govuk-link--destructive hide-in-reorder-mode hide-when-edit-mode">
                                 Delete page
                               </a>
@@ -233,7 +234,7 @@ activeLinkId: "nav-editor"
                         {% if currentPage and currentPage.pageId %}
                         {{ govukButton({
                         text: "Manage conditions",
-                        href: "/titan-mvp-1/conditions/" + currentPage.pageId,
+                        href: "/titan-mvp-1.2/conditions/" + currentPage.pageId,
                         classes: "govuk-button"
                         }) }}
                         {% else %}
@@ -291,7 +292,7 @@ activeLinkId: "nav-editor"
               </p>
 
               <div id="heading-container">
-                {% include "titan-mvp-1/form-editor/previews/questions/guidance-preview.html" %}
+                {% include "titan-mvp-1.2/form-editor/previews/questions/guidance-preview.html" %}
               </div>
 
               <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;" {%

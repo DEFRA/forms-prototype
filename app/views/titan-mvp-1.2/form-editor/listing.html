@@ -16,10 +16,10 @@ accountName: "Chris Smith",
 homepageLink: "/",
 signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
-{ href: "/titan-mvp-1/library.html", text: commonTerms.form_editor.navigation.forms_library, id: "nav-library" },
-{ href: "/titan-mvp-1/form-overview/index", text: commonTerms.form_editor.navigation.overview, id:
+{ href: "/titan-mvp-1.2/library.html", text: commonTerms.form_editor.navigation.forms_library, id: "nav-library" },
+{ href: "/titan-mvp-1.2/form-overview/index", text: commonTerms.form_editor.navigation.overview, id:
 "nav-overview" },
-{ href: "/titan-mvp-1/form-editor/listing", text: commonTerms.form_editor.navigation.editor, id: "nav-editor" }
+{ href: "/titan-mvp-1.2/form-editor/listing", text: commonTerms.form_editor.navigation.editor, id: "nav-editor" }
 ],
 activeLinkId: "nav-editor"
 }) }}
@@ -441,7 +441,7 @@ activeLinkId: "nav-editor"
                                                 <div class="preview-item" data-id="question-{{ question.questionId }}">
                                                     {# Set the preview template based on question type and subtype #}
                                                     {% set previewTemplate =
-                                                    '/titan-mvp-1/form-editor/question-type/questions/previews/' %}
+                                                    '/titan-mvp-1.2/form-editor/question-type/questions/previews/' %}
                                                     {% if question.type == 'phone' %}
                                                     {% set previewTemplate = previewTemplate ~ 'phone-preview.html'
                                                     %}
@@ -574,7 +574,7 @@ CHECK ANSWERS PAGE
                 <ul class="govuk-summary-card__actions">
                     <li class="govuk-summary-card__action">
                         <a class="govuk-link govuk-link--no-visited-state" id="editpage13"
-                            href="/titan-mvp-1/form-editor/check-answers/settings.html">
+                            href="/titan-mvp-1.2/form-editor/check-answers/settings.html">
                             Edit <span class="govuk-visually-hidden">page 13</span>
                         </a>
                     </li>
@@ -945,7 +945,7 @@ CHECK ANSWERS PAGE
             const selectedCondition = document.getElementById('condition-filter').value;
 
             // Get all edit links to identify pages
-            const editLinks = document.querySelectorAll('a[href^="/titan-mvp-1/edit-page/"]');
+            const editLinks = document.querySelectorAll('a[href^="/titan-mvp-1.2/edit-page/"]');
             console.log('Found pages:', editLinks.length);
 
             editLinks.forEach(editLink => {

@@ -763,6 +763,463 @@ router.post(
 
 // ── FORM EDITOR ROUTES ─────────────────────────────────────────────────────────
 
+// Location pages routes
+router.get("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
+  res.render("titan-mvp-1.2/form-editor/location/wreck", {
+    serviceName: "Form Editor",
+    errorSummary: [],
+    errors: {},
+    data: req.session.data || {},
+  });
+});
+
+router.post("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
+  const errors = {};
+  const errorSummary = [];
+  const data = req.body;
+
+  // Check if at least one location method is provided
+  const hasDecimalDegrees =
+    data["location-latitude-decimal"] && data["location-longitude-decimal"];
+  const hasDecimalMinutes =
+    data["location-latitude-decimal-minutes-degree"] &&
+    data["location-longitude-decimal-minutes-degree"];
+  const hasDegreesMinutesSeconds =
+    data["location-latitude-degrees-degree"] &&
+    data["location-longitude-degrees-degree"];
+  const hasOSGrid =
+    data["location-osgrid-square"] &&
+    data["location-osgrid-easting"] &&
+    data["location-osgrid-northing"];
+  const hasMap =
+    data["map-latitude-input"] &&
+    data["map-longitude-input"] &&
+    data["map-radius-input"];
+  const hasTextLocation =
+    data["text-location"] && data["text-location"].trim().length > 0;
+
+  const hasAnyLocation =
+    hasDecimalDegrees ||
+    hasDecimalMinutes ||
+    hasDegreesMinutesSeconds ||
+    hasOSGrid ||
+    hasMap ||
+    hasTextLocation;
+
+  if (!hasAnyLocation) {
+    errorSummary.push({
+      text: "Please provide at least one location method",
+      href: "#location-latitude-decimal",
+    });
+  }
+
+  // Validate each provided location method
+  if (hasDecimalDegrees) {
+    validateDecimalDegrees(data, errors, errorSummary);
+  }
+
+  if (hasDecimalMinutes) {
+    validateDegreesDecimalMinutes(data, errors, errorSummary);
+  }
+
+  if (hasDegreesMinutesSeconds) {
+    validateDegreesMinutesSeconds(data, errors, errorSummary);
+  }
+
+  if (hasOSGrid) {
+    validateOSGridRef(data, errors, errorSummary);
+  }
+
+  if (hasMap) {
+    validateMapInput(data, errors, errorSummary);
+  }
+
+  if (hasTextLocation) {
+    validateTextLocation(data, errors, errorSummary);
+  }
+
+  // Store form data in session
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+  if (!req.session.data.location) {
+    req.session.data.location = {};
+  }
+
+  // Store all form data
+  Object.keys(data).forEach((key) => {
+    req.session.data.location[key] = data[key];
+  });
+
+  // If there are errors, re-render the form with errors
+  if (Object.keys(errors).length > 0) {
+    res.render("titan-mvp-1.2/form-editor/location/wreck", {
+      serviceName: "Form Editor",
+      errorSummary: errorSummary,
+      errors: errors,
+      data: req.session.data || {},
+    });
+  } else {
+    // Form is valid, redirect to next step
+    res.redirect("/titan-mvp-1.2/form-editor/location-answer");
+  }
+});
+
+// Validation helper functions
+function validateDecimalDegrees(data, errors, errorSummary) {
+  const lat = data["location-latitude-decimal"];
+  const lon = data["location-longitude-decimal"];
+
+  if (!lat || !lon) {
+    errors["location-latitude-decimal"] = {
+      text: "Both latitude and longitude are required",
+    };
+    errors["location-longitude-decimal"] = {
+      text: "Both latitude and longitude are required",
+    };
+    errorSummary.push({
+      text: "Both latitude and longitude are required",
+      href: "#location-latitude-decimal",
+    });
+    return;
+  }
+
+  const latNum = parseFloat(lat);
+  const lonNum = parseFloat(lon);
+
+  if (isNaN(latNum) || isNaN(lonNum)) {
+    errors["location-latitude-decimal"] = {
+      text: "Latitude and longitude must be valid numbers",
+    };
+    errors["location-longitude-decimal"] = {
+      text: "Latitude and longitude must be valid numbers",
+    };
+    errorSummary.push({
+      text: "Latitude and longitude must be valid numbers",
+      href: "#location-latitude-decimal",
+    });
+    return;
+  }
+
+  if (latNum < -90 || latNum > 90) {
+    errors["location-latitude-decimal"] = {
+      text: "Latitude must be between -90 and 90 degrees",
+    };
+    errorSummary.push({
+      text: "Latitude must be between -90 and 90 degrees",
+      href: "#location-latitude-decimal",
+    });
+  }
+
+  if (lonNum < -180 || lonNum > 180) {
+    errors["location-longitude-decimal"] = {
+      text: "Longitude must be between -180 and 180 degrees",
+    };
+    errorSummary.push({
+      text: "Longitude must be between -180 and 180 degrees",
+      href: "#location-longitude-decimal",
+    });
+  }
+
+  // Check if coordinates are within Great Britain (simplified check)
+  if (latNum < 49 || latNum > 62 || lonNum < -9.5 || lonNum > 2.3) {
+    errors["location-latitude-decimal"] = {
+      text: "Coordinates must be within Great Britain",
+    };
+    errors["location-longitude-decimal"] = {
+      text: "Coordinates must be within Great Britain",
+    };
+    errorSummary.push({
+      text: "Coordinates must be within Great Britain",
+      href: "#location-latitude-decimal",
+    });
+  }
+}
+
+function validateDegreesDecimalMinutes(data, errors, errorSummary) {
+  const latDeg = data["location-latitude-decimal-minutes-degree"];
+  const latMin = data["location-latitude-decimal-minutes-minute"];
+  const latDir = data["location-latitude-decimal-minutes-direction"];
+  const lonDeg = data["location-longitude-decimal-minutes-degree"];
+  const lonMin = data["location-longitude-decimal-minutes-minute"];
+  const lonDir = data["location-longitude-decimal-minutes-direction"];
+
+  if (!latDeg || !latMin || !latDir || !lonDeg || !lonMin || !lonDir) {
+    errorSummary.push({
+      text: "All coordinate fields are required",
+      href: "#location-latitude-decimal-minutes-degree",
+    });
+    return;
+  }
+
+  const latDegNum = parseInt(latDeg);
+  const latMinNum = parseFloat(latMin);
+  const lonDegNum = parseInt(lonDeg);
+  const lonMinNum = parseFloat(lonMin);
+
+  if (
+    isNaN(latDegNum) ||
+    isNaN(latMinNum) ||
+    isNaN(lonDegNum) ||
+    isNaN(lonMinNum)
+  ) {
+    errorSummary.push({
+      text: "All coordinate values must be valid numbers",
+      href: "#location-latitude-decimal-minutes-degree",
+    });
+    return;
+  }
+
+  if (latDegNum < 0 || latDegNum > 90) {
+    errors["location-latitude-decimal-minutes-degree"] = {
+      text: "Latitude degrees must be between 0 and 90",
+    };
+    errorSummary.push({
+      text: "Latitude degrees must be between 0 and 90",
+      href: "#location-latitude-decimal-minutes-degree",
+    });
+  }
+
+  if (latMinNum < 0 || latMinNum >= 60) {
+    errors["location-latitude-decimal-minutes-minute"] = {
+      text: "Latitude minutes must be between 0 and 59.999",
+    };
+    errorSummary.push({
+      text: "Latitude minutes must be between 0 and 59.999",
+      href: "#location-latitude-decimal-minutes-minute",
+    });
+  }
+
+  if (lonDegNum < 0 || lonDegNum > 180) {
+    errors["location-longitude-decimal-minutes-degree"] = {
+      text: "Longitude degrees must be between 0 and 180",
+    };
+    errorSummary.push({
+      text: "Longitude degrees must be between 0 and 180",
+      href: "#location-longitude-decimal-minutes-degree",
+    });
+  }
+
+  if (lonMinNum < 0 || lonMinNum >= 60) {
+    errors["location-longitude-decimal-minutes-minute"] = {
+      text: "Longitude minutes must be between 0 and 59.999",
+    };
+    errorSummary.push({
+      text: "Longitude minutes must be between 0 and 59.999",
+      href: "#location-longitude-decimal-minutes-minute",
+    });
+  }
+}
+
+function validateDegreesMinutesSeconds(data, errors, errorSummary) {
+  const latDeg = data["location-latitude-degrees-degree"];
+  const latMin = data["location-latitude-degrees-minute"];
+  const latSec = data["location-latitude-degrees-second"];
+  const latDir = data["location-latitude-degrees-direction"];
+  const lonDeg = data["location-longitude-degrees-degree"];
+  const lonMin = data["location-longitude-degrees-minute"];
+  const lonSec = data["location-longitude-degrees-second"];
+  const lonDir = data["location-longitude-degrees-direction"];
+
+  if (
+    !latDeg ||
+    !latMin ||
+    !latSec ||
+    !latDir ||
+    !lonDeg ||
+    !lonMin ||
+    !lonSec ||
+    !lonDir
+  ) {
+    errorSummary.push({
+      text: "All coordinate fields are required",
+      href: "#location-latitude-degrees-degree",
+    });
+    return;
+  }
+
+  const latDegNum = parseInt(latDeg);
+  const latMinNum = parseInt(latMin);
+  const latSecNum = parseFloat(latSec);
+  const lonDegNum = parseInt(lonDeg);
+  const lonMinNum = parseInt(lonMin);
+  const lonSecNum = parseFloat(lonSec);
+
+  if (
+    isNaN(latDegNum) ||
+    isNaN(latMinNum) ||
+    isNaN(latSecNum) ||
+    isNaN(lonDegNum) ||
+    isNaN(lonMinNum) ||
+    isNaN(lonSecNum)
+  ) {
+    errorSummary.push({
+      text: "All coordinate values must be valid numbers",
+      href: "#location-latitude-degrees-degree",
+    });
+    return;
+  }
+
+  if (latDegNum < 0 || latDegNum > 90) {
+    errors["location-latitude-degrees-degree"] = {
+      text: "Latitude degrees must be between 0 and 90",
+    };
+    errorSummary.push({
+      text: "Latitude degrees must be between 0 and 90",
+      href: "#location-latitude-degrees-degree",
+    });
+  }
+
+  if (latMinNum < 0 || latMinNum >= 60) {
+    errors["location-latitude-degrees-minute"] = {
+      text: "Latitude minutes must be between 0 and 59",
+    };
+    errorSummary.push({
+      text: "Latitude minutes must be between 0 and 59",
+      href: "#location-latitude-degrees-minute",
+    });
+  }
+
+  if (latSecNum < 0 || latSecNum >= 60) {
+    errors["location-latitude-degrees-second"] = {
+      text: "Latitude seconds must be between 0 and 59.999",
+    };
+    errorSummary.push({
+      text: "Latitude seconds must be between 0 and 59.999",
+      href: "#location-latitude-degrees-second",
+    });
+  }
+
+  if (lonDegNum < 0 || lonDegNum > 180) {
+    errors["location-longitude-degrees-degree"] = {
+      text: "Longitude degrees must be between 0 and 180",
+    };
+    errorSummary.push({
+      text: "Longitude degrees must be between 0 and 180",
+      href: "#location-longitude-degrees-degree",
+    });
+  }
+
+  if (lonMinNum < 0 || lonMinNum >= 60) {
+    errors["location-longitude-degrees-minute"] = {
+      text: "Longitude minutes must be between 0 and 59",
+    };
+    errorSummary.push({
+      text: "Longitude minutes must be between 0 and 59",
+      href: "#location-longitude-degrees-minute",
+    });
+  }
+
+  if (lonSecNum < 0 || lonSecNum >= 60) {
+    errors["location-longitude-degrees-second"] = {
+      text: "Longitude seconds must be between 0 and 59.999",
+    };
+    errorSummary.push({
+      text: "Longitude seconds must be between 0 and 59.999",
+      href: "#location-longitude-degrees-second",
+    });
+  }
+}
+
+function validateOSGridRef(data, errors, errorSummary) {
+  const square = data["location-osgrid-square"];
+  const easting = data["location-osgrid-easting"];
+  const northing = data["location-osgrid-northing"];
+
+  if (!square || !easting || !northing) {
+    errorSummary.push({
+      text: "All grid reference fields are required",
+      href: "#location-osgrid-square",
+    });
+    return;
+  }
+
+  const eastingNum = parseInt(easting);
+  const northingNum = parseInt(northing);
+
+  if (isNaN(eastingNum) || isNaN(northingNum)) {
+    errors["location-osgrid-easting"] = {
+      text: "Easting and northing must be valid numbers",
+    };
+    errors["location-osgrid-northing"] = {
+      text: "Easting and northing must be valid numbers",
+    };
+    errorSummary.push({
+      text: "Easting and northing must be valid numbers",
+      href: "#location-osgrid-easting",
+    });
+    return;
+  }
+
+  if (eastingNum < 0 || eastingNum > 99999) {
+    errors["location-osgrid-easting"] = {
+      text: "Easting must be between 0 and 99999",
+    };
+    errorSummary.push({
+      text: "Easting must be between 0 and 99999",
+      href: "#location-osgrid-easting",
+    });
+  }
+
+  if (northingNum < 0 || northingNum > 99999) {
+    errors["location-osgrid-northing"] = {
+      text: "Northing must be between 0 and 99999",
+    };
+    errorSummary.push({
+      text: "Northing must be between 0 and 99999",
+      href: "#location-osgrid-northing",
+    });
+  }
+
+  if (!/^[A-Z]{2}$/i.test(square)) {
+    errors["location-osgrid-square"] = {
+      text: "Grid square must be two letters (e.g., TQ, SW)",
+    };
+    errorSummary.push({
+      text: "Grid square must be two letters (e.g., TQ, SW)",
+      href: "#location-osgrid-square",
+    });
+  }
+}
+
+function validateMapInput(data, errors, errorSummary) {
+  const mapLat = data["map-latitude-input"];
+  const mapLon = data["map-longitude-input"];
+  const mapRadius = data["map-radius-input"];
+
+  if (!mapLat || !mapLon || !mapRadius) {
+    errors["map-radius-input"] = {
+      text: "Please draw an area on the map",
+    };
+    errorSummary.push({
+      text: "Please draw an area on the map",
+      href: "#location-map-input",
+    });
+  }
+}
+
+function validateTextLocation(data, errors, errorSummary) {
+  const textLocation = data["text-location"];
+
+  if (!textLocation || textLocation.trim().length < 10) {
+    errors["text-location"] = {
+      text: "Please provide a detailed location description (at least 10 characters)",
+    };
+    errorSummary.push({
+      text: "Please provide a detailed location description (at least 10 characters)",
+      href: "#text-location",
+    });
+  }
+}
+
+// Location answer page
+router.get("/titan-mvp-1.2/form-editor/location-answer", function (req, res) {
+  res.render("titan-mvp-1.2/form-editor/location-answer", {
+    serviceName: "Form Editor",
+    data: req.session.data || {},
+  });
+});
+
 // Listing and setup routes
 router.get("/titan-mvp-1.2/form-editor/listing", function (req, res) {
   const formPages = req.session.data["formPages"] || [];

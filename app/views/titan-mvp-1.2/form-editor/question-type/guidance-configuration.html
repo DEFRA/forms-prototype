@@ -258,7 +258,7 @@ activeLinkId: "nav-editor"
                             }) }}
 
                             <p class="govuk-body">
-                              <a href="/titan-mvp-1/form-editor/delete/{{ currentPage.pageId }}"
+                              <a href="/titan-mvp-1.2/form-editor/delete/{{ currentPage.pageId }}"
                                 class="govuk-link govuk-link--no-visited-state govuk-link--destructive hide-in-reorder-mode hide-when-edit-mode">
                                 Delete page
                               </a>
@@ -300,7 +300,7 @@ activeLinkId: "nav-editor"
                         {% if currentPage and currentPage.pageId %}
                         {{ govukButton({
                         text: "Manage conditions",
-                        href: "/titan-mvp-1/form-editor/conditions/page-level/" + currentPage.pageId,
+                        href: "/titan-mvp-1.2/form-editor/conditions/page-level/" + currentPage.pageId,
                         classes: "govuk-button"
                         }) }}
                         {% else %}

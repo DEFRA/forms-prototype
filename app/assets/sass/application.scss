@@ -3728,3 +3728,19 @@ to
   padding: 1.5rem;
   margin: 2rem 0;
 }
+
+.row-prototype-coordinate-input {
+  .govuk-form-group {
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+}
+
+.autocomplete__option {
+  &:hover,
+  &--focused {
+    span {
+      color: white;
+    }
+  }
+}

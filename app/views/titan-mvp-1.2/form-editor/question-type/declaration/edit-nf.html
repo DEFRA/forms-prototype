@@ -14,16 +14,16 @@ accountName: "Chris Smith",
 homepageLink: "/",
 signOutLink: "/onboarding/sign-out-confirmation",
 navigationItems: [
-{ href: "/titan-mvp-1/library.html", text: "Forms library", id: "nav-library" },
-{ href: "/cph-overview/draft/complete-clean.html", text: "Overview", id: "nav-overview" },
-{ href: "/titan-mvp-1/form-editor/listing", text: "Editor", id: "nav-editor" } ],
+{ href: "/titan-mvp-1.2/library.html", text: "Forms library", id: "nav-library" },
+{ href: "/titan-mvp-1.2/form-overview/index", text: "Overview", id: "nav-overview" },
+{ href: "/titan-mvp-1.2/form-editor/listing", text: "Editor", id: "nav-editor" } ],
 activeLinkId: "nav-editor"
 }) }}
 
 <div class="x-govuk-masthead x-govuk-masthead--large">
     <div class="govuk-width-container">
         {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text:
-        commonTerms.form_editor.information_type.back, href: "/titan-mvp-1/form-editor/listing.html" }) }}
+        commonTerms.form_editor.information_type.back, href: "/titan-mvp-1.2/form-editor/listing.html" }) }}
 
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
             style="border-bottom: 1px solid white; margin-bottom: 0" />
@@ -92,9 +92,7 @@ activeLinkId: "nav-editor"
                                                             {{ commonTerms.form_editor.question_settings.question }}
                                                         </label>
 
-                                                        <div class="govuk-hint">
-                                                            This should usually include the word ‘Declaration’
-                                                        </div>
+
                                                         <input class="govuk-input" id="question-label-input-declaration"
                                                             name="questionLabelInputDeclaration" type="text" value="">
                                                     </div>
@@ -135,10 +133,8 @@ activeLinkId: "nav-editor"
                                                             }}
                                                         </label>
                                                         <div class="govuk-hint">
-                                                            {{
-                                                            commonTerms.form_editor.question_settings.declaration_text_hint
-                                                            }}. You can use Markdown to format the content or add
-                                                            hyperlinks.
+                                                            You can use Markdown if you want to format the content or
+                                                            add links
                                                         </div>
                                                         <textarea class="govuk-textarea" id="declaration-text-input"
                                                             name="declarationTextInput" rows="5"
