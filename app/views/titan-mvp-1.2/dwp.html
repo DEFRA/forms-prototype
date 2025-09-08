@@ -22,18 +22,16 @@ activeLinkId: "nav-features"
 {{ xGovukMasthead({
 inverse: true,
 title: {
-text: "Features"
+text: "Postcode lookup prototype"
 },
 description: {
-html: "The Defra Form Designer is in private beta. We're working on some <a href='#coming-soon'
-    class='govuk-link govuk-link--inverse govuk-link--no-visited-state'>
-    exciting features</a> right now."
+html: "This prototype shows a postcode lookup plugin that can be used in a form."
 }
 }) }}
 {% endblock %}
 
 {% block pageTitle %}
-Features – Defra Form Designer – GOV.UK Prototype Kit
+Postcode lookup prototype – Defra Form Designer
 {% endblock %}
 
 
@@ -44,9 +42,10 @@ Features – Defra Form Designer – GOV.UK Prototype Kit
 {# Example of a Continue button #}
 {{
 govukButton({
-text: "Continue",
+text: "Try the postcode lookup prototype",
+classes: "govuk-button--start",
 href: "/dwp-find-an-address-plugin/start?find_an_address_exit_url=/your-exit-url",
-isStartButton: false
+isStartButton: true
 })
 }}
 {% endblock %}
