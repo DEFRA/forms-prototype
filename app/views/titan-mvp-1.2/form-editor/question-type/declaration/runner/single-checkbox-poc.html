@@ -1,0 +1,92 @@
+{% extends "layouts/main.html" %}
+
+{% block pageTitle %}
+Single Checkbox Proof of Concept – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block beforeContent %}
+{{ govukBackLink({
+text: "Back",
+href: "javascript:window.history.back()"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h1 class="govuk-heading-l">Single Checkbox Proof of Concept</h1>
+
+        <form class="form" action="/path/of/next/page" method="post">
+
+            <!-- Example 1: Single checkbox WITHOUT fieldset/legend -->
+            <div class="govuk-form-group">
+                <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                    <div class="govuk-checkboxes__item">
+                        <input class="govuk-checkboxes__input" id="simple-checkbox" name="simple-checkbox"
+                            type="checkbox" value="confirmed">
+                        <label class="govuk-label govuk-checkboxes__label" for="simple-checkbox">
+                            I agree to the terms and conditions
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+            <!-- Example 2: Single checkbox WITH fieldset/legend (when heading is provided) -->
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="declaration-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <h1 class="govuk-fieldset__heading">Declaration</h1>
+                    </legend>
+                    <div id="declaration-hint" class="govuk-hint">
+                        Please confirm that the information you have provided is accurate
+                    </div>
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="declaration-checkbox" name="declaration"
+                                type="checkbox" value="confirmed">
+                            <label class="govuk-label govuk-checkboxes__label" for="declaration-checkbox">
+                                I declare that the information I have provided is true and accurate to the best of my
+                                knowledge
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+            <!-- Example 3: Single checkbox WITH fieldset/legend (using span instead of h1) -->
+            <div class="govuk-form-group">
+                <fieldset class="govuk-fieldset" aria-describedby="consent-hint">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                        <span class="govuk-fieldset__heading">Data consent</span>
+                    </legend>
+                    <div id="consent-hint" class="govuk-hint">
+                        We need your consent to process your data
+                    </div>
+                    <div class="govuk-checkboxes" data-module="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item">
+                            <input class="govuk-checkboxes__input" id="consent-checkbox" name="consent" type="checkbox"
+                                value="confirmed">
+                            <label class="govuk-label govuk-checkboxes__label" for="consent-checkbox">
+                                I consent to my data being processed for this application
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            {{ govukButton({
+            text: "Continue"
+            }) }}
+
+        </form>
+
+    </div>
+</div>
+
+{% endblock %}
