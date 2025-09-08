@@ -783,6 +783,16 @@ router.get(
   }
 );
 
+// Postcode lookup prototype page
+router.get(
+  "/titan-mvp-1.2/form-editor/location/postcode-lookup",
+  function (req, res) {
+    res.render("titan-mvp-1.2/form-editor/location/postcode-lookup", {
+      serviceName: "Form Editor",
+    });
+  }
+);
+
 router.post("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
   const errors = {};
   const errorSummary = [];
