@@ -10,6 +10,9 @@
   {%- set describedBy = params.describedBy %}
   {%- set classes = params.classes %}
   {%- set attributes = params.attributes %}
+  
+  {# Determine if we should include a fieldset based on whether legend is provided #}
+  {%- set hasFieldset = fieldset and fieldset.legend and fieldset.legend.text %}
 
   {%- set formGroupClasses = "govuk-form-group" %}
   {%- if errorMessage %}
@@ -20,13 +23,15 @@
   {%- endif %}
 
   {%- set fieldsetClasses = "govuk-fieldset" %}
-  {%- if fieldset.classes %}
+  {%- if hasFieldset and fieldset.classes %}
     {%- set fieldsetClasses = fieldsetClasses + " " + fieldset.classes %}
   {%- endif %}
 
   {%- set legendClasses = "govuk-fieldset__legend" %}
-  {%- if fieldset.legend.classes %}
+  {%- if hasFieldset and fieldset.legend.classes %}
     {%- set legendClasses = legendClasses + " " + fieldset.legend.classes %}
+  {%- elif hasFieldset and (fieldset.legend.isPageHeading or fieldset.legend.is_page_heading) %}
+    {%- set legendClasses = legendClasses + " govuk-fieldset__legend--xl" %}
   {%- endif %}
 
   {%- set describedByValue = describedBy %}
@@ -38,14 +43,16 @@
   {%- endif %}
 
   <div class="{{ formGroupClasses }}"{% if formGroup.attributes %}{% for attribute, value in formGroup.attributes.items() %} {{ attribute }}="{{ value }}"{% endfor %}{% endif %}>
+    {%- if hasFieldset %}
     <fieldset class="{{ fieldsetClasses }}"{% if describedByValue %} aria-describedby="{{ describedByValue }}"{% endif %}{% if fieldset.attributes %}{% for attribute, value in fieldset.attributes.items() %} {{ attribute }}="{{ value }}"{% endfor %}{% endif %}>
       <legend class="{{ legendClasses }}"{% if fieldset.legend.attributes %}{% for attribute, value in fieldset.legend.attributes.items() %} {{ attribute }}="{{ value }}"{% endfor %}{% endif %}>
-        {%- if fieldset.legend.html %}
-          {{ fieldset.legend.html | safe }}
+        {%- if fieldset.legend.isPageHeading or fieldset.legend.is_page_heading %}
+          <h1 class="govuk-fieldset__heading">{{ fieldset.legend.text }}</h1>
         {%- else %}
           {{ fieldset.legend.text }}
         {%- endif %}
       </legend>
+    {%- endif %}
       {%- if hint %}
         <div id="{{ id or name }}-hint" class="govuk-hint"{% if hint.attributes %}{% for attribute, value in hint.attributes.items() %} {{ attribute }}="{{ value }}"{% endfor %}{% endif %}>
           {%- if hint.html %}
@@ -128,6 +135,8 @@
           {%- endif %}
         {%- endfor %}
       </div>
+    {%- if hasFieldset %}
     </fieldset>
+    {%- endif %}
   </div>
 {% endmacro %}

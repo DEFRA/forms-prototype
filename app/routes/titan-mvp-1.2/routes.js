@@ -783,16 +783,6 @@ router.get(
   }
 );
 
-// Postcode lookup prototype page
-router.get(
-  "/titan-mvp-1.2/form-editor/location/postcode-lookup",
-  function (req, res) {
-    res.render("titan-mvp-1.2/form-editor/location/postcode-lookup", {
-      serviceName: "Form Editor",
-    });
-  }
-);
-
 router.post("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
   const errors = {};
   const errorSummary = [];
@@ -5790,6 +5780,16 @@ function emailToName(email) {
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
     .join(" ");
 }
+
+// Single checkbox proof of concept
+router.get(
+  "/titan-mvp-1.2/form-editor/question-type/declaration/runner/single-checkbox-poc",
+  function (req, res) {
+    res.render(
+      "titan-mvp-1.2/form-editor/question-type/declaration/runner/single-checkbox-poc"
+    );
+  }
+);
 
 // Welcome email preview (GET)
 router.get("/titan-mvp-1.2/email/welcome-preview", function (req, res) {
