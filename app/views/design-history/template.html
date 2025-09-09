@@ -206,6 +206,7 @@ navigationItems: [
 activeLinkId: ""
 }) }}
 
+{% if latestVersionLink %}
 {{ xGovukMasthead({
 title: {
 text: featureName
@@ -225,6 +226,19 @@ breadcrumbs: {
 items: breadcrumbs
 }
 }) }}
+{% else %}
+{{ xGovukMasthead({
+title: {
+text: featureName
+},
+description: {
+text: "History of how this feature has evolved over time."
+},
+breadcrumbs: {
+items: breadcrumbs
+}
+}) }}
+{% endif %}
 {% endblock %}
 
 {% block content %}
