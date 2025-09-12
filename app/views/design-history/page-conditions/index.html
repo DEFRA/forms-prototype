@@ -34,25 +34,29 @@ questions, and testing the logic." %}
 {
 roundNumber: "13",
 researchDate: "April 2025",
-researchFinding: "Users needed clearer relationships between conditions and questions",
-changeMade: "Improved visual hierarchy and condition relationships"
+researchFinding: "Overall setup described as 'very intuitive' and 'super duper clear'. Positive feedback on modularity
+and combining conditions. Some confusion about repetition in flow and linking conditions to pages.",
+changeMade: "Enhanced success messages with clear CTAs, improved messaging about which pages conditions apply to"
 },
 {
 roundNumber: "12",
 researchDate: "March 2025",
-researchFinding: "Visibility improved by moving filter to left-hand pane",
-changeMade: "Enhanced condition filter visibility"
+researchFinding: "Participants navigated adding conditions successfully through exploration. Revealing operator and
+renaming to 'Condition type' improved understanding. Discoverability improved after moving filter to left-hand pane.",
+changeMade: "Moved 'Filter pages by condition' to left-hand pane, revealed operator and renamed to 'Condition type'"
 },
 {
 roundNumber: "11",
 researchDate: "March 2025",
-researchFinding: "Users found setup for page conditions confusing",
-changeMade: "Improved UI flow and terminology"
+researchFinding: "Intuitive overall but not obvious that questions needed separate pages for conditions. Terminology
+issues with 'operator'. Discoverability issues with hidden page conditions and repeater questions.",
+changeMade: "Improved UI flow, terminology, and discoverability of condition controls"
 },
 {
 roundNumber: "2",
 researchDate: "May/June 2024",
-researchFinding: "Conditions label unclear without prompting",
+researchFinding: "Conditions label unclear without prompting. 'Add or change conditions' page not clear. 'Add condition:
+Enter...' needed revision. Overall logic clear once understood.",
 changeMade: "Revised content for clarity and intuitive understanding"
 }
 ] %}
@@ -60,79 +64,170 @@ changeMade: "Revised content for clarity and intuitive understanding"
 {# --- Detailed research summaries --- #}
 {% set researchSummaries = [
 {
-title: "Round 13 - April 2025",
-summary: "Testing of condition relationships and visual hierarchy",
+title: "Round 13 – April 2025",
+summary: "Testing of overall page conditions setup, conditional guidance, and combining multiple conditions",
 sections: [
 {
 type: "content",
-content: "**Research conducted:** Remote usability testing (April 2025)\n\n**Participants:** Content designers and form
-administrators"
+content: "**What was tested:** Overall page conditions setup, conditional guidance, and combining multiple
+conditions\n\n**Participants:** Content designers"
 },
 {
 type: "findings",
 content: [
-"Users needed clearer relationships between conditions and questions",
-"Recommendation to improve visual hierarchy",
-"Success messages and clear CTAs particularly helpful"
+"Overall setup described as 'very intuitive', 'super duper clear', 'good', and 'really nice'",
+"Positive feedback on modularity: conditions could be treated as reusable building blocks",
+"Joining multiple conditions was straightforward; participants managed with no guidance",
+"Success messages with clear call-to-action ('Add to pages') helped users adapt",
+"Some confusion about repetition when asked to 'Create a new condition' twice in the flow",
+"Linking: some expected conditions to be tied directly to the question page they were created from",
+"Messaging about which pages a condition was applied to was subtle – participants wanted it spelled out more clearly"
+]
+},
+{
+type: "quotes",
+content: [
+"\"The ability to combine conditions – that's pretty wicked. I can see that being a big time-saver.\" (P1)",
+"\"It's a bit clunky compared to other experiences like MS Forms.\" (P4)",
+"\"You might think when you first create the page with the choice, that you're putting conditions on that… but then you
+almost have to go back and do it because the conditions are separate.\" (P1)",
+"\"That's how I'm following this. Whatever appears in a green box, I'll just do.\" (P1)"
 ]
 }
 ]
 },
 {
-title: "Round 12 - March 2025",
-summary: "Testing of condition filters and visibility",
+title: "Round 12 – March 2025",
+summary: "Testing of condition setup flow and discoverability improvements",
 sections: [
 {
 type: "content",
-content: "**Research conducted:** Remote usability testing (March 2025)\n\n**Participants:** Content designers and form
-administrators"
+content: "**What was tested:** Condition setup flow and discoverability improvements\n\n**Participants:** 5 content
+designers (BAU, juniors, mix of prior form experience)"
 },
 {
 type: "findings",
 content: [
-"Visibility improved by moving filter to left-hand pane",
-"Users appreciated ability to check form length and condition correctness",
-"Recommendation to continue exposing condition filters in overview pane"
+"Participants generally navigated adding conditions successfully through exploration",
+"Some initial confusion between thinking in terms of questions vs. pages, but they were able to set up routing
+effectively",
+"Revealing the operator ('is') and renaming it to 'Condition type' improved understanding",
+"Discoverability improved for 'Filter pages by condition' after moving it to the left-hand pane (previously hidden under
+a dropdown)"
+]
+},
+{
+type: "quotes",
+content: [
+"\"Pretty straightforward.\" (P1)",
+"\"Easy peasy.\" (P2)",
+"\"You can filter pages by condition. OK, I can see that would be useful.\" (P1)",
+"\"…check that all the conditions have been set correctly. That would be useful.\" (P2)"
 ]
 }
 ]
 },
 {
 title: "Round 11 - March 2025",
-summary: "Testing of page condition setup",
+summary: "Testing of page condition setup and discoverability",
 sections: [
 {
 type: "content",
-content: "**Research conducted:** Remote usability testing (March 2025)\n\n**Participants:** Content designers and form
-administrators"
+content: "**What was tested:** Page condition setup and discoverability\n\n"
+},
+{
+type: "content",
+content: "**Participants:** 4 content designers"
 },
 {
 type: "findings",
 content: [
-"Users found setup for page conditions confusing",
-"Unclear about order of setup and placement of controls",
-"Recommendation to improve UI flow and terminology"
+"Placement / discoverability: Page conditions and repeater questions only appeared on a separate page after saving a
+question, causing uncertainty. Participants expected page heading, guidance, and conditions to appear earlier in the
+flow. Some felt conditions were 'hidden' and wanted them more prominent.",
+"Existing vs new condition: Participants often clicked 'Add an existing condition' first (because it appeared
+first), before realising they should create a new one.",
+"Setup experience: Mixed - some found it simple and intuitive; others struggled. Not obvious that conditions only
+work if questions are on separate pages. Some put two questions on one page and hit issues.",
+"Terminology: The word 'operator' confused people; they preferred familiar terms like 'condition' or 'options'. One
+participant said setting a condition felt like 'working backwards' (starting from the answer instead of the question).",
+"Preview & checking conditions: Some had trouble finding or using preview to check conditions. Participants missed
+the 'filter by conditions' dropdown - it didn't mean much to them. They wanted a flow chart view of the routing, but
+instead clicked through the prototype to test conditions."
+]
+},
+{
+type: "quotes",
+content: [
+"I'm slightly confused as to why these are sort of offered to me at this point and not offered to me when I was
+creating the question page. (P5)",
+"So I'm not clear what it means by existing because I haven't created this yet. (P4)",
+"Filter pages by condition didn't mean a lot… I just skipped over it. (P1)",
+"I know the word filter is accurate, but for me it's just like seeing the conditional journeys or something. (P3)"
 ]
 }
 ]
 },
 {
 title: "Round 2 - May/June 2024",
-summary: "Initial testing of conditions feature",
+summary: "Initial testing of conditions feature and content clarity",
 sections: [
 {
 type: "content",
-content: "**Research conducted:** Remote usability testing (May/June 2024)\n\n**Participants:** Content designers and
-form administrators"
+content: "**What was tested:** Initial conditions feature and content clarity\n\n**Participants:** 1 x BAU working with
+mainly Environment Agency (Whitehall),
+1 x Environment Agency (Fishing rod licenses),
+1 x BAU working with Trade - (Whitehall),
+1 x BAU updating gov.uk/intranet - (Whitehall)
+"
+},
+{
+type: "details",
+summary: "Screens that were tested",
+content: "",
+images: [
+{
+src: "/public/images/conditions/r2/add.png",
+alt: "Add or change conditions screen",
+caption: "Add condition screen"
+}
+],
+items: [
+{
+type: "images",
+content: {
+src: "/public/images/conditions/r2/name.png",
+alt: "Condition name screen: enter a unique name for the condition",
+caption: "Condition name screen: enter a unique name for the condition"
+}
+},
+{
+type: "images",
+content: {
+src: "/public/images/conditions/r2/select.png",
+alt: "Select answer screen: select which answer the condition should be based on",
+caption: "Select answer screen: select which answer the condition should be based on"
+}
+},
+{
+type: "images",
+content: {
+src: "/public/images/conditions/r2/select-answer.png",
+alt: "Select answer screen: select which answer the condition should be based on: dog, cat, or hamster",
+caption: "Select answer screen: select which answer the condition should be based on: dog, cat, or hamster"
+}
+}
+]
 },
 {
 type: "findings",
 content: [
-"Conditions label unclear without prompting",
-"Add or change conditions unclear; select condition clear",
-"Overall logic and clarity of conditional questions well-understood",
-"Recommendation to revise content for clarity",
-"Recommendation to clarify instructions on adding conditions"
+"Tested scenario for creating a form with conditional branching (e.g. pets → dogs → dog's age)",
+"The label 'Conditions' was not clear to all participants, some needed prompting",
+"'Add or change conditions' page: not clear what it does",
+"'Add condition: Enter …' needed content revision",
+"'Add condition: select …' was clear",
+"Overall, both the copy and the logic behind conditional questions were clear once understood"
 ]
 }
 ]

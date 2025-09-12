@@ -233,7 +233,7 @@ text-align: center;"> Previews
               </p>
 
               {# {% include "/titan-mvp-1/form-editor/templates/previews/address/edit.html" %} #}
-              {% include "/titan-mvp-1.2/form-editor/question-type/address/previews/edit.html" %}
+              {% include "/titan-mvp-1/form-editor/question-type/address/previews/edit.html" %}
 
               <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;"
                 data-module="govuk-skip-link">
@@ -408,8 +408,7 @@ text-align: center;"> Previews
         document.addEventListener('DOMContentLoaded', function () {
           // DOM Elements
           const domElements = {
-            // Use the real question input id used on the form
-            multiQuestionLabelInputAddress: document.getElementById('question-label-input-address'),
+            multiQuestionLabelInputAddress: document.getElementById('multi-question-label-input-address'),
             errorMessageInputAddress: document.getElementById('error-message-input-address'),
             errorMessagePreviewElements: document.querySelectorAll("#error-dynamic-text, #error-dynamic-text-long, #error-dynamic-text-short, #error-dynamic-text-range"),
             makeOptionalCheckbox: document.getElementById('make-optional'),
@@ -419,8 +418,7 @@ text-align: center;"> Previews
             maxCharactersPreview: document.querySelectorAll("#max-characters, #max-length, #max-length-range"),
             errorMessagePreviewSummary: document.getElementById('error-message-preview-summary'), // Add the details component
             postcodeLookupCheckbox: document.getElementById('postcode-lookup'),
-            previewFieldset: document.querySelector('#tab-one fieldset'),
-            guidanceAddress: document.getElementById('guidance-address')
+            previewFieldset: document.querySelector('#tab-one fieldset')
           };
 
           // Initialize event listeners
@@ -438,8 +436,7 @@ text-align: center;"> Previews
             }
 
             // Apply focus/blur highlighting to other elements
-            // Ensure we highlight using the correct question input element
-            applyHighlightOnFocus(domElements.multiQuestionLabelInputAddress, document.getElementById('question-label-legend'));
+            applyHighlightOnFocus(domElements.multiQuestionLabelInputTextarea, document.getElementById('question-label-legend'));
 
             // Update character limits dynamically
             if (domElements.minCharactersInput && domElements.maxCharactersInput) {
@@ -474,23 +471,18 @@ text-align: center;"> Previews
           }
 
           function applyHighlightOnFocus(inputElement, targetElements) {
-            if (!inputElement || !targetElements) return;
+            if (inputElement && targetElements) {
+              inputElement.addEventListener('focus', function () {
+                targetElements.forEach(target => target.classList.add('highlight'));
+              });
+              inputElement.addEventListener('blur', function () {
+                targetElements.forEach(target => target.classList.remove('highlight'));
+              });
 
-            // Normalise to an array so we can accept a single element or a NodeList
-            const targets = (NodeList.prototype.isPrototypeOf(targetElements) || Array.isArray(targetElements))
-              ? targetElements
-              : [targetElements];
-
-            inputElement.addEventListener('focus', function () {
-              targets.forEach(target => target.classList.add('highlight'));
-            });
-            inputElement.addEventListener('blur', function () {
-              targets.forEach(target => target.classList.remove('highlight'));
-            });
-
-            // If the input is already focused, apply the highlight immediately
-            if (document.activeElement === inputElement) {
-              targets.forEach(target => target.classList.add('highlight'));
+              // If the input is already focused, apply the highlight immediately
+              if (document.activeElement === inputElement) {
+                targetElements.forEach(target => target.classList.add('highlight'));
+              }
             }
           }
 
@@ -499,18 +491,14 @@ text-align: center;"> Previews
 
             const isChecked = domElements.postcodeLookupCheckbox.checked;
 
-            // Save current values before switching
-            const currentQuestionText = domElements.multiQuestionLabelInputAddress ? domElements.multiQuestionLabelInputAddress.value : '';
-            const currentGuidanceText = domElements.guidanceAddress ? domElements.guidanceAddress.value : '';
-
             if (isChecked) {
               // Show postcode lookup interface
               domElements.previewFieldset.innerHTML = `
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                   <h1 class="govuk-fieldset__heading" id="question-label-legend">
-                    ${currentQuestionText || 'Question'}
+                    Question
                   </h1>
-                  <div class="govuk-hint" id="hint-text-output">${currentGuidanceText}</div>
+                  <div class="govuk-hint" id="hint-text-output"></div>
                 </legend>
 
                 <div class="govuk-form-group">
@@ -524,7 +512,7 @@ text-align: center;"> Previews
                   <button class="govuk-button govuk-button--secondary govuk-!-margin-right-1" type="button">
                     Find address
                   </button>
-                  <p class="govuk-body">or <a href="#" class="govuk-link">enter address manually</a></p>
+                  <p class="govuk-body">or <a href="#" class="govuk-link">Enter address manually</a></p>
                 </div>
               `;
             } else {
@@ -532,9 +520,9 @@ text-align: center;"> Previews
               domElements.previewFieldset.innerHTML = `
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                   <h1 class="govuk-fieldset__heading" id="question-label-legend">
-                    ${currentQuestionText || 'Question'}
+                    Question
                   </h1>
-                  <div class="govuk-hint" id="hint-text-output">${currentGuidanceText}</div>
+                  <div class="govuk-hint" id="hint-text-output"></div>
                 </legend>
 
                 <div class="govuk-form-group">
@@ -565,56 +553,6 @@ text-align: center;"> Previews
                   <input class="govuk-input govuk-input--width-10" id="address-postcode" name="addressPostcode" type="text" autocomplete="postal-code">
                 </div>
               `;
-            }
-
-            // Re-apply dynamic functionality after content change
-            reapplyDynamicFunctionality();
-          }
-
-          function reapplyDynamicFunctionality() {
-            // Re-bind highlight and text updates for the question label
-            const questionLabelLegend = document.getElementById('question-label-legend');
-            const questionInput = domElements.multiQuestionLabelInputAddress; // real id set above
-            if (questionInput && questionLabelLegend) {
-              // Only bind once per lifecycle of the input
-              if (!questionInput.dataset.previewBound) {
-                applyHighlightOnFocus(questionInput, questionLabelLegend);
-                questionInput.addEventListener('input', function () {
-                  const suffix = domElements.makeOptionalCheckbox && domElements.makeOptionalCheckbox.checked ? ' (optional)' : '';
-                  questionLabelLegend.textContent = this.value || 'Question';
-                  questionLabelLegend.textContent += suffix;
-                });
-                // Mark as bound to avoid duplicate listeners
-                questionInput.dataset.previewBound = 'true';
-              }
-              // Immediately reflect current value
-              const suffixNow = domElements.makeOptionalCheckbox && domElements.makeOptionalCheckbox.checked ? ' (optional)' : '';
-              questionLabelLegend.textContent = questionInput.value || 'Question';
-              questionLabelLegend.textContent += suffixNow;
-            }
-
-            // Ensure the optional checkbox continues to control the suffix after toggling
-            if (domElements.makeOptionalCheckbox && questionLabelLegend && questionInput) {
-              if (!domElements.makeOptionalCheckbox.dataset.previewBound) {
-                domElements.makeOptionalCheckbox.addEventListener('change', function () {
-                  const suffix = domElements.makeOptionalCheckbox.checked ? ' (optional)' : '';
-                  questionLabelLegend.textContent = (questionInput.value || 'Question') + suffix;
-                });
-                domElements.makeOptionalCheckbox.dataset.previewBound = 'true';
-              }
-            }
-
-            // Re-bind hint text updates
-            const hintTextOutput = document.getElementById('hint-text-output');
-            const guidanceInput = domElements.guidanceAddress;
-            if (guidanceInput && hintTextOutput) {
-              if (!guidanceInput.dataset.previewBound) {
-                guidanceInput.addEventListener('input', function () {
-                  hintTextOutput.textContent = this.value || '';
-                });
-                guidanceInput.dataset.previewBound = 'true';
-              }
-              hintTextOutput.textContent = guidanceInput.value || '';
             }
           }
 

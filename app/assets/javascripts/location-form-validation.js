@@ -95,6 +95,36 @@ class LocationFormValidator {
         });
       }
     });
+
+    // OS Grid reference number (single field)
+    const osGridRefNumber = document.getElementById("os-grid-reference-number");
+    if (osGridRefNumber) {
+      osGridRefNumber.addEventListener("blur", () => {
+        this.validateOSGridReferenceNumber();
+      });
+    }
+
+    // Easting/Northing-only alternate IDs
+    const enAlt = [
+      "location-osgrid-easting-alt",
+      "location-osgrid-northing-alt",
+    ];
+    enAlt.forEach((id) => {
+      const input = document.getElementById(id);
+      if (input) {
+        input.addEventListener("blur", () => {
+          this.validateEastingNorthingAlt();
+        });
+      }
+    });
+
+    // National Grid field number
+    const ngField = document.getElementById("national-grid-field-number");
+    if (ngField) {
+      ngField.addEventListener("blur", () => {
+        this.validateNationalGridFieldNumber();
+      });
+    }
   }
 
   validateForm() {
@@ -103,6 +133,9 @@ class LocationFormValidator {
     const hasDecimalMinutes = this.hasDecimalMinutes();
     const hasDegreesMinutesSeconds = this.hasDegreesMinutesSeconds();
     const hasOSGrid = this.hasOSGrid();
+    const hasOSGridRefNumber = this.hasOSGridReferenceNumber();
+    const hasEastingNorthingAlt = this.hasEastingNorthingAlt();
+    const hasNgFieldNumber = this.hasNationalGridFieldNumber();
     const hasMap = this.hasMap();
     const hasTextLocation = this.hasTextLocation();
 
@@ -111,6 +144,9 @@ class LocationFormValidator {
       hasDecimalMinutes ||
       hasDegreesMinutesSeconds ||
       hasOSGrid ||
+      hasOSGridRefNumber ||
+      hasEastingNorthingAlt ||
+      hasNgFieldNumber ||
       hasMap ||
       hasTextLocation;
 
@@ -136,6 +172,18 @@ class LocationFormValidator {
 
     if (hasOSGrid) {
       isValid = this.validateOSGridRef() && isValid;
+    }
+
+    if (hasOSGridRefNumber) {
+      isValid = this.validateOSGridReferenceNumber() && isValid;
+    }
+
+    if (hasEastingNorthingAlt) {
+      isValid = this.validateEastingNorthingAlt() && isValid;
+    }
+
+    if (hasNgFieldNumber) {
+      isValid = this.validateNationalGridFieldNumber() && isValid;
     }
 
     if (hasMap) {
@@ -180,6 +228,26 @@ class LocationFormValidator {
     const easting = document.getElementById("location-osgrid-easting")?.value;
     const northing = document.getElementById("location-osgrid-northing")?.value;
     return square && easting && northing;
+  }
+
+  hasOSGridReferenceNumber() {
+    const ref = document.getElementById("os-grid-reference-number")?.value;
+    return ref && ref.trim().length > 0;
+  }
+
+  hasEastingNorthingAlt() {
+    const easting = document.getElementById(
+      "location-osgrid-easting-alt"
+    )?.value;
+    const northing = document.getElementById(
+      "location-osgrid-northing-alt"
+    )?.value;
+    return easting && northing;
+  }
+
+  hasNationalGridFieldNumber() {
+    const field = document.getElementById("national-grid-field-number")?.value;
+    return field && field.trim().length > 0;
   }
 
   hasMap() {
@@ -376,6 +444,60 @@ class LocationFormValidator {
       fieldIds.forEach((id) => {
         this.clearFieldErrors(id);
       });
+    }
+
+    return isValid;
+  }
+
+  validateOSGridReferenceNumber() {
+    const value = document.getElementById("os-grid-reference-number")?.value;
+    const isValid = this.validator.validateOSGridReferenceNumber(value);
+
+    const fieldId = "os-grid-reference-number";
+    if (!isValid) {
+      this.showFieldErrors(fieldId, this.validator.getErrors());
+    } else {
+      this.clearFieldErrors(fieldId);
+    }
+
+    return isValid;
+  }
+
+  validateEastingNorthingAlt() {
+    const easting = document.getElementById(
+      "location-osgrid-easting-alt"
+    )?.value;
+    const northing = document.getElementById(
+      "location-osgrid-northing-alt"
+    )?.value;
+
+    const isValid = this.validator.validateEastingNorthing(easting, northing);
+
+    const fieldIds = [
+      "location-osgrid-easting-alt",
+      "location-osgrid-northing-alt",
+    ];
+
+    if (!isValid) {
+      fieldIds.forEach((id) =>
+        this.showFieldErrors(id, this.validator.getErrors())
+      );
+    } else {
+      fieldIds.forEach((id) => this.clearFieldErrors(id));
+    }
+
+    return isValid;
+  }
+
+  validateNationalGridFieldNumber() {
+    const value = document.getElementById("national-grid-field-number")?.value;
+    const isValid = this.validator.validateNationalGridFieldNumber(value);
+    const fieldId = "national-grid-field-number";
+
+    if (!isValid) {
+      this.showFieldErrors(fieldId, this.validator.getErrors());
+    } else {
+      this.clearFieldErrors(fieldId);
     }
 
     return isValid;

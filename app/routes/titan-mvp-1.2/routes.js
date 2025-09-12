@@ -764,6 +764,15 @@ router.post(
 // ── FORM EDITOR ROUTES ─────────────────────────────────────────────────────────
 
 // Location pages routes
+router.get("/titan-mvp-1.2/form-editor/location/precise", function (req, res) {
+  res.render("titan-mvp-1.2/form-editor/location/precise", {
+    serviceName: "Form Editor",
+    errorSummary: [],
+    errors: {},
+    data: req.session.data || {},
+  });
+});
+
 router.get("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
   res.render("titan-mvp-1.2/form-editor/location/wreck", {
     serviceName: "Form Editor",
@@ -773,6 +782,34 @@ router.get("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
   });
 });
 
+// Wreck OTP demo page
+router.get(
+  "/titan-mvp-1.2/form-editor/location/wreck-otp",
+  function (req, res) {
+    res.render("titan-mvp-1.2/form-editor/location/wreck-otp", {
+      serviceName: "Form Editor",
+      errorSummary: [],
+      errors: {},
+      data: req.session.data || {},
+    });
+  }
+);
+
+// OTP Input Demo Route
+router.get("/titan-mvp-1.2/govuk-otp-input-demo", function (req, res) {
+  res.render("titan-mvp-1.2/govuk-otp-input-demo", {
+    serviceName: "Form Editor",
+    errorSummary: [],
+    errors: {},
+    data: req.session.data || {},
+  });
+});
+
+router.post("/titan-mvp-1.2/govuk-otp-input-demo", function (req, res) {
+  // Handle form submission - redirect back to demo page
+  res.redirect("/titan-mvp-1.2/govuk-otp-input-demo");
+});
+
 // Error scenarios page for location form
 router.get(
   "/titan-mvp-1.2/form-editor/location/wreck-errors",
@@ -780,6 +817,336 @@ router.get(
     res.render("titan-mvp-1.2/form-editor/location/wreck-errors", {
       serviceName: "Form Editor",
     });
+  }
+);
+
+// Wreck OTP demo page POST
+router.post(
+  "/titan-mvp-1.2/form-editor/location/wreck-otp",
+  function (req, res) {
+    const errors = {};
+    const errorSummary = [];
+    const data = req.body;
+
+    // Store the form data in session
+    if (!req.session.data) {
+      req.session.data = {};
+    }
+    if (!req.session.data.location) {
+      req.session.data.location = {};
+    }
+
+    // Store all form data
+    Object.keys(data).forEach((key) => {
+      req.session.data.location[key] = data[key];
+    });
+
+    // Validation functions
+    function isValidNumber(value) {
+      return value && !isNaN(parseFloat(value)) && isFinite(value);
+    }
+
+    function isInRange(value, min, max) {
+      const num = parseFloat(value);
+      return num >= min && num <= max;
+    }
+
+    // Decimal Degrees Validation
+    if (data["latitude_decimal_otp"]) {
+      if (!isValidNumber(data["latitude_decimal_otp"])) {
+        errors["latitude-decimal-otp"] = "Latitude must be a valid number";
+        errorSummary.push({
+          text: "Latitude must be a valid number",
+          href: "#latitude-decimal-otp",
+        });
+      } else if (!isInRange(data["latitude_decimal_otp"], -90, 90)) {
+        errors["latitude-decimal-otp"] =
+          "Latitude must be between -90 and 90 degrees";
+        errorSummary.push({
+          text: "Latitude must be between -90 and 90 degrees",
+          href: "#latitude-decimal-otp",
+        });
+      }
+    }
+
+    if (data["longitude_decimal_otp"]) {
+      if (!isValidNumber(data["longitude_decimal_otp"])) {
+        errors["longitude-decimal-otp"] = "Longitude must be a valid number";
+        errorSummary.push({
+          text: "Longitude must be a valid number",
+          href: "#longitude-decimal-otp",
+        });
+      } else if (!isInRange(data["longitude_decimal_otp"], -180, 180)) {
+        errors["longitude-decimal-otp"] =
+          "Longitude must be between -180 and 180 degrees";
+        errorSummary.push({
+          text: "Longitude must be between -180 and 180 degrees",
+          href: "#longitude-decimal-otp",
+        });
+      }
+    }
+
+    // Degrees and Decimal Minutes Validation
+    if (data["latitude_dm_degree"] || data["latitude_dm_minute"]) {
+      if (!data["latitude_dm_degree"]) {
+        errors["latitude-decimal-minutes-otp"] = "Enter latitude degree";
+        errorSummary.push({
+          text: "Enter latitude degree",
+          href: "#latitude-dm-degree",
+        });
+      } else if (!isInRange(data["latitude_dm_degree"], 0, 90)) {
+        errors["latitude-decimal-minutes-otp"] =
+          "Latitude degree must be between 0 and 90";
+        errorSummary.push({
+          text: "Latitude degree must be between 0 and 90",
+          href: "#latitude-dm-degree",
+        });
+      }
+
+      if (
+        data["latitude_dm_minute"] &&
+        !isInRange(data["latitude_dm_minute"], 0, 59.999)
+      ) {
+        errors["latitude-decimal-minutes-otp"] =
+          "Latitude minutes must be between 0 and 59.999";
+        errorSummary.push({
+          text: "Latitude minutes must be between 0 and 59.999",
+          href: "#latitude-dm-minute",
+        });
+      }
+
+      if (!data["latitude_dm_direction"]) {
+        errors["latitude-decimal-minutes-otp"] = "Select latitude direction";
+        errorSummary.push({
+          text: "Select latitude direction",
+          href: "#latitude-dm-direction",
+        });
+      }
+    }
+
+    if (data["longitude_dm_degree"] || data["longitude_dm_minute"]) {
+      if (!data["longitude_dm_degree"]) {
+        errors["longitude-decimal-minutes-otp"] = "Enter longitude degree";
+        errorSummary.push({
+          text: "Enter longitude degree",
+          href: "#longitude-dm-degree",
+        });
+      } else if (!isInRange(data["longitude_dm_degree"], 0, 180)) {
+        errors["longitude-decimal-minutes-otp"] =
+          "Longitude degree must be between 0 and 180";
+        errorSummary.push({
+          text: "Longitude degree must be between 0 and 180",
+          href: "#longitude-dm-degree",
+        });
+      }
+
+      if (
+        data["longitude_dm_minute"] &&
+        !isInRange(data["longitude_dm_minute"], 0, 59.999)
+      ) {
+        errors["longitude-decimal-minutes-otp"] =
+          "Longitude minutes must be between 0 and 59.999";
+        errorSummary.push({
+          text: "Longitude minutes must be between 0 and 59.999",
+          href: "#longitude-dm-minute",
+        });
+      }
+
+      if (!data["longitude_dm_direction"]) {
+        errors["longitude-decimal-minutes-otp"] = "Select longitude direction";
+        errorSummary.push({
+          text: "Select longitude direction",
+          href: "#longitude-dm-direction",
+        });
+      }
+    }
+
+    // Degrees, Minutes, Seconds Validation
+    if (
+      data["latitude_dms_degree"] ||
+      data["latitude_dms_minute"] ||
+      data["latitude_dms_second"]
+    ) {
+      if (!data["latitude_dms_degree"]) {
+        errors["latitude-dms-otp"] = "Enter latitude degree";
+        errorSummary.push({
+          text: "Enter latitude degree",
+          href: "#latitude-dms-degree",
+        });
+      } else if (!isInRange(data["latitude_dms_degree"], 0, 90)) {
+        errors["latitude-dms-otp"] = "Latitude degree must be between 0 and 90";
+        errorSummary.push({
+          text: "Latitude degree must be between 0 and 90",
+          href: "#latitude-dms-degree",
+        });
+      }
+
+      if (
+        data["latitude_dms_minute"] &&
+        !isInRange(data["latitude_dms_minute"], 0, 59)
+      ) {
+        errors["latitude-dms-otp"] =
+          "Latitude minutes must be between 0 and 59";
+        errorSummary.push({
+          text: "Latitude minutes must be between 0 and 59",
+          href: "#latitude-dms-minute",
+        });
+      }
+
+      if (
+        data["latitude_dms_second"] &&
+        !isInRange(data["latitude_dms_second"], 0, 59.999)
+      ) {
+        errors["latitude-dms-otp"] =
+          "Latitude seconds must be between 0 and 59.999";
+        errorSummary.push({
+          text: "Latitude seconds must be between 0 and 59.999",
+          href: "#latitude-dms-second",
+        });
+      }
+
+      if (!data["latitude_dms_direction"]) {
+        errors["latitude-dms-otp"] = "Select latitude direction";
+        errorSummary.push({
+          text: "Select latitude direction",
+          href: "#latitude-dms-direction",
+        });
+      }
+    }
+
+    if (
+      data["longitude_dms_degree"] ||
+      data["longitude_dms_minute"] ||
+      data["longitude_dms_second"]
+    ) {
+      if (!data["longitude_dms_degree"]) {
+        errors["longitude-dms-otp"] = "Enter longitude degree";
+        errorSummary.push({
+          text: "Enter longitude degree",
+          href: "#longitude-dms-degree",
+        });
+      } else if (!isInRange(data["longitude_dms_degree"], 0, 180)) {
+        errors["longitude-dms-otp"] =
+          "Longitude degree must be between 0 and 180";
+        errorSummary.push({
+          text: "Longitude degree must be between 0 and 180",
+          href: "#longitude-dms-degree",
+        });
+      }
+
+      if (
+        data["longitude_dms_minute"] &&
+        !isInRange(data["longitude_dms_minute"], 0, 59)
+      ) {
+        errors["longitude-dms-otp"] =
+          "Longitude minutes must be between 0 and 59";
+        errorSummary.push({
+          text: "Longitude minutes must be between 0 and 59",
+          href: "#longitude-dms-minute",
+        });
+      }
+
+      if (
+        data["longitude_dms_second"] &&
+        !isInRange(data["longitude_dms_second"], 0, 59.999)
+      ) {
+        errors["longitude-dms-otp"] =
+          "Longitude seconds must be between 0 and 59.999";
+        errorSummary.push({
+          text: "Longitude seconds must be between 0 and 59.999",
+          href: "#longitude-dms-second",
+        });
+      }
+
+      if (!data["longitude_dms_direction"]) {
+        errors["longitude-dms-otp"] = "Select longitude direction";
+        errorSummary.push({
+          text: "Select longitude direction",
+          href: "#longitude-dms-direction",
+        });
+      }
+    }
+
+    // UK Grid Reference Validation
+    if (data["grid_square"] || data["grid_easting"] || data["grid_northing"]) {
+      if (!data["grid_square"]) {
+        errors["uk-grid-otp"] = "Enter grid square";
+        errorSummary.push({
+          text: "Enter grid square",
+          href: "#grid-square",
+        });
+      } else if (!/^[A-Za-z]{2}$/.test(data["grid_square"])) {
+        errors["uk-grid-otp"] =
+          "Grid square must be two letters (e.g., TQ, SW)";
+        errorSummary.push({
+          text: "Grid square must be two letters (e.g., TQ, SW)",
+          href: "#grid-square",
+        });
+      }
+
+      if (!data["grid_easting"]) {
+        errors["uk-grid-otp"] = "Enter easting";
+        errorSummary.push({
+          text: "Enter easting",
+          href: "#grid-easting",
+        });
+      } else if (!isInRange(data["grid_easting"], 0, 99999)) {
+        errors["uk-grid-otp"] = "Easting must be between 0 and 99999";
+        errorSummary.push({
+          text: "Easting must be between 0 and 99999",
+          href: "#grid-easting",
+        });
+      }
+
+      if (!data["grid_northing"]) {
+        errors["uk-grid-otp"] = "Enter northing";
+        errorSummary.push({
+          text: "Enter northing",
+          href: "#grid-northing",
+        });
+      } else if (!isInRange(data["grid_northing"], 0, 99999)) {
+        errors["uk-grid-otp"] = "Northing must be between 0 and 99999";
+        errorSummary.push({
+          text: "Northing must be between 0 and 99999",
+          href: "#grid-northing",
+        });
+      }
+    }
+
+    // Check if at least one coordinate method is provided
+    const hasAnyCoordinateData = Object.keys(data).some(
+      (key) =>
+        key.includes("_otp") ||
+        key.includes("_degree") ||
+        key.includes("_minute") ||
+        key.includes("_second") ||
+        key.includes("_direction") ||
+        key.includes("grid_")
+    );
+
+    if (!hasAnyCoordinateData) {
+      errors["no-coordinates"] =
+        "Please enter at least one coordinate using the OTP inputs";
+      errorSummary.push({
+        text: "Please enter at least one coordinate using the OTP inputs",
+        href: "#latitude-decimal-otp",
+      });
+    }
+
+    // If there are errors, re-render the form with errors
+    if (Object.keys(errors).length > 0) {
+      res.render("titan-mvp-1.2/form-editor/location/wreck-otp", {
+        serviceName: "Form Editor",
+        errorSummary: errorSummary,
+        errors: errors,
+        data: req.session.data || {},
+      });
+    } else {
+      // Success - redirect to a success page or back to the form
+      res.redirect(
+        "/titan-mvp-1.2/form-editor/location/wreck-otp?success=true"
+      );
+    }
   }
 );
 
@@ -807,12 +1174,23 @@ router.post("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
     data["map-radius-input"];
   const hasTextLocation =
     data["text-location"] && data["text-location"].trim().length > 0;
+  const hasOSGridRefNumber =
+    data["os-grid-reference-number"] &&
+    data["os-grid-reference-number"].trim().length > 0;
+  const hasEastingNorthingAlt =
+    data["location-osgrid-easting-alt"] && data["location-osgrid-northing-alt"];
+  const hasNationalGridFieldNumber =
+    data["national-grid-field-number"] &&
+    data["national-grid-field-number"].trim().length > 0;
 
   const hasAnyLocation =
     hasDecimalDegrees ||
     hasDecimalMinutes ||
     hasDegreesMinutesSeconds ||
     hasOSGrid ||
+    hasOSGridRefNumber ||
+    hasEastingNorthingAlt ||
+    hasNationalGridFieldNumber ||
     hasMap ||
     hasTextLocation;
 
@@ -848,6 +1226,18 @@ router.post("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
     validateTextLocation(data, errors, errorSummary);
   }
 
+  if (hasOSGridRefNumber) {
+    validateOSGridRefNumber(data, errors, errorSummary);
+  }
+
+  if (hasEastingNorthingAlt) {
+    validateEastingNorthingAlt(data, errors, errorSummary);
+  }
+
+  if (hasNationalGridFieldNumber) {
+    validateNationalGridFieldNumber(data, errors, errorSummary);
+  }
+
   // Store form data in session
   if (!req.session.data) {
     req.session.data = {};
@@ -864,6 +1254,122 @@ router.post("/titan-mvp-1.2/form-editor/location/wreck", function (req, res) {
   // If there are errors, re-render the form with errors
   if (Object.keys(errors).length > 0) {
     res.render("titan-mvp-1.2/form-editor/location/wreck", {
+      serviceName: "Form Editor",
+      errorSummary: errorSummary,
+      errors: errors,
+      data: req.session.data || {},
+    });
+  } else {
+    // Form is valid, redirect to next step
+    res.redirect("/titan-mvp-1.2/form-editor/location-answer");
+  }
+});
+
+// Precise location page POST
+router.post("/titan-mvp-1.2/form-editor/location/precise", function (req, res) {
+  const errors = {};
+  const errorSummary = [];
+  const data = req.body;
+
+  // Check if at least one location method is provided
+  const hasDecimalDegrees =
+    data["location-latitude-decimal"] && data["location-longitude-decimal"];
+  const hasDecimalMinutes =
+    data["location-latitude-decimal-minutes-degree"] &&
+    data["location-longitude-decimal-minutes-degree"];
+  const hasDegreesMinutesSeconds =
+    data["location-latitude-degrees-degree"] &&
+    data["location-longitude-degrees-degree"];
+  const hasOSGrid =
+    data["location-osgrid-square"] &&
+    data["location-osgrid-easting"] &&
+    data["location-osgrid-northing"];
+  const hasOSGridRefNumber =
+    data["os-grid-reference-number"] &&
+    data["os-grid-reference-number"].trim().length > 0;
+  const hasEastingNorthingAlt =
+    data["location-osgrid-easting-alt"] && data["location-osgrid-northing-alt"];
+  const hasNationalGridFieldNumber =
+    data["national-grid-field-number"] &&
+    data["national-grid-field-number"].trim().length > 0;
+  const hasMap =
+    data["map-latitude-input"] &&
+    data["map-longitude-input"] &&
+    data["map-radius-input"];
+  const hasTextLocation =
+    data["text-location"] && data["text-location"].trim().length > 0;
+
+  const hasAnyLocation =
+    hasDecimalDegrees ||
+    hasDecimalMinutes ||
+    hasDegreesMinutesSeconds ||
+    hasOSGrid ||
+    hasOSGridRefNumber ||
+    hasEastingNorthingAlt ||
+    hasNationalGridFieldNumber ||
+    hasMap ||
+    hasTextLocation;
+
+  if (!hasAnyLocation) {
+    errorSummary.push({
+      text: "Please provide at least one location method",
+      href: "#location-latitude-decimal",
+    });
+  }
+
+  // Validate each provided location method
+  if (hasDecimalDegrees) {
+    validateDecimalDegrees(data, errors, errorSummary);
+  }
+
+  if (hasDecimalMinutes) {
+    validateDegreesDecimalMinutes(data, errors, errorSummary);
+  }
+
+  if (hasDegreesMinutesSeconds) {
+    validateDegreesMinutesSeconds(data, errors, errorSummary);
+  }
+
+  if (hasOSGrid) {
+    validateOSGridRef(data, errors, errorSummary);
+  }
+
+  if (hasMap) {
+    validateMapInput(data, errors, errorSummary);
+  }
+
+  if (hasTextLocation) {
+    validateTextLocation(data, errors, errorSummary);
+  }
+
+  if (hasOSGridRefNumber) {
+    validateOSGridRefNumber(data, errors, errorSummary);
+  }
+
+  if (hasEastingNorthingAlt) {
+    validateEastingNorthingAlt(data, errors, errorSummary);
+  }
+
+  if (hasNationalGridFieldNumber) {
+    validateNationalGridFieldNumber(data, errors, errorSummary);
+  }
+
+  // Store form data in session
+  if (!req.session.data) {
+    req.session.data = {};
+  }
+  if (!req.session.data.location) {
+    req.session.data.location = {};
+  }
+
+  // Store all form data
+  Object.keys(data).forEach((key) => {
+    req.session.data.location[key] = data[key];
+  });
+
+  // If there are errors, re-render the form with errors
+  if (Object.keys(errors).length > 0) {
+    res.render("titan-mvp-1.2/form-editor/location/precise", {
       serviceName: "Form Editor",
       errorSummary: errorSummary,
       errors: errors,
@@ -1218,6 +1724,90 @@ function validateTextLocation(data, errors, errorSummary) {
     errorSummary.push({
       text: "Please provide a detailed location description (at least 10 characters)",
       href: "#text-location",
+    });
+  }
+}
+
+function validateOSGridRefNumber(data, errors, errorSummary) {
+  const gridRef = data["os-grid-reference-number"];
+
+  if (!gridRef || gridRef.trim().length === 0) {
+    errors["os-grid-reference-number"] = {
+      text: "Enter an OS grid reference",
+    };
+    errorSummary.push({
+      text: "Enter an OS grid reference",
+      href: "#os-grid-reference-number",
+    });
+  } else {
+    // Basic format validation - should be 2 letters followed by numbers
+    const cleaned = gridRef.trim().replace(/\s+/g, " ");
+    if (!/^[A-Z]{2}\s*\d+\s*\d+$/i.test(cleaned)) {
+      errors["os-grid-reference-number"] = {
+        text: "Enter a valid OS grid reference (for example, TQ 3003 8038)",
+      };
+      errorSummary.push({
+        text: "Enter a valid OS grid reference (for example, TQ 3003 8038)",
+        href: "#os-grid-reference-number",
+      });
+    }
+  }
+}
+
+function validateEastingNorthingAlt(data, errors, errorSummary) {
+  const easting = data["location-osgrid-easting-alt"];
+  const northing = data["location-osgrid-northing-alt"];
+
+  if (!easting || !northing) {
+    errors["location-osgrid-easting-alt"] = {
+      text: "Enter easting and northing",
+    };
+    errorSummary.push({
+      text: "Enter easting and northing",
+      href: "#location-osgrid-easting-alt",
+    });
+  } else {
+    const eastingNum = parseInt(easting, 10);
+    const northingNum = parseInt(northing, 10);
+
+    if (isNaN(eastingNum) || isNaN(northingNum)) {
+      errors["location-osgrid-easting-alt"] = {
+        text: "Easting and northing must be valid numbers",
+      };
+      errorSummary.push({
+        text: "Easting and northing must be valid numbers",
+        href: "#location-osgrid-easting-alt",
+      });
+    } else if (eastingNum < 0 || eastingNum > 99999) {
+      errors["location-osgrid-easting-alt"] = {
+        text: "Easting must be between 0 and 99999",
+      };
+      errorSummary.push({
+        text: "Easting must be between 0 and 99999",
+        href: "#location-osgrid-easting-alt",
+      });
+    } else if (northingNum < 0 || northingNum > 99999) {
+      errors["location-osgrid-northing-alt"] = {
+        text: "Northing must be between 0 and 99999",
+      };
+      errorSummary.push({
+        text: "Northing must be between 0 and 99999",
+        href: "#location-osgrid-northing-alt",
+      });
+    }
+  }
+}
+
+function validateNationalGridFieldNumber(data, errors, errorSummary) {
+  const fieldNumber = data["national-grid-field-number"];
+
+  if (!fieldNumber || fieldNumber.trim().length === 0) {
+    errors["national-grid-field-number"] = {
+      text: "Enter the National Grid field number",
+    };
+    errorSummary.push({
+      text: "Enter the National Grid field number",
+      href: "#national-grid-field-number",
     });
   }
 }
@@ -6486,6 +7076,292 @@ router.get("/dwp-find-an-address-plugin/test", (req, res) => {
     process.cwd() +
       "/app/views/titan-mvp-1.2/dwp-find-an-address-plugin/test-address-select.html"
   );
+});
+
+// Simplified address plugin routes (without building number/name field and confirm step)
+router.get("/dwp-find-an-address-plugin-simple/start", (req, res) => {
+  res.redirect("/dwp-find-an-address-plugin-simple");
+});
+
+router.get("/dwp-find-an-address-plugin-simple", (req, res) => {
+  res.render("titan-mvp-1.2/dwp-find-an-address-plugin-simple/index.njk");
+});
+
+router.post("/dwp-find-an-address-plugin-simple", (req, res) => {
+  const { addressPostcode } = req.body;
+  if (!addressPostcode) {
+    res.render("titan-mvp-1.2/dwp-find-an-address-plugin-simple/index.njk", {
+      error: "Enter a postcode.",
+    });
+  } else {
+    // Import the utility functions from the plugin
+    const {
+      getAddressesPostcode,
+    } = require("find-an-address-plugin/utils/getData");
+    getAddressesPostcode(addressPostcode).then((data) => {
+      if (data.length > 0) {
+        if (data.length == 1) {
+          req.session.data.address = data[0];
+          res.redirect(req.query.find_an_address_exit_url || "/");
+        } else {
+          req.session.data.results = data;
+          req.session.data.postcode = addressPostcode;
+          res.render(
+            "titan-mvp-1.2/dwp-find-an-address-plugin-simple/address-select-multi.njk",
+            {
+              addressData: data,
+            }
+          );
+        }
+      } else {
+        res.render(
+          "titan-mvp-1.2/dwp-find-an-address-plugin-simple/no-address.njk"
+        );
+      }
+    });
+  }
+});
+
+router.get(
+  "/dwp-find-an-address-plugin-simple/address-select-multi",
+  (req, res) => {
+    const addressData = req.session.data.results || [];
+    const postcode = req.session.data.postcode || "";
+
+    res.render(
+      "titan-mvp-1.2/dwp-find-an-address-plugin-simple/address-select-multi.njk",
+      {
+        addressData: addressData,
+        data: {
+          postcode: postcode,
+          results: addressData,
+        },
+      }
+    );
+  }
+);
+
+router.post(
+  "/dwp-find-an-address-plugin-simple/address-select-multi",
+  (req, res) => {
+    const selectedAddress = req.body["select-an-address"];
+
+    if (selectedAddress && selectedAddress !== "") {
+      // Store the selected address in session
+      req.session.data.address = selectedAddress;
+      // Redirect directly to exit URL (no confirm step)
+      res.redirect(req.query.find_an_address_exit_url || "/");
+    } else {
+      // If no address selected, redirect back to selection page with error
+      res.redirect("/dwp-find-an-address-plugin-simple/address-select-multi");
+    }
+  }
+);
+
+router.get("/dwp-find-an-address-plugin-simple/manual-entry", (req, res) => {
+  res.render(
+    "titan-mvp-1.2/dwp-find-an-address-plugin-simple/manual-entry.njk"
+  );
+});
+
+router.post("/dwp-find-an-address-plugin-simple/manual-entry", (req, res) => {
+  const addressLine1 = req.body["address-line-1"];
+  const addressLine2 = req.body["address-line-2"];
+  const townCity = req.body["town-city"];
+  const postcode = req.body["postcode"];
+
+  const error = {
+    addressLineError:
+      addressLine1 == "" ? "Enter the first line of the address" : undefined,
+    townOrCityError: townCity == "" ? "Enter the town or city" : undefined,
+    postcodeError: postcode == "" ? "Enter the postcode" : undefined,
+  };
+
+  if (error.addressLineError || error.townOrCityError || error.postcodeError) {
+    res.render(
+      "titan-mvp-1.2/dwp-find-an-address-plugin-simple/manual-entry.njk",
+      {
+        error,
+      }
+    );
+  } else {
+    // Store manual address and redirect directly to exit URL (no confirm step)
+    req.session.data.address = `${addressLine1}${
+      addressLine2 ? ", " + addressLine2 : ""
+    }, ${townCity}, ${postcode}`;
+    res.redirect(req.query.find_an_address_exit_url || "/");
+  }
+});
+
+// Integrated address plugin routes (shows pattern with other questions on same page)
+router.get(
+  "/dwp-find-an-address-plugin-integrated/question-one",
+  (req, res) => {
+    // Handle search again - clear address results when clearResults=true
+    if (req.query.clearResults === "true") {
+      req.session.data.addressResults = [];
+      req.session.data.selectedAddress = null;
+      req.session.data.addressMode = "lookup";
+      // Clear the postcode to force a fresh search
+      req.session.data.addressPostcode = "";
+      // Redirect to clean URL to prevent form resubmission dialog
+      return res.redirect(
+        "/dwp-find-an-address-plugin-integrated/question-one"
+      );
+    }
+
+    res.render(
+      "titan-mvp-1.2/dwp-find-an-address-plugin-integrated/question-one.njk",
+      {
+        data: req.session.data || {},
+      }
+    );
+  }
+);
+
+router.post(
+  "/dwp-find-an-address-plugin-integrated/question-one",
+  (req, res) => {
+    const {
+      action,
+      addressMode,
+      name,
+      email,
+      addressPostcode,
+      selectAddress,
+      addressLine1,
+      addressLine2,
+      townCity,
+    } = req.body;
+
+    // Store all form data in session
+    req.session.data = {
+      ...req.session.data,
+      name,
+      email,
+      addressPostcode,
+      addressLine1,
+      addressLine2,
+      townCity,
+      addressMode: addressMode || "lookup",
+    };
+
+    if (action === "lookup") {
+      // Handle address lookup
+      if (!addressPostcode) {
+        res.render(
+          "titan-mvp-1.2/dwp-find-an-address-plugin-integrated/question-one.njk",
+          {
+            data: req.session.data,
+            error: {
+              addressError: "Enter a postcode",
+            },
+          }
+        );
+      } else {
+        // Import the utility functions from the plugin
+        const {
+          getAddressesPostcode,
+        } = require("find-an-address-plugin/utils/getData");
+
+        getAddressesPostcode(addressPostcode)
+          .then((data) => {
+            console.log("Address lookup results:", data); // Debug log
+            if (data.length > 0) {
+              // Store results in session
+              req.session.data.addressResults = data.map((address, index) => ({
+                value: address,
+                text: address,
+              }));
+              console.log(
+                "Stored address results:",
+                req.session.data.addressResults
+              ); // Debug log
+
+              // PRG redirect back to the same page with anchor
+              res.redirect(
+                "/dwp-find-an-address-plugin-integrated/question-one#address"
+              );
+            } else {
+              // No addresses found
+              req.session.data.addressResults = [];
+              console.log("No addresses found for postcode:", addressPostcode); // Debug log
+              res.redirect(
+                "/dwp-find-an-address-plugin-integrated/question-one#address"
+              );
+            }
+          })
+          .catch(() => {
+            // Error in lookup
+            req.session.data.addressResults = [];
+            res.redirect(
+              "/dwp-find-an-address-plugin-integrated/question-one#address"
+            );
+          });
+      }
+    } else if (action === "continue") {
+      // Handle form submission
+      const error = {
+        nameError: !name ? "Enter your full name" : undefined,
+        emailError: !email ? "Enter your email address" : undefined,
+        addressError: undefined,
+      };
+
+      // Validate address based on mode
+      if (addressMode === "manual") {
+        if (!addressLine1 || !townCity || !addressPostcode) {
+          error.addressError = "Enter all required address details";
+        }
+      } else {
+        if (!selectAddress && !req.session.data.selectedAddress) {
+          error.addressError = "Select an address or enter one manually";
+        }
+      }
+
+      if (error.nameError || error.emailError || error.addressError) {
+        res.render(
+          "titan-mvp-1.2/dwp-find-an-address-plugin-integrated/question-one.njk",
+          {
+            data: req.session.data,
+            error,
+          }
+        );
+      } else {
+        // Store selected address if using lookup
+        if (addressMode === "lookup" && selectAddress) {
+          req.session.data.selectedAddress = selectAddress;
+        }
+
+        // Redirect to confirmation page
+        res.redirect("/dwp-find-an-address-plugin-integrated/confirmation");
+      }
+    }
+  }
+);
+
+router.get(
+  "/dwp-find-an-address-plugin-integrated/confirmation",
+  (req, res) => {
+    res.render(
+      "titan-mvp-1.2/dwp-find-an-address-plugin-integrated/confirmation.njk",
+      {
+        data: req.session.data || {},
+      }
+    );
+  }
+);
+
+router.post(
+  "/dwp-find-an-address-plugin-integrated/confirmation",
+  (req, res) => {
+    // Clear session data and redirect to success page
+    req.session.data = {};
+    res.redirect("/dwp-find-an-address-plugin-integrated/success");
+  }
+);
+
+router.get("/dwp-find-an-address-plugin-integrated/success", (req, res) => {
+  res.render("titan-mvp-1.2/dwp-find-an-address-plugin-integrated/success.njk");
 });
 
 const findAddressPlugin = require("find-an-address-plugin");

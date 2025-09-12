@@ -7,6 +7,8 @@
 {% from "govuk/components/textarea/macro.njk" import govukTextarea %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
 {% from "components/defra-coordinate-input/macro.njk" import defraCoordinateInput %}
+{% from "components/location/macro.njk" import eastingNorthing, gridReference, osGridReferenceNumber, longitudeLatitude,
+nationalGridFieldNumber %}
 
 
 {# {% block pageTitle %}
@@ -24,7 +26,7 @@ Where was the wreck material located? - {{ serviceName }} – GOV.UK
 <div class="govuk-grid-row" data-js="conditional-content">
     <div class="govuk-grid-column-full">
 
-        <form class="form" action="/titan-mvp-1.2/form-editor/location/wreck" method="post" autocomplete="off">
+        <form class="form" action="/titan-mvp-1.2/form-editor/location/precise" method="post" autocomplete="off">
             {% if errorSummary.length > 0 %}
             {{ govukErrorSummary({
             titleText: "There is a problem",
@@ -133,47 +135,9 @@ Where was the wreck material located? - {{ serviceName }} – GOV.UK
                     validation errors for this form</p>
             </div>
 
-            <!-- Decimal Degrees Section -->
-            {{ defraCoordinateInput({
-            id: "decimal-degrees",
-            namePrefix: "location",
-            fieldset: {
-            legend: {
-            text: "Coordinates (Decimal degrees)",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--m"
-            }
-            },
-            hint: {
-            text: "For example 53.76385° -3.73904°"
-            },
-            classes: "row-prototype-coordinate-input",
-            items: [
-            {
-            id: "location-latitude-decimal",
-            name: "location-latitude-decimal",
-            label: "Latitude",
-            value: data["location"]["location-latitude-decimal"],
-            classes: locationLatitudeDecimalClass,
-            type: "text",
-            attributes: {
-            inputmode: "numeric",
-            suffix: "°"
-            }
-            },
-            {
-            id: "location-longitude-decimal",
-            name: "location-longitude-decimal",
-            label: "Longitude",
-            value: data["location"]["location-longitude-decimal"],
-            classes: locationLongitudeDecimalClass,
-            type: "text",
-            attributes: {
-            inputmode: "numeric",
-            suffix: "°"
-            }
-            }
-            ]
+            <!-- Decimal Degrees Section (macro) -->
+            {{ longitudeLatitude({
+            values: data["location"]
             }) }}
 
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
@@ -428,60 +392,37 @@ Where was the wreck material located? - {{ serviceName }} – GOV.UK
 
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"> #}
 
-            <!-- UK Grid Reference Section -->
-            {{ defraCoordinateInput({
-            id: "uk-grid-reference",
-            namePrefix: "location",
-            fieldset: {
-            legend: {
-            text: "UK grid reference",
-            isPageHeading: false,
-            classes: "govuk-fieldset__legend--m"
+            <!-- UK Grid Reference Section (macro) -->
+            {{ gridReference({
+            values: data["location"]
+            }) }}
+            <!-- Easting and Northing only (macro with alternate IDs) -->
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            {{ eastingNorthing({
+            values: data["location"],
+            ids: {
+            eastingId: "location-osgrid-easting-alt",
+            eastingName: "location-osgrid-easting-alt",
+            northingId: "location-osgrid-northing-alt",
+            northingName: "location-osgrid-northing-alt"
             }
-            },
-            hint: {
-            text: "For example TQ 3003 8038"
-            },
-            classes: "row-prototype-coordinate-input",
-            items: [
-            {
-            id: "location-osgrid-square",
-            name: "location-osgrid-square",
-            label: "Square",
-            value: data["location"]["location-osgrid-square"],
-            classes: locationOsGridSquareClass,
-            type: "text",
-            attributes: {
-            inputmode: "text"
-            }
-            },
-            {
-            id: "location-osgrid-easting",
-            name: "location-osgrid-easting",
-            label: "Easting",
-            value: data["location"]["location-osgrid-easting"],
-            classes: locationOsGridEastingClass,
-            type: "text",
-            attributes: {
-            inputmode: "numeric"
-            }
-            },
-            {
-            id: "location-osgrid-northing",
-            name: "location-osgrid-northing",
-            label: "Northing",
-            value: data["location"]["location-osgrid-northing"],
-            classes: locationOsGridNorthingClass,
-            type: "text",
-            attributes: {
-            inputmode: "numeric"
-            }
-            }
-            ]
             }) }}
 
 
 
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            {{ osGridReferenceNumber({
+            values: data["location"]
+            }) }}
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            {{ nationalGridFieldNumber({
+            values: data["location"]
+            }) }}
 
             {{ govukButton({
             text: "Continue"

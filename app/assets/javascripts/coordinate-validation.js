@@ -833,6 +833,77 @@ export class CoordinateValidator {
     return true;
   }
 
+  // Validate a full OS grid reference string, e.g., "TQ 3003 8038" or "TQ30038038"
+  validateOSGridReferenceNumber(gridRefText) {
+    this.errors = [];
+
+    if (!gridRefText || gridRefText.trim().length === 0) {
+      this.errors.push("Enter an OS grid reference");
+      return false;
+    }
+
+    const osgb = new GT_OSGB();
+    const cleaned = gridRefText.trim().replace(/\s+/g, " ");
+
+    if (!osgb.parseGridRef(cleaned)) {
+      this.errors.push(
+        "Enter a valid OS grid reference (for example, TQ 3003 8038)"
+      );
+      return false;
+    }
+
+    const wgs84 = osgb.getWGS84();
+    if (!wgs84.isGreatBritain()) {
+      this.errors.push("Grid reference must be within Great Britain");
+      return false;
+    }
+
+    return true;
+  }
+
+  // Validate Easting and Northing without a 100km grid square (range checks only)
+  validateEastingNorthing(easting, northing) {
+    this.errors = [];
+
+    if (!easting || !northing) {
+      this.errors.push("Enter easting and northing");
+      return false;
+    }
+
+    const eastingNum = parseInt(easting, 10);
+    const northingNum = parseInt(northing, 10);
+
+    if (isNaN(eastingNum) || isNaN(northingNum)) {
+      this.errors.push("Easting and northing must be valid numbers");
+      return false;
+    }
+
+    // Match the 5-digit format used in the UI example
+    if (eastingNum < 0 || eastingNum > 99999) {
+      this.errors.push("Easting must be between 0 and 99999");
+      return false;
+    }
+
+    if (northingNum < 0 || northingNum > 99999) {
+      this.errors.push("Northing must be between 0 and 99999");
+      return false;
+    }
+
+    return true;
+  }
+
+  // Minimal validation for National Grid field number (non-empty)
+  validateNationalGridFieldNumber(value) {
+    this.errors = [];
+
+    if (!value || value.trim().length === 0) {
+      this.errors.push("Enter the National Grid field number");
+      return false;
+    }
+
+    return true;
+  }
+
   getErrors() {
     return this.errors;
   }
