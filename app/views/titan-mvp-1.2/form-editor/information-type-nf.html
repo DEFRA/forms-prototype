@@ -178,6 +178,34 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                           }) }}
                           {% endset -%}
 
+                          {% set locationHtml %}
+                          {{ govukRadios({
+                          name: "locationType",
+                          fieldset: {
+                          legend: {
+                          text: commonTerms.form_editor.information_type.location.types.title,
+                          classes: "govuk-fieldset__legend"
+                          }
+                          },
+                          items: [
+                          {
+                          value: "address",
+                          text: commonTerms.form_editor.information_type.location.types.address,
+                          hint: {
+                          text: commonTerms.form_editor.information_type.address.hint
+                          }
+                          },
+                          {
+                          value: "precise",
+                          text: commonTerms.form_editor.information_type.location.types.precise,
+                          hint: {
+                          text: "Enter precise coordinates like grid references or latitude/longitude"
+                          }
+                          }
+                          ]
+                          }) }}
+                          {% endset -%}
+
                           <span class="govuk-caption-l">Page {{ pageNumber }}: question {{ questionNumber }}</span>
                           {{ govukRadios({
                           name: "informationQuestion1",
@@ -213,10 +241,13 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                           }
                           },
                           {
-                          value: "address",
-                          text: commonTerms.form_editor.information_type.address.title,
+                          value: "location",
+                          text: commonTerms.form_editor.information_type.location.title,
                           hint: {
-                          text: commonTerms.form_editor.information_type.address.hint
+                          text: commonTerms.form_editor.information_type.location.hint
+                          },
+                          conditional: {
+                          html: locationHtml
                           }
                           },
                           {
@@ -306,7 +337,7 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
           });
 
           // Listen for changes to sub-options
-          document.querySelectorAll("input[name='written'], input[name='dateType'], input[name='listType']").forEach((subRadio) => {
+          document.querySelectorAll("input[name='written'], input[name='dateType'], input[name='listType'], input[name='locationType']").forEach((subRadio) => {
             subRadio.addEventListener("change", function () {
               console.log("Sub-option changed:", this.value);
               showPreview(this.value);
@@ -366,6 +397,8 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                 updateSetName("Text");
               } else if (selectedOption === "date") {
                 updateSetName("Date");
+              } else if (selectedOption === "location") {
+                updateSetName("Location");
               } else if (selectedOption === "list") {
                 updateSetName("List");
               } else {
@@ -375,7 +408,7 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
           });
 
           // Listen for changes on sub-options to update `data-setname` further
-          document.querySelectorAll("input[name='written'], input[name='dateType'], input[name='listType']").forEach(subOption => {
+          document.querySelectorAll("input[name='written'], input[name='dateType'], input[name='listType'], input[name='locationType']").forEach(subOption => {
             subOption.addEventListener("change", function () {
               const mainOption = document.querySelector("input[name='informationQuestion1']:checked");
               const selectedSubOption = this.value;
@@ -384,6 +417,8 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                 updateSetName(selectedSubOption === "short-answer" ? "Text Short" : "Text Long");
               } else if (mainOption && mainOption.value === "date") {
                 updateSetName(selectedSubOption === "day-month-year" ? "Date Full" : "Date Month-Year");
+              } else if (mainOption && mainOption.value === "location") {
+                updateSetName(selectedSubOption === "address" ? "Location Address" : "Location Precise");
               } else if (mainOption && mainOption.value === "list") {
                 updateSetName(selectedSubOption);
               }
@@ -433,6 +468,8 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                 setCustomDataAttribute("Shorttext");
               } else if (selectedOption === "date") {
                 setCustomDataAttribute("Date");
+              } else if (selectedOption === "location") {
+                setCustomDataAttribute("Location");
               } else if (selectedOption === "list") {
                 setCustomDataAttribute("List");
               } else {
@@ -442,7 +479,7 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
           });
 
           // Listener for sub-option changes
-          document.querySelectorAll("input[name='written'], input[name='dateType'], input[name='listType']").forEach(subOption => {
+          document.querySelectorAll("input[name='written'], input[name='dateType'], input[name='listType'], input[name='locationType']").forEach(subOption => {
             subOption.addEventListener("change", function () {
               const mainOption = document.querySelector("input[name='informationQuestion1']:checked");
               const selectedSubOption = this.value;
@@ -451,6 +488,8 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                 setCustomDataAttribute(selectedSubOption === "short-answer" ? "Shorttext" : "Longtext");
               } else if (mainOption && mainOption.value === "date") {
                 setCustomDataAttribute(selectedSubOption === "day-month-year" ? "DateFull" : "DateMonthYear");
+              } else if (mainOption && mainOption.value === "location") {
+                setCustomDataAttribute(selectedSubOption === "address" ? "LocationAddress" : "LocationPrecise");
               } else if (mainOption && mainOption.value === "list") {
                 setCustomDataAttribute(selectedSubOption.charAt(0).toUpperCase() + selectedSubOption.slice(1));
               }

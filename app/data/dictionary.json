@@ -111,6 +111,34 @@
           "partial": "Month and year"
         }
       },
+      "location": {
+        "title": "Location",
+        "hint": "A UK address or precise location coordinates",
+        "types": {
+          "title": "Type of location",
+          "address": "UK address",
+          "precise": "Precise location"
+        },
+        "precise": {
+          "title": "Precise location",
+          "hint": "Enter precise coordinates like grid references or latitude/longitude",
+          "location_formats": {
+            "title": "Select location format",
+            "easting_northing": "National Grid - Easting and Northing",
+            "grid_reference": "Grid reference",
+            "field_number": "National Grid Field Number",
+            "os_grid_number": "OS grid reference number",
+            "longitude_latitude": "Longitude and Latitude"
+          },
+          "grid_reference_types": {
+            "title": "Select grid reference type",
+            "4_figure": "4-figure grid reference",
+            "6_figure": "6-figure grid reference",
+            "8_figure": "8-figure grid reference",
+            "10_figure": "10-figure grid reference"
+          }
+        }
+      },
       "address": {
         "title": "UK address",
         "hint": "A street address, town or city and postcode"

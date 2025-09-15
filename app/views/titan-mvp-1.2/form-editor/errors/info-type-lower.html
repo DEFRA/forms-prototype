@@ -183,6 +183,34 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                           }) }}
                           {% endset -%}
 
+                          {% set locationHtml %}
+                          {{ govukRadios({
+                          name: "locationType",
+                          fieldset: {
+                          legend: {
+                          text: "Type of location",
+                          classes: "govuk-fieldset__legend"
+                          }
+                          },
+                          items: [
+                          {
+                          value: "address",
+                          text: "UK address",
+                          hint: {
+                          text: "A street address, town or city and postcode"
+                          }
+                          },
+                          {
+                          value: "precise",
+                          text: "Precise location",
+                          hint: {
+                          text: "Enter precise coordinates like grid references or latitude/longitude"
+                          }
+                          }
+                          ]
+                          }) }}
+                          {% endset -%}
+
                           {% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 
                           {{ govukErrorSummary({
@@ -231,10 +259,13 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                           }
                           },
                           {
-                          value: "address",
-                          text: "UK address",
+                          value: "location",
+                          text: "Location",
                           hint: {
-                          text: "A street address, town or city and postcode"
+                          text: "A UK address or precise location coordinates"
+                          },
+                          conditional: {
+                          html: locationHtml
                           }
                           },
                           {

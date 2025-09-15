@@ -2128,6 +2128,7 @@ router.post("/titan-mvp-1.2/information-type-answer-nf", function (req, res) {
   const writtenSubType = req.body["written"];
   const dateSubType = req.body["dateType"];
   const listSubType = req.body["listType"];
+  const locationSubType = req.body["locationType"];
 
   const formPages = req.session.data["formPages"] || [];
   const pageIndex = req.session.data["currentPageIndex"];
@@ -2144,11 +2145,12 @@ router.post("/titan-mvp-1.2/information-type-answer-nf", function (req, res) {
   req.session.data["writtenSubType"] = writtenSubType;
   req.session.data["dateSubType"] = dateSubType;
   req.session.data["listSubType"] = listSubType;
+  req.session.data["locationSubType"] = locationSubType;
 
   const newQuestion = {
     questionId: Date.now(),
     type: mainType,
-    subType: listSubType || dateSubType || writtenSubType,
+    subType: listSubType || dateSubType || writtenSubType || locationSubType,
     label: "New question",
     options: [],
   };
@@ -2185,6 +2187,12 @@ router.post("/titan-mvp-1.2/information-type-answer-nf", function (req, res) {
         "/titan-mvp-1.2/form-editor/question-type/checkboxes/edit"
       );
     }
+  } else if (mainType === "location") {
+    if (locationSubType === "address") {
+      return res.redirect("/titan-mvp-1.2/question-configuration");
+    } else if (locationSubType === "precise") {
+      return res.redirect("/titan-mvp-1.2/question-configuration");
+    }
   }
 
   res.redirect("/titan-mvp-1.2/question-configuration");
@@ -2202,6 +2210,7 @@ router.get("/titan-mvp-1.2/question-configuration", function (req, res) {
   const writtenSubType = req.session.data["writtenSubType"];
   const dateSubType = req.session.data["dateSubType"];
   const listSubType = req.session.data["listSubType"];
+  const locationSubType = req.session.data["locationSubType"];
 
   let templateToRender =
     "/titan-mvp-1.2/form-editor/question-type/default.html";
@@ -2224,6 +2233,14 @@ router.get("/titan-mvp-1.2/question-configuration", function (req, res) {
     } else if (dateSubType === "month-year") {
       templateToRender =
         "/titan-mvp-1.2/form-editor/question-type/date-mmyy/edit-nf.html";
+    }
+  } else if (mainType === "location") {
+    if (locationSubType === "address") {
+      templateToRender =
+        "/titan-mvp-1.2/form-editor/question-type/address/edit-nf.html";
+    } else if (locationSubType === "precise") {
+      templateToRender =
+        "/titan-mvp-1.2/form-editor/question-type/precise-location/edit-nf.html";
     }
   } else if (mainType === "address") {
     templateToRender =
@@ -2293,6 +2310,7 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
   const writtenSubType = req.session.data["writtenSubType"];
   const dateSubType = req.session.data["dateSubType"];
   const listSubType = req.session.data["listSubType"];
+  const locationSubType = req.session.data["locationSubType"];
 
   let finalSubType = null;
   if (questionType === "text") {
@@ -2304,6 +2322,12 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
       finalSubType = "autocomplete";
     } else {
       finalSubType = listSubType;
+    }
+  } else if (questionType === "location") {
+    if (locationSubType === "address") {
+      finalSubType = "address";
+    } else if (locationSubType === "precise") {
+      finalSubType = "precise-location";
     }
   } else if (questionType === "address") {
     finalSubType = "address";
