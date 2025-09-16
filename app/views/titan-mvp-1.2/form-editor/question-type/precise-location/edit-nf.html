@@ -718,6 +718,28 @@ text-align: center;"> Previews
                     const longitudeLatitudePrecision = document.querySelector('input[name="longitudeLatitudePrecision"]:checked');
 
                     if (longitudeLatitudeFormat && longitudeLatitudeFormat.value === "degrees_minutes_seconds") {
+                        // Degrees, minutes, seconds format - get precision-specific hint
+                        let degreesHint = 'For example 53° 45.831\' N    3° 44.342\' W.';
+                        if (longitudeLatitudePrecision) {
+                            switch (longitudeLatitudePrecision.value) {
+                                case '1_decimal':
+                                    degreesHint = 'For example 53° 45.8\' N    3° 44.3\' W';
+                                    break;
+                                case '2_decimal':
+                                    degreesHint = 'For example 53° 45.83\' N    3° 44.34\' W';
+                                    break;
+                                case '3_decimal':
+                                    degreesHint = 'For example 53° 45.831\' N    3° 44.342\' W';
+                                    break;
+                                case '4_decimal':
+                                    degreesHint = 'For example 53° 45.8310\' N    3° 44.3420\' W';
+                                    break;
+                                case '5_decimal':
+                                    degreesHint = 'For example 53° 45.83100\' N    3° 44.34200\' W';
+                                    break;
+                            }
+                        }
+
                         // Degrees, minutes, seconds format
                         previewHTML = `
             <div class="govuk-form-group">
@@ -725,7 +747,7 @@ text-align: center;"> Previews
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="question-label-legend">
                   Question
                 </legend>
-                <div class="govuk-hint" id="hint-text-output"></div>
+                <div class="govuk-hint" id="hint-text-output">${degreesHint}</div>
 
                 <!-- Latitude -->
                 <div class="govuk-form-group">
@@ -733,7 +755,6 @@ text-align: center;"> Previews
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                       Latitude
                     </legend>
-                    <div class="govuk-hint">For example 53° 45' 49.9\" N</div>
                     <div class="govuk-date-input row-prototype-coordinate-input">
                       <div class="govuk-date-input__item govuk-!-margin-bottom-2">
                         <div class="govuk-form-group">
@@ -781,7 +802,6 @@ text-align: center;"> Previews
                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                       Longitude
                     </legend>
-                    <div class="govuk-hint">For example 3° 44' 20.5\" W</div>
                     <div class="govuk-date-input row-prototype-coordinate-input">
                       <div class="govuk-date-input__item govuk-!-margin-bottom-2">
                         <div class="govuk-form-group">
@@ -1190,7 +1210,30 @@ text-align: center;"> Previews
                     const longitudeLatitudePrecision = document.querySelector('input[name="longitudeLatitudePrecision"]:checked');
 
                     if (longitudeLatitudeFormat && longitudeLatitudeFormat.value === "degrees_minutes_seconds") {
-                        defaultHint = 'For example 53° 45.831\' N    3° 44.342\' W.';
+                        // Get precision-specific hint for degrees/minutes/seconds
+                        if (longitudeLatitudePrecision) {
+                            switch (longitudeLatitudePrecision.value) {
+                                case '1_decimal':
+                                    defaultHint = 'For example 53° 45.8\' N    3° 44.3\' W';
+                                    break;
+                                case '2_decimal':
+                                    defaultHint = 'For example 53° 45.83\' N    3° 44.34\' W';
+                                    break;
+                                case '3_decimal':
+                                    defaultHint = 'For example 53° 45.831\' N    3° 44.342\' W';
+                                    break;
+                                case '4_decimal':
+                                    defaultHint = 'For example 53° 45.8310\' N    3° 44.3420\' W';
+                                    break;
+                                case '5_decimal':
+                                    defaultHint = 'For example 53° 45.83100\' N    3° 44.34200\' W';
+                                    break;
+                                default:
+                                    defaultHint = 'For example 53° 45.831\' N    3° 44.342\' W.';
+                            }
+                        } else {
+                            defaultHint = 'For example 53° 45.831\' N    3° 44.342\' W.';
+                        }
                     } else {
                         // Get precision-specific example coordinates
                         let exampleCoords = '53.76385° -3.73904°';
