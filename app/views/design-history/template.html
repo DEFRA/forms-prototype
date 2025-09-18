@@ -320,6 +320,7 @@ items: breadcrumbs
 
         {% block customContent %}{% endblock %}
 
+        {% if researchHistory and researchHistory.length > 0 %}
         <h2 class="govuk-heading-m">Research history</h2>
         <table class="govuk-table">
             <thead class="govuk-table__head">
@@ -341,7 +342,9 @@ items: breadcrumbs
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
 
+        {% if researchSummaries and researchSummaries.length > 0 %}
         <h2 class="govuk-heading-m">Detailed research summaries</h2>
 
         <div class="timeline govuk-accordion " data-module="govuk-accordion" id="accordion-default">
@@ -435,6 +438,13 @@ items: breadcrumbs
                     <div class="markdown-content govuk-caption-m govuk-!-margin-bottom-1 govuk-!-margin-top-1"
                         data-markdown="{{ section.caption | replace('"', ' &quot;') | replace('\n', '\\n' ) }}"></div>
                     {% endif %}
+                    {% elif section.type == 'table' %}
+                    {{ govukTable({
+                    caption: section.caption,
+                    firstCellIsHeader: section.firstCellIsHeader | default(true),
+                    head: section.head,
+                    rows: section.rows
+                    }) }}
                     {% elif section.type == 'details' %}
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
@@ -810,6 +820,7 @@ items: breadcrumbs
             </div>
             {% endfor %}
         </div>
+        {% endif %}
     </div>
     <div class="govuk-grid-column-one-third">
         <div class="app-related-items">

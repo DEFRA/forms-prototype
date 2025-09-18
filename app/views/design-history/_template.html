@@ -106,60 +106,10 @@ screenPath: ""
 {% set improvements = [] %}
 
 {# --- Research history table --- #}
-{% set researchHistory = [
-[
-{ roundNumber: "8" },
-{ roundDate: "November 2024" },
-{ roundFindings: "Users understood the security implications but needed clearer guidance on appropriate email addresses"
-},
-{ roundChanges: "Added warning about personal email addresses in team details" }
-]
-] %}
+{# Define researchHistory in your page if you want to include research history #}
 
 {# --- Detailed research summaries --- #}
-{% set researchSummaries = [
-{
-summaryTitle: "",
-summaryDescription: "",
-sections: [
-{
-sectionType: "content",
-sectionContent: "**Research conducted:** \n\n**Participants:** "
-},
-{
-sectionType: "screen",
-screenTitle: "",
-screenContent: "",
-screenImages: [
-{
-imageSource: "",
-imageAlt: "",
-imageCaption: ""
-}
-]
-},
-{
-sectionType: "changes",
-changesTitle: "Changes since previous round",
-changesContent: [
-{
-changedScreen: "",
-changeDescription: "",
-changeReason: ""
-}
-]
-},
-{
-sectionType: "findings",
-findingsList: []
-},
-{
-sectionType: "quotes",
-quotesList: []
-}
-]
-}
-] %}
+{# Define researchSummaries in your page if you want to include detailed research summaries #}
 
 {# --- Preview section --- #}
 <span class="govuk-caption-m govuk-!-margin-bottom-1">Preview</span>
@@ -180,6 +130,10 @@ quotesList: []
         </a>
     </div>
 </div>
+
+{# --- Custom HTML block for page-specific content --- #}
+{% block customContent %}
+{% endblock %}
 
 <style>
     .app-secondary-text {

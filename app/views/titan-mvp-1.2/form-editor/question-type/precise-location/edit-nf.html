@@ -98,32 +98,30 @@ activeLinkId: "nav-editor"
                                                     items: [
                                                     {
                                                     value: "4_figure",
-                                                    text: "4-figure OS grid reference",
+                                                    text: "4 figure grid reference",
                                                     hint: {
-                                                    text: "Use 4 numbers to show a 1 kilometre square area. It tells you
-                                                    the general area, but not an exact spot."
+                                                    text: "Shows a 1 kilometre square area"
                                                     }
                                                     },
                                                     {
                                                     value: "6_figure",
-                                                    text: "6-figure OS grid reference",
+                                                    text: "6 figure grid reference",
                                                     hint: {
-                                                    text: "Use 6 numbers to show a smaller 100 metre square area. More
-                                                    precise."
+                                                    text: "Shows a 100 metre square area"
                                                     }
                                                     },
                                                     {
                                                     value: "8_figure",
-                                                    text: "8-figure OS grid reference",
+                                                    text: "8 figure grid reference",
                                                     hint: {
-                                                    text: "Use 8 numbers to show a 10 metre square area. Very precise."
+                                                    text: "Shows a 10 metre square area"
                                                     }
                                                     },
                                                     {
                                                     value: "10_figure",
-                                                    text: "10-figure OS grid reference",
+                                                    text: "10 figure grid reference",
                                                     hint: {
-                                                    text: "Use 10 numbers to show a 1 metre square area. Most precise."
+                                                    text: "Shows a 1 metre square area"
                                                     }
                                                     }
                                                     ]
@@ -134,17 +132,14 @@ activeLinkId: "nav-editor"
                                                         name: "osGridFormat",
                                                         fieldset: {
                                                         legend: {
-                                                        text: "Input format",
+                                                        text: "Input format (optional)",
                                                         classes: "govuk-fieldset__legend--s"
                                                         }
                                                         },
                                                         items: [
                                                         {
                                                         value: "single_input",
-                                                        text: "Use single input box",
-                                                        hint: {
-                                                        text: "Show one input box instead of separate fields"
-                                                        }
+                                                        text: "Use single input box"
                                                         }
                                                         ]
                                                         }) }}
@@ -165,14 +160,14 @@ activeLinkId: "nav-editor"
                                                     value: "decimal_degrees",
                                                     text: "Decimal degrees",
                                                     hint: {
-                                                    text: "For example 53.76385° -3.73904°"
+                                                    text: "For example, 53.76385° -3.73904°"
                                                     }
                                                     },
                                                     {
                                                     value: "degrees_minutes_seconds",
                                                     text: "Degrees, minutes, seconds",
                                                     hint: {
-                                                    text: "For example 53°45'49.9\"N
+                                                    text: "For example, 53°45'49.9\"N
                                                     3°44'20.5\"W"
                                                     }
                                                     }
@@ -184,7 +179,7 @@ activeLinkId: "nav-editor"
                                                         name: "longitudeLatitudePrecision",
                                                         fieldset: {
                                                         legend: {
-                                                        text: "Select precision level",
+                                                        text: "Select number of decimal places",
                                                         classes: "govuk-fieldset__legend--s"
                                                         }
                                                         },
@@ -193,35 +188,35 @@ activeLinkId: "nav-editor"
                                                         value: "1_decimal",
                                                         text: "1 decimal place",
                                                         hint: {
-                                                        text: "For example 53.8, -3.7"
+                                                        text: "For example, 53.8, -3.7"
                                                         }
                                                         },
                                                         {
                                                         value: "2_decimal",
                                                         text: "2 decimal places",
                                                         hint: {
-                                                        text: "For example 53.76, -3.74"
+                                                        text: "For example, 53.76, -3.74"
                                                         }
                                                         },
                                                         {
                                                         value: "3_decimal",
                                                         text: "3 decimal places",
                                                         hint: {
-                                                        text: "For example 53.764, -3.739"
+                                                        text: "For example, 53.764, -3.739"
                                                         }
                                                         },
                                                         {
                                                         value: "4_decimal",
                                                         text: "4 decimal places",
                                                         hint: {
-                                                        text: "For example 53.7639, -3.7390"
+                                                        text: "For example, 53.7639, -3.7390"
                                                         }
                                                         },
                                                         {
                                                         value: "5_decimal",
                                                         text: "5 decimal places",
                                                         hint: {
-                                                        text: "For example 53.76385, -3.73904"
+                                                        text: "For example, 53.76385, -3.73904"
                                                         }
                                                         }
                                                         ]
@@ -241,22 +236,22 @@ activeLinkId: "nav-editor"
                                                     items: [
                                                     {
                                                     value: "easting_northing",
-                                                    text: "British National Grid (easting and northing)"
+                                                    text: "Easting and northing"
                                                     },
                                                     {
                                                     value: "os_grid_number",
-                                                    text: "OS grid reference",
+                                                    text: "Ordnance Survey (OS) grid reference",
                                                     conditional: {
                                                     html: osGridNumberHtml
                                                     }
                                                     },
                                                     {
                                                     value: "field_number",
-                                                    text: "National Grid Field Number"
+                                                    text: "National Grid field number"
                                                     },
                                                     {
                                                     value: "longitude_latitude",
-                                                    text: "Longitude and Latitude",
+                                                    text: "Latitude and longitude",
                                                     conditional: {
                                                     html: longitudeLatitudeHtml
                                                     }
@@ -276,292 +271,264 @@ activeLinkId: "nav-editor"
                                                             value="">
                                                     </div>
 
-                                                    <!-- Hint Text Override -->
-                                                    <div class="govuk-form-group" id="hint-text-section">
-                                                        <label class="govuk-label govuk-label--m" id="hint-text-label">
-                                                            Hint text
-                                                        </label>
+                                                    {#
+                                            </div> #}
 
-                                                        <!-- Description text (always visible) -->
-                                                        <div class="govuk-hint" id="hint-text-description">
-                                                            A default hint will be added for the location format you
-                                                            choose.
-                                                            Only change this if the default does not meet your
-                                                            needs.
-                                                        </div>
+                                            {{ govukInput({
+                                            label: {
+                                            text:
+                                            commonTerms.form_editor.question_settings.short_description.title,
+                                            classes: "govuk-label--m",
+                                            isPageHeading: false
+                                            },
+                                            hint: {
+                                            text:
+                                            commonTerms.form_editor.question_settings.short_description.hint
+                                            },
+                                            id: "error-message-input-precise-location",
+                                            name: "errorMessageInputPreciseLocation"
+                                            }) }}
 
-                                                        <!-- Default state: button only -->
-                                                        <div id="hint-text-default-state">
-                                                            <button type="button"
-                                                                class="govuk-button govuk-button--inverse govuk-!-margin-bottom-0"
-                                                                id="override-hint-button">
-                                                                Change default hint text
-                                                            </button>
-                                                        </div>
+                                            <!-- Additional Settings -->
+                                            {% set hintTextHtml %}
+                                            {{ govukTextarea({
+                                            id: "hint-text-input-precise-location",
+                                            name: "hintTextInputPreciseLocation",
+                                            label: {
+                                            text: "Hint text",
+                                            classes: "govuk-label--s"
+                                            },
+                                            hint: {
+                                            text: "This location format includes default hint text. Only change the hint
+                                            text if the default text does not meet your needs."
+                                            },
+                                            rows: 3
+                                            }) }}
+                                            {% endset -%}
 
-                                                        <!-- Edit state: textarea and button -->
-                                                        <div id="hint-text-edit-state" style="display: none;">
-                                                            <textarea id="hint-text-input-precise-location"
-                                                                name="hintTextInputPreciseLocation"
-                                                                class="govuk-textarea" rows="3"></textarea>
-                                                            <button type="button"
-                                                                class="govuk-button govuk-button--inverse govuk-!-margin-top-2"
-                                                                id="use-default-hint-button">
-                                                                Change back to default hint text
-                                                                <rd /button>
-                                                        </div>
-                                                    </div>
+                                            {% set helpTextHtml %}
+                                            {{ govukTextarea({
+                                            id: "help-text-input-precise-location",
+                                            name: "helpTextInputPreciseLocation",
+                                            label: {
+                                            text: "Instructions to help users answer this question",
+                                            classes: "govuk-label--s"
+                                            },
+                                            hint: {
+                                            text: "You can use markdown formatting."
+                                            },
+                                            rows: 4,
+                                            placeholder: "For example:\n\nYou can find coordinates using:\n-
+                                            [Grid Reference Finder](https://gridreferencefinder.com/)\n- [Magic
+                                            Maps](https://magic.defra.gov.uk/)\n- GPS devices or mapping apps"
+                                            }) }}
 
-                                                    <!-- Make Optional Checkbox -->
-                                                    <div class="govuk-form-group">
-                                                        <div class="govuk-checkboxes--small">
-                                                            <div class="govuk-checkboxes__item">
-                                                                <input class="govuk-checkboxes__input"
-                                                                    id="make-optional-precise-location"
-                                                                    name="makeOptionalPreciseLocation" type="checkbox"
-                                                                    value="optional">
-                                                                <label class="govuk-label govuk-checkboxes__label"
-                                                                    for="make-optional-precise-location">
-                                                                    {{
-                                                                    commonTerms.form_editor.question_settings.optional
-                                                                    }}
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {{ govukInput({
-                                                    label: {
-                                                    text:
-                                                    commonTerms.form_editor.question_settings.short_description.title,
-                                                    classes: "govuk-label--m",
-                                                    isPageHeading: false
-                                                    },
-                                                    hint: {
-                                                    text:
-                                                    commonTerms.form_editor.question_settings.short_description.hint
-                                                    },
-                                                    id: "error-message-input-precise-location",
-                                                    name: "errorMessageInputPreciseLocation"
-                                                    }) }}
-
-                                                    <!-- Answer limits -->
-                                                    <details class="govuk-details" data-module="govuk-details">
-                                                        <summary class="govuk-details__summary">
-                                                            <span class="govuk-details__summary-text">
-                                                                {{
-                                                                commonTerms.form_editor.question_settings.answer_limits.title
-                                                                }}
-                                                            </span>
-                                                        </summary>
-                                                        <div class="govuk-details__text">
-                                                            <!-- Default Content for Question 1 -->
-                                                            <div id="question-1-content" class="question-content"
-                                                                style="margin-top: 10px;">
-                                                                {{ govukTextarea({
-                                                                label: {
-                                                                text:
-                                                                commonTerms.form_editor.question_settings.answer_limits.classes.title,
-                                                                classes: "govuk-label--m",
-                                                                isPageHeading: false
-                                                                },
-                                                                hint: {
-                                                                text:
-                                                                commonTerms.form_editor.question_settings.answer_limits.classes.hint
-                                                                },
-                                                                id: "answer-limits-classes-precise-location",
-                                                                name: "answerLimitsClassesPreciseLocation",
-                                                                value: data['answer-limits-classes-precise-location'],
-                                                                classes: "govuk-textarea",
-                                                                rows: 2,
-                                                                describedBy:
-                                                                "answer-limits-classes-precise-location-hint"
-                                                                }) }}
-
-                                                                {{ govukInput({
-                                                                label: {
-                                                                text:
-                                                                commonTerms.form_editor.question_settings.answer_limits.words.title,
-                                                                classes: "govuk-label--m",
-                                                                isPageHeading: false
-                                                                },
-                                                                hint: {
-                                                                text:
-                                                                commonTerms.form_editor.question_settings.answer_limits.words.hint
-                                                                },
-                                                                id: "answer-limits-words-precise-location",
-                                                                name: "answerLimitsWordsPreciseLocation",
-                                                                value: data['answer-limits-words-precise-location'],
-                                                                classes: "govuk-input--width-3",
-                                                                describedBy: "answer-limits-words-precise-location-hint"
-                                                                }) }}
-
-                                                                {{ govukInput({
-                                                                label: {
-                                                                text:
-                                                                commonTerms.form_editor.question_settings.answer_limits.characters.title,
-                                                                classes: "govuk-label--m",
-                                                                isPageHeading: false
-                                                                },
-                                                                hint: {
-                                                                text:
-                                                                commonTerms.form_editor.question_settings.answer_limits.characters.hint
-                                                                },
-                                                                id: "answer-limits-characters-precise-location",
-                                                                name: "answerLimitsCharactersPreciseLocation",
-                                                                value:
-                                                                data['answer-limits-characters-precise-location'],
-                                                                classes: "govuk-input--width-3",
-                                                                describedBy:
-                                                                "answer-limits-characters-precise-location-hint"
-                                                                }) }}
-                                                            </div>
-                                                        </div>
-                                                    </details>
-
-                                                    <!-- Section Break -->
-                                                    <hr
-                                                        class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-
-                                                    <!-- Question Settings Summary List -->
-                                                    <h2 class="govuk-heading-m">{{
-                                                        commonTerms.form_editor.question_settings.title }}</h2>
-
-                                                    {{ govukSummaryList({
-                                                    "rows": [
-                                                    {
-                                                    "key": {
-                                                    "text": "Type of information"
-                                                    },
-                                                    "value": {
-                                                    "html":
-                                                    commonTerms.form_editor.information_type.location.precise.title
-                                                    },
-                                                    "actions": {
-                                                    "items": [
-                                                    {
-                                                    "href": "/titan-mvp-1.2/form-editor/information-type-nf.html",
-                                                    "text": commonTerms.form_editor.common.edit,
-                                                    "visuallyHiddenText": " type"
-                                                    }
-                                                    ]
-                                                    }
-                                                    }
-                                                    ]
-                                                    }) }}
-
-                                                    <hr
-                                                        class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-
-                                                    <!-- Submit Button -->
-                                                    <div class="moj-button-action">
-                                                        {{ govukButton({
-                                                        text: commonTerms.form_editor.common.continue,
-                                                        type: 'submit'
-                                                        }) }}
-                                                    </div>
-                                                </form>
-
+                                            <div class="govuk-checkboxes--small">
+                                                <div class="govuk-checkboxes__item">
+                                                    <input class="govuk-checkboxes__input"
+                                                        id="use-default-help-text-precise-location"
+                                                        name="useDefaultHelpTextPreciseLocation" type="checkbox"
+                                                        value="true">
+                                                    <label class="govuk-label govuk-checkboxes__label"
+                                                        for="use-default-help-text-precise-location">
+                                                        Use default instruction text
+                                                    </label>
+                                                </div>
                                             </div>
+                                            {% endset -%}
+
+                                            {{ govukCheckboxes({
+                                            name: "additionalSettings",
+                                            classes: "govuk-checkboxes--small",
+                                            fieldset: {
+                                            legend: {
+                                            text: "Additional settings (optional)",
+                                            isPageHeading: false,
+                                            classes: "govuk-fieldset__legend--m"
+                                            }
+                                            },
+                                            hint: {
+                                            text: "You should choose a location format first before adding additional
+                                            settings."
+                                            },
+                                            items: [
+                                            {
+                                            value: "make-optional",
+                                            text: commonTerms.form_editor.question_settings.optional
+                                            },
+                                            {
+                                            value: "add-hint-text",
+                                            text: "Change default hint text (optional)",
+                                            conditional: {
+                                            html: hintTextHtml
+                                            }
+                                            },
+                                            {
+                                            value: "add-help-text",
+                                            text: "Give instructions to help users answer this question (optional)",
+                                            conditional: {
+                                            html: helpTextHtml
+                                            }
+                                            }
+                                            ]
+                                            }) }}
+
+                                            <!-- Section Break -->
+                                            <hr
+                                                class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+                                            <!-- Question Settings Summary List -->
+                                            <h2 class="govuk-heading-m">{{
+                                                commonTerms.form_editor.question_settings.title }}</h2>
+
+                                            {{ govukSummaryList({
+                                            "rows": [
+                                            {
+                                            "key": {
+                                            "text": "Type of information"
+                                            },
+                                            "value": {
+                                            "html":
+                                            commonTerms.form_editor.information_type.location.precise.title
+                                            },
+                                            "actions": {
+                                            "items": [
+                                            {
+                                            "href": "/titan-mvp-1.2/form-editor/information-type-nf.html",
+                                            "text": commonTerms.form_editor.common.edit,
+                                            "visuallyHiddenText": " type"
+                                            }
+                                            ]
+                                            }
+                                            }
+                                            ]
+                                            }) }}
+
+                                            <hr
+                                                class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+                                            <!-- Submit Button -->
+                                            <div class="moj-button-action">
+                                                {{ govukButton({
+                                                text: commonTerms.form_editor.common.continue,
+                                                type: 'submit'
+                                                }) }}
+                                            </div>
+                                            </form>
+
                                         </div>
                                     </div>
                             </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Right Column for Preview -->
-            <div class="govuk-grid-column-one-half-from-desktop" id="second-container"
-                style="outline: solid 1px #008938; height: 100%; position: sticky; top: 0; padding: 20px; box-shadow: 5px 10px #008938;">
-                <!-- Before content -->
-                <div id="before-content" style=" background-color:  #cce2d8;">
-                    <p class="govuk-body-s" style="margin-bottom: 0; color: #005a30; padding: 2px 8px 3px;
+        <!-- Right Column for Preview -->
+        <div class="govuk-grid-column-one-half-from-desktop" id="second-container"
+            style="outline: solid 1px #008938; height: 100%; position: sticky; top: 0; padding: 20px; box-shadow: 5px 10px #008938;">
+            <!-- Before content -->
+            <div id="before-content" style=" background-color:  #cce2d8;">
+                <p class="govuk-body-s" style="margin-bottom: 0; color: #005a30; padding: 2px 8px 3px;
 text-align: center;"> Previews
-                    </p>
-                </div>
+                </p>
+            </div>
 
-                <div style="margin-top: 60px;">
-                    {% from "govuk/components/tabs/macro.njk" import govukTabs %}
+            <div style="margin-top: 60px;">
+                {% from "govuk/components/tabs/macro.njk" import govukTabs %}
 
-                    <div class="govuk-tabs" data-module="govuk-tabs">
-                        <h2 class="govuk-tabs__title">
-                            Contents
-                        </h2>
-                        <ul class="govuk-tabs__list">
-                            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                                <a class="govuk-tabs__tab" href="#tab-one">Page preview</a>
-                            </li>
-                            <li class="govuk-tabs__list-item">
-                                <a class="govuk-tabs__tab" href="#tab-two">Error messages</a>
-                            </li>
-                        </ul>
+                <div class="govuk-tabs" data-module="govuk-tabs">
+                    <h2 class="govuk-tabs__title">
+                        Contents
+                    </h2>
+                    <ul class="govuk-tabs__list">
+                        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                            <a class="govuk-tabs__tab" href="#tab-one">Page preview</a>
+                        </li>
+                        <li class="govuk-tabs__list-item">
+                            <a class="govuk-tabs__tab" href="#tab-two">Error messages</a>
+                        </li>
+                    </ul>
 
-                        <div class="govuk-tabs__panel" id="tab-one">
-                            <!-- Page Preview Content -->
+                    <div class="govuk-tabs__panel" id="tab-one">
+                        <!-- Page Preview Content -->
 
-                            <p class="govuk-body-s" style="margin-bottom: 30px; border-bottom: #008938 1px;">
-                                <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
-                                    target="_blank">
-                                    Preview this page in a new tab
-                                </a>
-                            </p>
+                        <p class="govuk-body-s" style="margin-bottom: 30px; border-bottom: #008938 1px;">
+                            <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
+                                target="_blank">
+                                Preview this page in a new tab
+                            </a>
+                        </p>
 
-                            <div class="preview-content" id="precise-location-preview">
-                                <!-- Preview content will be dynamically updated -->
-                                <div class="border-left-container">
-                                    <div id="coordinate-inputs-preview">
-                                        <!-- Dynamic coordinate inputs will be inserted here -->
-                                    </div>
+                        <div class="preview-content" id="precise-location-preview">
+                            <!-- Preview content will be dynamically updated -->
+                            <div class="border-left-container">
+                                <div id="coordinate-inputs-preview">
+                                    <!-- Dynamic coordinate inputs will be inserted here -->
+                                </div>
 
-                                    <!-- Empty state message -->
-                                    <div id="empty-state-message" style="display: none;">
-                                        <div class="govuk-form-group">
-                                            <fieldset class="govuk-fieldset row-prototype-coordinate-input"
-                                                role="group">
-                                                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"
-                                                    id="question-label-legend">
-                                                    Question
-                                                </legend>
-                                                <div class="govuk-summary-list govuk-!-margin-top-4">
-                                                    <div class="govuk-summary-list__row">
-                                                        <dt class="govuk-summary-list__key govuk-hint"
-                                                            style="font-weight: normal;">No location format selected
-                                                        </dt>
-                                                        <dd class="govuk-summary-list__actions"></dd>
-                                                    </div>
+                                <!-- Empty state message -->
+                                <div id="empty-state-message" style="display: none;">
+                                    <div class="govuk-form-group">
+                                        <fieldset class="govuk-fieldset row-prototype-coordinate-input" role="group">
+                                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l"
+                                                id="question-label-legend">
+                                                Question
+                                            </legend>
+                                            <div class="govuk-summary-list govuk-!-margin-top-4">
+                                                <div class="govuk-summary-list__row">
+                                                    <dt class="govuk-summary-list__key govuk-hint"
+                                                        style="font-weight: normal;">No location format selected
+                                                    </dt>
+                                                    <dd class="govuk-summary-list__actions"></dd>
                                                 </div>
-                                            </fieldset>
-                                        </div>
+                                            </div>
+                                        </fieldset>
                                     </div>
                                 </div>
-                            </div>
 
-                            <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;"
-                                data-module="govuk-skip-link">
-                                Skip to edit page
-                            </a>
+                                <!-- Help Component -->
+                                <div id="help-component-preview" style="display: none;">
+                                    <details class="govuk-details" data-module="govuk-details">
+                                        <summary class="govuk-details__summary">
+                                            <span class="govuk-details__summary-text">
+                                                How to find location details
+                                            </span>
+                                        </summary>
+                                        <div class="govuk-details__text" id="help-content">
+                                            <!-- Dynamic help content will be inserted here -->
+                                        </div>
+                                    </details>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="govuk-tabs__panel" id="tab-two">
-                            <!-- Error Messages Content -->
-                            <p class="govuk-body-s" style="margin-bottom: 30px; border-bottom: #008938 1px;">
-                                <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
-                                    target="_blank">
-                                    Preview error messages in a new tab
-                                </a>
-                            </p>
-                            <div class="govuk-error-summary" data-disable-auto-focus="true">
-                                <h2 class="govuk-error-summary__title">There is a problem</h2>
-                                <ul class="govuk-list govuk-error-summary__list" id="error-messages-list">
-                                    <!-- Dynamic error messages will be inserted here -->
-                                </ul>
-                            </div>
+                        <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;"
+                            data-module="govuk-skip-link">
+                            Skip to edit page
+                        </a>
+                    </div>
+
+                    <div class="govuk-tabs__panel" id="tab-two">
+                        <!-- Error Messages Content -->
+                        <p class="govuk-body-s" style="margin-bottom: 30px; border-bottom: #008938 1px;">
+                            <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
+                                target="_blank">
+                                Preview error messages in a new tab
+                            </a>
+                        </p>
+                        <div class="govuk-error-summary" data-disable-auto-focus="true">
+                            <h2 class="govuk-error-summary__title">There is a problem</h2>
+                            <ul class="govuk-list govuk-error-summary__list" id="error-messages-list">
+                                <!-- Dynamic error messages will be inserted here -->
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <script>
@@ -572,11 +539,15 @@ text-align: center;"> Previews
         const domElements = {
             questionLabelInputPreciseLocation: document.getElementById('question-label-input-precise-location'),
             questionLabelLegend: document.getElementById('question-label-legend'),
+            hintTextCheckbox: document.querySelector('input[name="additionalSettings"][value="add-hint-text"]'),
             hintTextInputPreciseLocation: document.getElementById('hint-text-input-precise-location'),
             hintTextOutput: document.getElementById('hint-text-output'),
-            makeOptionalPreciseLocation: document.getElementById('make-optional-precise-location'),
-            overrideHintButton: document.getElementById('override-hint-button'),
-            useDefaultHintButton: document.getElementById('use-default-hint-button')
+            makeOptionalPreciseLocation: document.querySelector('input[name="additionalSettings"][value="make-optional"]'),
+            helpTextCheckbox: document.querySelector('input[name="additionalSettings"][value="add-help-text"]'),
+            helpTextInputPreciseLocation: document.getElementById('help-text-input-precise-location'),
+            useDefaultHelpTextCheckbox: document.getElementById('use-default-help-text-precise-location'),
+            helpComponentPreview: document.getElementById('help-component-preview'),
+            helpContent: document.getElementById('help-content'),
         };
 
         // Initialize event listeners for dynamic updates
@@ -924,6 +895,9 @@ text-align: center;"> Previews
 
             // Update question label to reflect current input value
             updateQuestionLabel();
+
+            // Update help component
+            updateHelpComponent();
         }
 
         // Re-initialize event listeners after preview update
@@ -945,6 +919,11 @@ text-align: center;"> Previews
                 applyHighlightOnFocus(domElements.questionLabelInputPreciseLocation, domElements.questionLabelLegend);
             }
 
+            // Re-bind hint text checkbox
+            if (domElements.hintTextCheckbox) {
+                domElements.hintTextCheckbox.addEventListener('change', updateHintText);
+            }
+
             // Re-bind hint text updates
             if (domElements.hintTextInputPreciseLocation && domElements.hintTextOutput) {
                 // Remove existing listeners to avoid duplicates
@@ -956,12 +935,37 @@ text-align: center;"> Previews
                 applyHighlightOnFocus(domElements.hintTextInputPreciseLocation, domElements.hintTextOutput);
             }
 
-            // Re-bind button event listeners
-            if (domElements.overrideHintButton) {
-                domElements.overrideHintButton.addEventListener('click', showHintTextOverride);
+
+
+            // Re-bind help text checkbox
+            if (domElements.helpTextCheckbox) {
+                domElements.helpTextCheckbox.addEventListener('change', updateHelpComponent);
             }
-            if (domElements.useDefaultHintButton) {
-                domElements.useDefaultHintButton.addEventListener('click', useDefaultHintText);
+
+            // Re-bind help text input
+            if (domElements.helpTextInputPreciseLocation) {
+                domElements.helpTextInputPreciseLocation.addEventListener('input', updateHelpComponent);
+                applyHighlightOnFocus(domElements.helpTextInputPreciseLocation, domElements.helpContent);
+            }
+
+            // Re-bind use default help text checkbox
+            if (domElements.useDefaultHelpTextCheckbox) {
+                domElements.useDefaultHelpTextCheckbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        // Use default help text
+                        const defaultHelpText = generateDefaultHelpText();
+                        if (domElements.helpTextInputPreciseLocation) {
+                            domElements.helpTextInputPreciseLocation.value = defaultHelpText;
+                        }
+                        updateHelpComponent();
+                    } else {
+                        // Clear the textarea
+                        if (domElements.helpTextInputPreciseLocation) {
+                            domElements.helpTextInputPreciseLocation.value = '';
+                        }
+                        updateHelpComponent();
+                    }
+                });
             }
         }
 
@@ -1046,6 +1050,7 @@ text-align: center;"> Previews
         // Set initial error messages
         updateErrorMessages();
 
+
         // Show empty state message
         function showEmptyStateMessage() {
             const previewContainer = document.getElementById("coordinate-inputs-preview");
@@ -1077,25 +1082,53 @@ text-align: center;"> Previews
                 applyHighlightOnFocus(domElements.questionLabelInputPreciseLocation, domElements.questionLabelLegend);
             }
 
+            // Hint text checkbox
+            if (domElements.hintTextCheckbox) {
+                domElements.hintTextCheckbox.addEventListener('change', updateHintText);
+            }
+
             // Update hint text
             if (domElements.hintTextInputPreciseLocation && domElements.hintTextOutput) {
                 domElements.hintTextInputPreciseLocation.addEventListener('input', updateHintText);
                 applyHighlightOnFocus(domElements.hintTextInputPreciseLocation, domElements.hintTextOutput);
             }
 
+
             // Update optional state
             if (domElements.makeOptionalPreciseLocation) {
                 domElements.makeOptionalPreciseLocation.addEventListener('change', updateQuestionLabel);
             }
 
-            // Override hint text button
-            if (domElements.overrideHintButton) {
-                domElements.overrideHintButton.addEventListener('click', showHintTextOverride);
+
+            // Help text checkbox
+            if (domElements.helpTextCheckbox) {
+                domElements.helpTextCheckbox.addEventListener('change', updateHelpComponent);
             }
 
-            // Use default hint text button
-            if (domElements.useDefaultHintButton) {
-                domElements.useDefaultHintButton.addEventListener('click', useDefaultHintText);
+            // Help text input
+            if (domElements.helpTextInputPreciseLocation) {
+                domElements.helpTextInputPreciseLocation.addEventListener('input', updateHelpComponent);
+                applyHighlightOnFocus(domElements.helpTextInputPreciseLocation, domElements.helpContent);
+            }
+
+            // Use default help text checkbox
+            if (domElements.useDefaultHelpTextCheckbox) {
+                domElements.useDefaultHelpTextCheckbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        // Use default help text
+                        const defaultHelpText = generateDefaultHelpText();
+                        if (domElements.helpTextInputPreciseLocation) {
+                            domElements.helpTextInputPreciseLocation.value = defaultHelpText;
+                        }
+                        updateHelpComponent();
+                    } else {
+                        // Clear the textarea
+                        if (domElements.helpTextInputPreciseLocation) {
+                            domElements.helpTextInputPreciseLocation.value = '';
+                        }
+                        updateHelpComponent();
+                    }
+                });
             }
         }
 
@@ -1132,37 +1165,7 @@ text-align: center;"> Previews
             }
         }
 
-        // Show hint text override section
-        function showHintTextOverride() {
-            const defaultState = document.getElementById('hint-text-default-state');
-            const editState = document.getElementById('hint-text-edit-state');
 
-            if (defaultState && editState) {
-                defaultState.style.display = 'none';
-                editState.style.display = 'block';
-                // Focus on the textarea
-                if (domElements.hintTextInputPreciseLocation) {
-                    domElements.hintTextInputPreciseLocation.focus();
-                }
-            }
-        }
-
-        // Use default hint text
-        function useDefaultHintText() {
-            const defaultState = document.getElementById('hint-text-default-state');
-            const editState = document.getElementById('hint-text-edit-state');
-
-            if (defaultState && editState) {
-                defaultState.style.display = 'block';
-                editState.style.display = 'none';
-                // Clear the custom hint text
-                if (domElements.hintTextInputPreciseLocation) {
-                    domElements.hintTextInputPreciseLocation.value = '';
-                }
-                // Update to show default hint text
-                updateDefaultHintText();
-            }
-        }
 
         // Update default hint text based on current location format
         function updateDefaultHintText() {
@@ -1322,21 +1325,43 @@ text-align: center;"> Previews
                     const longitudeLatitudePrecision = document.querySelector('input[name="longitudeLatitudePrecision"]:checked');
 
                     if (longitudeLatitudeFormat && longitudeLatitudeFormat.value === "degrees_minutes_seconds") {
+                        // Get precision-specific hint for degrees/minutes/seconds
+                        let precisionHint = '';
+                        if (longitudeLatitudePrecision) {
+                            switch (longitudeLatitudePrecision.value) {
+                                case '1_decimal':
+                                    precisionHint = ' (for example 53° 45.8\' N    3° 44.3\' W)';
+                                    break;
+                                case '2_decimal':
+                                    precisionHint = ' (for example 53° 45.83\' N    3° 44.34\' W)';
+                                    break;
+                                case '3_decimal':
+                                    precisionHint = ' (for example 53° 45.831\' N    3° 44.342\' W)';
+                                    break;
+                                case '4_decimal':
+                                    precisionHint = ' (for example 53° 45.8310\' N    3° 44.3420\' W)';
+                                    break;
+                                case '5_decimal':
+                                    precisionHint = ' (for example 53° 45.83100\' N    3° 44.34200\' W)';
+                                    break;
+                            }
+                        }
+
                         errorMessages = [
                             `Enter <span id="error-dynamic-text-lat-deg" style="text-transform: lowercase;">${shortDescription}</span> latitude degree`,
-                            `Enter <span id="error-dynamic-text-lat-min" style="text-transform: lowercase;">${shortDescription}</span> latitude minute`,
-                            `Enter <span id="error-dynamic-text-lat-sec" style="text-transform: lowercase;">${shortDescription}</span> latitude second`,
+                            `Enter <span id="error-dynamic-text-lat-min" style="text-transform: lowercase;">${shortDescription}</span> latitude minute${precisionHint}`,
+                            `Enter <span id="error-dynamic-text-lat-sec" style="text-transform: lowercase;">${shortDescription}</span> latitude second${precisionHint}`,
                             `Enter <span id="error-dynamic-text-lat-dir" style="text-transform: lowercase;">${shortDescription}</span> latitude direction`,
                             `Enter <span id="error-dynamic-text-lon-deg" style="text-transform: lowercase;">${shortDescription}</span> longitude degree`,
-                            `Enter <span id="error-dynamic-text-lon-min" style="text-transform: lowercase;">${shortDescription}</span> longitude minute`,
-                            `Enter <span id="error-dynamic-text-lon-sec" style="text-transform: lowercase;">${shortDescription}</span> longitude second`,
+                            `Enter <span id="error-dynamic-text-lon-min" style="text-transform: lowercase;">${shortDescription}</span> longitude minute${precisionHint}`,
+                            `Enter <span id="error-dynamic-text-lon-sec" style="text-transform: lowercase;">${shortDescription}</span> longitude second${precisionHint}`,
                             `Enter <span id="error-dynamic-text-lon-dir" style="text-transform: lowercase;">${shortDescription}</span> longitude direction`,
                             `Enter <span id="error-dynamic-text-lat-deg-num" style="text-transform: lowercase;">${shortDescription}</span> latitude degree as a number`,
-                            `Enter <span id="error-dynamic-text-lat-min-num" style="text-transform: lowercase;">${shortDescription}</span> latitude minute as a number`,
-                            `Enter <span id="error-dynamic-text-lat-sec-num" style="text-transform: lowercase;">${shortDescription}</span> latitude second as a number`,
+                            `Enter <span id="error-dynamic-text-lat-min-num" style="text-transform: lowercase;">${shortDescription}</span> latitude minute as a number${precisionHint}`,
+                            `Enter <span id="error-dynamic-text-lat-sec-num" style="text-transform: lowercase;">${shortDescription}</span> latitude second as a number${precisionHint}`,
                             `Enter <span id="error-dynamic-text-lon-deg-num" style="text-transform: lowercase;">${shortDescription}</span> longitude degree as a number`,
-                            `Enter <span id="error-dynamic-text-lon-min-num" style="text-transform: lowercase;">${shortDescription}</span> longitude minute as a number`,
-                            `Enter <span id="error-dynamic-text-lon-sec-num" style="text-transform: lowercase;">${shortDescription}</span> longitude second as a number`
+                            `Enter <span id="error-dynamic-text-lon-min-num" style="text-transform: lowercase;">${shortDescription}</span> longitude minute as a number${precisionHint}`,
+                            `Enter <span id="error-dynamic-text-lon-sec-num" style="text-transform: lowercase;">${shortDescription}</span> longitude second as a number${precisionHint}`
                         ];
                     } else {
                         // Get precision-specific error messages
@@ -1383,6 +1408,91 @@ text-align: center;"> Previews
 
             errorMessagesList.innerHTML = errorHTML;
         }
+
+        // Update help component based on checkbox and content
+        function updateHelpComponent() {
+            if (!domElements.helpComponentPreview || !domElements.helpContent) return;
+
+            // Check if checkbox is checked
+            const isChecked = domElements.helpTextCheckbox ? domElements.helpTextCheckbox.checked : false;
+            const customHelpText = domElements.helpTextInputPreciseLocation ? domElements.helpTextInputPreciseLocation.value.trim() : '';
+
+            if (isChecked) {
+                // Show help component
+                domElements.helpComponentPreview.style.display = 'block';
+
+                if (customHelpText) {
+                    // Use custom markdown content
+                    const htmlContent = convertMarkdownToHtml(customHelpText);
+                    domElements.helpContent.innerHTML = htmlContent;
+                } else {
+                    // Show placeholder content when checkbox is checked but no dd help texttext
+                    domElements.helpContent.innerHTML = '<p class="govuk-body">Help text</p>';
+                }
+            } else {
+                // Hide help component when checkbox not checked
+                domElements.helpComponentPreview.style.display = 'none';
+            }
+        }
+
+
+        // Generate default help text based on location format
+        function generateDefaultHelpText() {
+            const selectedFormat = document.querySelector('input[name="locationFormat"]:checked')?.value;
+
+            switch (selectedFormat) {
+                case "easting_northing":
+                    return "You can find coordinates using:\n- [Grid Reference Finder](https://gridreferencefinder.com/)\n- [Magic Maps](https://magic.defra.gov.uk/)\n- GPS devices or mapping apps";
+                case "latitude_longitude":
+                    return "You can find coordinates using:\n- [Grid Reference Finder](https://gridreferencefinder.com/)\n- [Magic Maps](https://magic.defra.gov.uk/)\n- GPS devices or mapping apps";
+                case "what3words":
+                    return "You can find coordinates using:\n- [what3words website](https://what3words.com/)\n- [what3words app](https://what3words.com/products/what3words-app/)\n- [Magic Maps](https://magic.defra.gov.uk/)";
+                case "osgb36":
+                    return "You can find coordinates using:\n- [Grid Reference Finder](https://gridreferencefinder.com/)\n- [Magic Maps](https://magic.defra.gov.uk/)\n- GPS devices or mapping apps";
+                default:
+                    return "You can find coordinates using:\n- [Grid Reference Finder](https://gridreferencefinder.com/)\n- [Magic Maps](https://magic.defra.gov.uk/)\n- GPS devices or mapping apps";
+            }
+        }
+
+        // Basic markdown to HTML converter
+        function convertMarkdownToHtml(markdown) {
+            let html = markdown;
+
+            // Convert links [text](url) to HTML links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="govuk-link" target="_blank" rel="noreferrer noopener">$1 (opens in new tab)</a>');
+
+            // Convert bullet points - to HTML list items
+            const lines = html.split('\n');
+            let inList = false;
+            let result = [];
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+
+                if (line.startsWith('- ')) {
+                    if (!inList) {
+                        result.push('<ul class="govuk-list govuk-list--bullet">');
+                        inList = true;
+                    }
+                    result.push(`<li>${line.substring(2)}</li>`);
+                } else {
+                    if (inList) {
+                        result.push('</ul>');
+                        inList = false;
+                    }
+                    if (line) {
+                        result.push(`<p class="govuk-body">${line}</p>`);
+                    }
+                }
+            }
+
+            if (inList) {
+                result.push('</ul>');
+            }
+
+            return result.join('\n');
+        }
+
 
         // Apply focus/blur highlighting
         function applyHighlightOnFocus(inputElement, targetElement) {

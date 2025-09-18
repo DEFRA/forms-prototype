@@ -7217,6 +7217,24 @@ router.post("/dwp-find-an-address-plugin-simple/manual-entry", (req, res) => {
   }
 });
 
+// Helper function to parse address string into components
+function parseAddressString(addressString) {
+  if (!addressString) return {};
+
+  // Split by comma and clean up whitespace
+  const parts = addressString.split(",").map((part) => part.trim());
+
+  // Basic parsing - this could be enhanced based on address format
+  const result = {
+    addressLine1: parts[0] || "",
+    addressLine2: parts[1] || "",
+    townCity: parts[2] || "",
+    addressPostcode: parts[3] || "",
+  };
+
+  return result;
+}
+
 // Integrated address plugin routes (shows pattern with other questions on same page)
 router.get(
   "/dwp-find-an-address-plugin-integrated/question-one",
@@ -7226,12 +7244,33 @@ router.get(
       req.session.data.addressResults = [];
       req.session.data.selectedAddress = null;
       req.session.data.addressMode = "lookup";
+      req.session.data.searchPerformed = false;
+      req.session.data.noResults = false;
       // Clear the postcode to force a fresh search
       req.session.data.addressPostcode = "";
       // Redirect to clean URL to prevent form resubmission dialog
       return res.redirect(
         "/dwp-find-an-address-plugin-integrated/question-one"
       );
+    }
+
+    // Handle switching to manual mode with selected address
+    if (
+      req.query.addressMode === "manual" &&
+      (req.session.data.selectedAddress || req.query.selectedAddress)
+    ) {
+      const addressToParse =
+        req.query.selectedAddress || req.session.data.selectedAddress;
+      const parsedAddress = parseAddressString(addressToParse);
+      req.session.data = {
+        ...req.session.data,
+        addressMode: "manual",
+        addressLine1: parsedAddress.addressLine1,
+        addressLine2: parsedAddress.addressLine2,
+        townCity: parsedAddress.townCity,
+        addressPostcode:
+          parsedAddress.addressPostcode || req.session.data.addressPostcode,
+      };
     }
 
     res.render(
@@ -7252,6 +7291,7 @@ router.post(
       name,
       email,
       addressPostcode,
+      buildingNameNumber,
       selectAddress,
       addressLine1,
       addressLine2,
@@ -7264,6 +7304,7 @@ router.post(
       name,
       email,
       addressPostcode,
+      buildingNameNumber,
       addressLine1,
       addressLine2,
       townCity,
@@ -7292,11 +7333,32 @@ router.post(
           .then((data) => {
             console.log("Address lookup results:", data); // Debug log
             if (data.length > 0) {
+              let filteredData = data;
+
+              // Filter by building name/number if provided
+              if (buildingNameNumber && buildingNameNumber.trim()) {
+                filteredData = data.filter((item) => {
+                  return (
+                    item
+                      .toUpperCase()
+                      .indexOf(buildingNameNumber.toUpperCase()) !== -1
+                  );
+                });
+                console.log(
+                  "Filtered addresses by building name/number:",
+                  filteredData
+                ); // Debug log
+              }
+
               // Store results in session
-              req.session.data.addressResults = data.map((address, index) => ({
-                value: address,
-                text: address,
-              }));
+              req.session.data.addressResults = filteredData.map(
+                (address, index) => ({
+                  value: address,
+                  text: address,
+                })
+              );
+              req.session.data.searchPerformed = true;
+              req.session.data.noResults = false;
               console.log(
                 "Stored address results:",
                 req.session.data.addressResults
@@ -7309,6 +7371,8 @@ router.post(
             } else {
               // No addresses found
               req.session.data.addressResults = [];
+              req.session.data.searchPerformed = true;
+              req.session.data.noResults = true;
               console.log("No addresses found for postcode:", addressPostcode); // Debug log
               res.redirect(
                 "/dwp-find-an-address-plugin-integrated/question-one#address"
@@ -7318,6 +7382,8 @@ router.post(
           .catch(() => {
             // Error in lookup
             req.session.data.addressResults = [];
+            req.session.data.searchPerformed = true;
+            req.session.data.noResults = true;
             res.redirect(
               "/dwp-find-an-address-plugin-integrated/question-one#address"
             );
