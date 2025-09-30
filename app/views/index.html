@@ -1057,17 +1057,6 @@ text: "Start latest prototype (Titan MVP 1.2)"
         zoomImage(focusedImage, zoomFactor);
       });
 
-      // Mouse position tracking for focus indicator
-      document.addEventListener('mousemove', function (event) {
-        const imageWrappers = document.querySelectorAll('.image-wrapper');
-        imageWrappers.forEach(function (wrapper) {
-          const rect = wrapper.getBoundingClientRect();
-          const x = ((event.clientX - rect.left) / rect.width) * 100;
-          const y = ((event.clientY - rect.top) / rect.height) * 100;
-          wrapper.style.setProperty('--mouse-x', x + '%');
-          wrapper.style.setProperty('--mouse-y', y + '%');
-        });
-      });
 
       // Mouse drag to pan
       let isDragging = false;
@@ -1097,7 +1086,9 @@ text: "Start latest prototype (Titan MVP 1.2)"
         }
       });
 
+      // Consolidated mousemove handler for both position tracking and dragging
       document.addEventListener('mousemove', function (event) {
+        // Handle dragging functionality
         if (isDragging && draggedImage) {
           const deltaX = event.clientX - startX;
           const deltaY = event.clientY - startY;
@@ -1109,6 +1100,16 @@ text: "Start latest prototype (Titan MVP 1.2)"
           const currentZoom = parseFloat(draggedImage.dataset.zoomLevel || 1);
           draggedImage.style.transform = `scale(${currentZoom}) translate(${newX}px, ${newY}px)`;
         }
+
+        // Handle mouse position tracking for focus indicator
+        const imageWrappers = document.querySelectorAll('.image-wrapper');
+        imageWrappers.forEach(function (wrapper) {
+          const rect = wrapper.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width) * 100;
+          const y = ((event.clientY - rect.top) / rect.height) * 100;
+          wrapper.style.setProperty('--mouse-x', x + '%');
+          wrapper.style.setProperty('--mouse-y', y + '%');
+        });
       });
 
       document.addEventListener('mouseup', function () {
