@@ -252,6 +252,25 @@ alt: "Payment screen on mobile and dashboard with refund function."
             {% endif %}
             {% endfor %}
 
+            {# Build full list of condition names defined in the form (if provided via data.conditions) #}
+            {% set allConditionNames = [] %}
+            {% if data and data.conditions %}
+            {% for cond in data.conditions %}
+            {% set condName = cond.name or cond.conditionName %}
+            {% if condName and (condName not in allConditionNames) %}
+            {% set allConditionNames = (allConditionNames.push(condName), allConditionNames) %}
+            {% endif %}
+            {% endfor %}
+            {% endif %}
+
+            {# Compute conditions that are defined but not assigned to any page #}
+            {% set unassignedConditions = [] %}
+            {% for name in allConditionNames %}
+            {% if name not in uniqueConditions %}
+            {% set unassignedConditions = (unassignedConditions.push(name), unassignedConditions) %}
+            {% endif %}
+            {% endfor %}
+
             {% if uniqueConditions.length > 0 %}
             <h2 id="search-filters-heading" class="govuk-heading-m govuk-!-margin-bottom-4">Filter pages by condition
             </h2>
@@ -295,6 +314,20 @@ alt: "Payment screen on mobile and dashboard with refund function."
             </div>
             {% endif %}
             {%- from "moj/components/button-menu/macro.njk" import mojButtonMenu -%}
+
+            {# Show non-assigned conditions as a non-bulleted list at the bottom #}
+            {% if unassignedConditions.length > 0 %}
+            <div class="govuk-!-margin-top-4" aria-labelledby="unassigned-filters-heading">
+                <h3 id="unassigned-filters-heading" class="govuk-heading-m">Conditions not applied to pages</h3>
+                <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                    {% for condition in unassignedConditions %}
+                    <li class="govuk-hint">{{ condition }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+
         </aside>
     </div>
 

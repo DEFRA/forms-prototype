@@ -76,8 +76,6 @@ activeLinkId: "nav-editor"
 
                                                 <form id="s" action="/titan-mvp-1.2/question-configuration-save"
                                                     method="post">
-                                                    <!-- Hidden input to pass the location format -->
-                                                    <input type="hidden" name="locationFormat" value="{{ data.locationSubType }}">
 
                                                     {% from "govuk/components/input/macro.njk" import govukInput %}
                                                     {% from "govuk/components/radios/macro.njk" import govukRadios %}
@@ -90,32 +88,34 @@ activeLinkId: "nav-editor"
 
 
 
-                                                    <!-- Location Format Display (Read-only) -->
-                                                    {# <div class="govuk-form-group">
-                                                        <fieldset class="govuk-fieldset">
-                                                            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                                                Location format
-                                                            </legend>
-                                                            <div class="govuk-radios govuk-radios--small" data-module="govuk-radios">
-                                                                <div class="govuk-radios__item">
-                                                                    <input class="govuk-radios__input" id="location-format-display" name="locationFormatDisplay" type="radio" value="{{ data.locationSubType }}" checked disabled>
-                                                                    <label class="govuk-label govuk-radios__label" for="location-format-display">
-                                                                        {% if data.locationSubType === "easting_northing" %}
-                                                                            Easting and northing
-                                                                        {% elif data.locationSubType === "os_grid_number" %}
-                                                                            Ordnance Survey (OS) grid reference
-                                                                        {% elif data.locationSubType === "field_number" %}
-                                                                            National Grid field number
-                                                                        {% elif data.locationSubType === "longitude_latitude" %}
-                                                                            Latitude and longitude
-                                                                        {% else %}
-                                                                            Location format
-                                                                        {% endif %}
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </fieldset>
-                                                    </div> #}
+                                                    <!-- Location Format Selection -->
+                                                    {{ govukRadios({
+                                                    name: "locationFormat",
+                                                    fieldset: {
+                                                    legend: {
+                                                    text: "Select location format",
+                                                    classes: "govuk-fieldset__legend--m"
+                                                    }
+                                                    },
+                                                    items: [
+                                                    {
+                                                    value: "easting_northing",
+                                                    text: "Easting and northing"
+                                                    },
+                                                    {
+                                                    value: "os_grid_number",
+                                                    text: "Ordnance Survey (OS) grid reference"
+                                                    },
+                                                    {
+                                                    value: "field_number",
+                                                    text: "National Grid field number"
+                                                    },
+                                                    {
+                                                    value: "longitude_latitude",
+                                                    text: "Latitude and longitude"
+                                                    }
+                                                    ]
+                                                    }) }}
 
                                                     <!-- Question Label Input -->
                                                     <div class="govuk-form-group">
@@ -217,20 +217,6 @@ activeLinkId: "nav-editor"
                                             <h2 class="govuk-heading-m">{{
                                                 commonTerms.form_editor.question_settings.title }}</h2>
 
-                                            {% set locationFormatText %}
-                                                {% if data.locationSubType === 'easting_northing' %}
-                                                    Easting and northing
-                                                {% elif data.locationSubType === 'os_grid_number' %}
-                                                    Ordnance Survey (OS) grid reference
-                                                {% elif data.locationSubType === 'field_number' %}
-                                                    National Grid field number
-                                                {% elif data.locationSubType === 'longitude_latitude' %}
-                                                    Latitude and longitude
-                                                {% else %}
-                                                    Location format
-                                                {% endif %}
-                                            {% endset %}
-
                                             {{ govukSummaryList({
                                             "rows": [
                                             {
@@ -238,7 +224,8 @@ activeLinkId: "nav-editor"
                                             "text": "Type of information"
                                             },
                                             "value": {
-                                            "text": locationFormatText
+                                            "html":
+                                            commonTerms.form_editor.information_type.location.precise.title
                                             },
                                             "actions": {
                                             "items": [
@@ -593,14 +580,25 @@ text-align: center;"> Previews
             }
         }
 
-        // Get the pre-selected location format from session data
-        const locationSubType = "{{ data.locationSubType }}";
-        if (locationSubType && locationSubType !== "") {
-            console.log("Using pre-selected locationSubType:", locationSubType);
-            updateLocationPreview(locationSubType);
+        // Listen for changes to the location format radio buttons
+        document.querySelectorAll("input[name='locationFormat']").forEach((radio) => {
+            radio.addEventListener("change", function () {
+                console.log("Location format changed:", this.value);
+                updateLocationPreview(this.value);
+                updateDefaultHintText();
+            });
+        });
+
+
+
+        // Show the preview for the initially selected radio button (if any)
+        const initialSelection = document.querySelector("input[name='locationFormat']:checked");
+        if (initialSelection) {
+            console.log("Initial selection found:", initialSelection.value);
+            updateLocationPreview(initialSelection.value);
         } else {
-            // Show empty state message when no location format is selected
-            console.log("No location format selected, showing empty state");
+            // Show empty state message when no selection
+            console.log("No initial selection, showing empty state");
             showEmptyStateMessage();
         }
 
@@ -725,15 +723,14 @@ text-align: center;"> Previews
         function updateDefaultHintText() {
             if (!domElements.hintTextOutput) return;
 
-            // Get the location format from session data
-            const locationSubType = "{{ data.locationSubType }}";
-            if (!locationSubType) {
+            const selectedFormat = document.querySelector('input[name="locationFormat"]:checked');
+            if (!selectedFormat) {
                 domElements.hintTextOutput.textContent = 'Easting must be between 0 and 70000. Northing must be between 0 and 1300000.';
                 return;
             }
 
             let defaultHint = '';
-            switch (locationSubType) {
+            switch (selectedFormat.value) {
                 case 'easting_northing':
                     defaultHint = 'Easting must be between 0 and 70000. Northing must be between 0 and 1300000.';
                     break;
@@ -764,10 +761,9 @@ text-align: center;"> Previews
             const errorMessagesList = document.getElementById('error-messages-list');
             if (!errorMessagesList) return;
 
-            // Get the location format from session data
-            const locationSubType = "{{ data.locationSubType }}";
-            if (!locationSubType) {
-                errorMessagesList.innerHTML = '<li><a class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>No location format selected</a></li>';
+            const selectedFormat = document.querySelector('input[name="locationFormat"]:checked');
+            if (!selectedFormat) {
+                errorMessagesList.innerHTML = '<li><a class="govuk-error-message"><span class="govuk-visually-hidden">Error:</span>Select a location format</a></li>';
                 return;
             }
 
@@ -776,7 +772,7 @@ text-align: center;"> Previews
             const shortDescription = shortDescriptionInput ? shortDescriptionInput.value.trim() || '[Short description]' : '[Short description]';
 
             let errorMessages = [];
-            switch (locationSubType) {
+            switch (selectedFormat.value) {
                 case 'easting_northing':
                     errorMessages = [
                         `Enter easting for <span id="error-dynamic-text-east" style="text-transform: lowercase;">${shortDescription}</span>`,

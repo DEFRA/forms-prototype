@@ -196,11 +196,20 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
                           }
                           },
                           {
-                          value: "precise",
-                          text: commonTerms.form_editor.information_type.location.types.precise,
-                          hint: {
-                          text: "A precise location, for example, a grid reference or coordinates"
-                          }
+                          value: "easting_northing",
+                          text: "Easting and northing"
+                          },
+                          {
+                          value: "os_grid_number",
+                          text: "Ordnance Survey (OS) grid reference"
+                          },
+                          {
+                          value: "field_number",
+                          text: "National Grid field number"
+                          },
+                          {
+                          value: "longitude_latitude",
+                          text: "Latitude and longitude"
                           }
                           ]
                           }) }}
@@ -418,7 +427,19 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
               } else if (mainOption && mainOption.value === "date") {
                 updateSetName(selectedSubOption === "day-month-year" ? "Date Full" : "Date Month-Year");
               } else if (mainOption && mainOption.value === "location") {
-                updateSetName(selectedSubOption === "address" ? "Location Address" : "Location Precise");
+                let locationSuffix = "Location";
+                if (selectedSubOption === "address") {
+                  locationSuffix = "Location Address";
+                } else if (selectedSubOption === "easting_northing") {
+                  locationSuffix = "Location Easting Northing";
+                } else if (selectedSubOption === "os_grid_number") {
+                  locationSuffix = "Location OS Grid";
+                } else if (selectedSubOption === "field_number") {
+                  locationSuffix = "Location Field Number";
+                } else if (selectedSubOption === "longitude_latitude") {
+                  locationSuffix = "Location Lat Long";
+                }
+                updateSetName(locationSuffix);
               } else if (mainOption && mainOption.value === "list") {
                 updateSetName(selectedSubOption);
               }
@@ -489,7 +510,19 @@ start: "<span class='govuk-heading-s'>Licence to Import an Animal Pathogen/Carri
               } else if (mainOption && mainOption.value === "date") {
                 setCustomDataAttribute(selectedSubOption === "day-month-year" ? "DateFull" : "DateMonthYear");
               } else if (mainOption && mainOption.value === "location") {
-                setCustomDataAttribute(selectedSubOption === "address" ? "LocationAddress" : "LocationPrecise");
+                let locationSuffix = "Location";
+                if (selectedSubOption === "address") {
+                  locationSuffix = "LocationAddress";
+                } else if (selectedSubOption === "easting_northing") {
+                  locationSuffix = "LocationEastingNorthing";
+                } else if (selectedSubOption === "os_grid_number") {
+                  locationSuffix = "LocationOSGrid";
+                } else if (selectedSubOption === "field_number") {
+                  locationSuffix = "LocationFieldNumber";
+                } else if (selectedSubOption === "longitude_latitude") {
+                  locationSuffix = "LocationLatLong";
+                }
+                setCustomDataAttribute(locationSuffix);
               } else if (mainOption && mainOption.value === "list") {
                 setCustomDataAttribute(selectedSubOption.charAt(0).toUpperCase() + selectedSubOption.slice(1));
               }

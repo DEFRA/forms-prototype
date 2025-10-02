@@ -1,0 +1,40 @@
+{% extends "layouts/notify.html" %}
+
+{% block pageTitle %}
+Feedback email - Form submissions data ready for download
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <!-- Email subject line styling -->
+        <div class="govuk-inset-text govuk-!-margin-bottom-6" style="background-color: #f7f7f7; border-left: -5px solid #1d70b800;">
+            <p class="govuk-body-s govuk-!-margin-bottom-1"><strong>Subject:</strong></p>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
+
+            <p class="govuk-body-s govuk-!-margin-bottom-0">File is ready to download</p>
+        </div>
+
+        <p class="govuk-body">
+            The file you requested is ready to download.</p>
+
+        <p class="govuk-body">
+            <a href="http://localhost:3000/titan-mvp-1.2/form-overview/submissions" class="govuk-link">Download file</a>.
+        </p>
+
+        <p class="govuk-body">
+            The link will expire in 90 days.
+        </p>
+
+
+        <p class="govuk-body">
+           From the Defra Forms team
+        </p>
+
+    </div>
+</div>
+
+{% endblock %}

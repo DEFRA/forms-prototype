@@ -221,6 +221,18 @@ router.get("/titan-mvp-1.2/form-editor/api/lists", lists.getListsAPI);
 router.get("/titan-mvp-1.2/form-editor/api/list/:name", lists.getListAPI);
 router.get("/titan-mvp-1.2/form-editor/view-list/:name", lists.viewGet);
 
+// ── CSAT ROUTES ────────────────────────────────────────────────────────────────
+
+// CSAT form submission
+router.post("/titan-mvp-1.2/form-editor/CSAT/form-submitted", function (req, res) {
+  res.render("titan-mvp-1.2/form-editor/CSAT/form-submitted");
+});
+
+// CSAT form page
+router.get("/titan-mvp-1.2/form-editor/CSAT/form", function (req, res) {
+  res.render("titan-mvp-1.2/form-editor/CSAT/form");
+});
+
 // ── SECTIONS ROUTES ────────────────────────────────────────────────────────────
 
 // Mount shared sections router
@@ -2190,7 +2202,7 @@ router.post("/titan-mvp-1.2/information-type-answer-nf", function (req, res) {
   } else if (mainType === "location") {
     if (locationSubType === "address") {
       return res.redirect("/titan-mvp-1.2/question-configuration");
-    } else if (locationSubType === "precise") {
+    } else if (["easting_northing", "os_grid_number", "field_number", "longitude_latitude"].includes(locationSubType)) {
       return res.redirect("/titan-mvp-1.2/question-configuration");
     }
   }
@@ -2238,7 +2250,7 @@ router.get("/titan-mvp-1.2/question-configuration", function (req, res) {
     if (locationSubType === "address") {
       templateToRender =
         "/titan-mvp-1.2/form-editor/question-type/address/edit-nf.html";
-    } else if (locationSubType === "precise") {
+    } else if (["easting_northing", "os_grid_number", "field_number", "longitude_latitude"].includes(locationSubType)) {
       templateToRender =
         "/titan-mvp-1.2/form-editor/question-type/precise-location/edit-nf.html";
     }
@@ -2326,7 +2338,7 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
   } else if (questionType === "location") {
     if (locationSubType === "address") {
       finalSubType = "address";
-    } else if (locationSubType === "precise") {
+    } else if (["easting_northing", "os_grid_number", "field_number", "longitude_latitude"].includes(locationSubType)) {
       finalSubType = "precise-location";
     }
   } else if (questionType === "address") {
@@ -3055,6 +3067,222 @@ router.get("/titan-mvp-1.2/form-overview/index/", (req, res) => {
     form: form,
     pageName: `Overview - ${form.name}`,
   });
+});
+
+// POC form overview route
+router.get("/titan-mvp-1.2/form-overview/poc", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data for POC
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form",
+    organisation: {
+      name: formData.organisation?.name || "Department for Environment, Food and Rural Affairs"
+    },
+    team: {
+      name: formData.team?.name || "Digital Services Team",
+      email: formData.team?.email || "team@defra.gov.uk"
+    },
+    support: {
+      phone: formData.support?.phone || "0300 123 4567",
+      email: formData.support?.email || "support@defra.gov.uk",
+      link: formData.support?.link || "https://defra.gov.uk/contact"
+    },
+    nextSteps: formData.nextSteps || "Review and publish your form",
+    privacyNotice: formData.privacyNotice || "https://defra.gov.uk/privacy",
+    notificationEmail: formData.notificationEmail || "notifications@defra.gov.uk"
+  };
+
+  res.render("titan-mvp-1.2/form-overview/poc", {
+    form: form,
+    pageName: `Overview - ${form.name}`,
+  });
+});
+
+// Submissions page route
+router.get("/titan-mvp-1.2/form-overview/submissions", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  // Check if there's a success message to show
+  const showSuccessMessage = req.query.success === 'true';
+  const showFeedbackSuccessMessage = req.query.feedbackSuccess === 'true';
+
+  res.render("titan-mvp-1.2/form-overview/submissions/index", {
+    form: form,
+    pageName: `Submissions - ${form.name}`,
+    showSuccessMessage: showSuccessMessage,
+    showFeedbackSuccessMessage: showFeedbackSuccessMessage
+  });
+});
+
+// Improved submissions page route
+router.get("/titan-mvp-1.2/form-overview/submissions/improved", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  // Check if there's a success message to show
+  const showSuccessMessage = req.query.success === 'true';
+  const showFeedbackSuccessMessage = req.query.feedbackSuccess === 'true';
+
+  res.render("titan-mvp-1.2/form-overview/submissions/index-improved", {
+    form: form,
+    pageName: `Submissions - ${form.name}`,
+    showSuccessMessage: showSuccessMessage,
+    showFeedbackSuccessMessage: showFeedbackSuccessMessage
+  });
+});
+
+// Improved-2 submissions page route
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  // Check if there's a success message to show
+  const showSuccessMessage = req.query.success === 'true';
+  const showFeedbackSuccessMessage = req.query.feedbackSuccess === 'true';
+
+  res.render("titan-mvp-1.2/form-overview/submissions/index-improved-2", {
+    form: form,
+    pageName: `Submissions - ${form.name}`,
+    showSuccessMessage: showSuccessMessage,
+    showFeedbackSuccessMessage: showFeedbackSuccessMessage
+  });
+});
+
+// Email template route
+router.get("/titan-mvp-1.2/form-overview/submissions/email", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  res.render("titan-mvp-1.2/form-overview/submissions/email/index", {
+    form: form,
+    pageName: `Email - Form submissions data ready for download`
+  });
+});
+
+// Download index page route
+router.get("/titan-mvp-1.2/form-overview/submissions/download/index", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  res.render("titan-mvp-1.2/form-overview/submissions/download/index", {
+    form: form,
+    pageName: `Download - ${form.name}`
+  });
+});
+
+// Downloading page route
+router.get("/titan-mvp-1.2/form-overview/submissions/download/downloading", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  res.render("titan-mvp-1.2/form-overview/submissions/download/downloading", {
+    form: form,
+    pageName: `Downloading - ${form.name}`
+  });
+});
+
+// Download submissions action (GET and POST) - redirect to downloading page
+router.get("/titan-mvp-1.2/form-overview/submissions/download", (req, res) => {
+  // Redirect to downloading page
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/download/downloading");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/download", (req, res) => {
+  // Redirect back to submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions?success=true");
+});
+
+// Download feedback action (GET and POST)
+router.get("/titan-mvp-1.2/form-overview/submissions/download-feedback", (req, res) => {
+  // Redirect back to submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions?feedbackSuccess=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/download-feedback", (req, res) => {
+  // Redirect back to submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions?feedbackSuccess=true");
+});
+
+// Download actions for improved page (GET and POST)
+router.get("/titan-mvp-1.2/form-overview/submissions/improved/download", (req, res) => {
+  // Redirect back to improved submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved?success=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/improved/download", (req, res) => {
+  // Redirect back to improved submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved?success=true");
+});
+
+router.get("/titan-mvp-1.2/form-overview/submissions/improved/download-feedback", (req, res) => {
+  // Redirect back to improved submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved?feedbackSuccess=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/improved/download-feedback", (req, res) => {
+  // Redirect back to improved submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved?feedbackSuccess=true");
+});
+
+// Download actions for improved-2 page (GET and POST)
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2/download", (req, res) => {
+  // Redirect back to improved-2 submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2?success=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/improved-2/download", (req, res) => {
+  // Redirect back to improved-2 submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2?success=true");
+});
+
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2/download-feedback", (req, res) => {
+  // Redirect back to improved-2 submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2?feedbackSuccess=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/improved-2/download-feedback", (req, res) => {
+  // Redirect back to improved-2 submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2?feedbackSuccess=true");
 });
 
 // Route handler for Livestock registration form
@@ -11073,6 +11301,32 @@ router.get("/titan-mvp-1.2/form-editor/listing/demo", function (req, res) {
       ],
     },
   ];
+
+  // Add a few extra demo conditions that are defined but not used by any page
+  // These will appear in the listing filter panel under the disabled "not used" group
+  demoConditions.push(
+    {
+      id: "form-cond5",
+      conditionName: "Has Website",
+      rules: [
+        { questionText: "Do you have a company website?", operator: "is", value: "yes" },
+      ],
+    },
+    {
+      id: "form-cond6",
+      conditionName: "Uses Subcontractors",
+      rules: [
+        { questionText: "Do you use subcontractors?", operator: "is", value: "yes" },
+      ],
+    },
+    {
+      id: "form-cond7",
+      conditionName: "High Environmental Impact",
+      rules: [
+        { questionText: "Estimated environmental impact", operator: "contains", value: "high" },
+      ],
+    }
+  );
 
   // Create demo sections
   const demoSections = [
