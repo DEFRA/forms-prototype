@@ -3170,6 +3170,29 @@ router.get("/titan-mvp-1.2/form-overview/submissions/improved-2", (req, res) => 
   });
 });
 
+// Improved-2 TABLE submissions page route
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  // Check if there's a success message to show
+  const showSuccessMessage = req.query.success === 'true';
+  const showFeedbackSuccessMessage = req.query.feedbackSuccess === 'true';
+
+  res.render("titan-mvp-1.2/form-overview/submissions/index-improved-2-table", {
+    form: form,
+    pageName: `Submissions - ${form.name}`,
+    showSuccessMessage: showSuccessMessage,
+    showFeedbackSuccessMessage: showFeedbackSuccessMessage
+  });
+});
+
 // Email template route
 router.get("/titan-mvp-1.2/form-overview/submissions/email", (req, res) => {
   // Get the form data from the session
@@ -3283,6 +3306,70 @@ router.get("/titan-mvp-1.2/form-overview/submissions/improved-2/download-feedbac
 router.post("/titan-mvp-1.2/form-overview/submissions/improved-2/download-feedback", (req, res) => {
   // Redirect back to improved-2 submissions page with feedback success flag
   res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2?feedbackSuccess=true");
+});
+
+// Download actions for improved-2 TABLE page (GET and POST)
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table/download", (req, res) => {
+  // Redirect back to improved-2 table submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-table?success=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/improved-2-table/download", (req, res) => {
+  // Redirect back to improved-2 table submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-table?success=true");
+});
+
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table/download-feedback", (req, res) => {
+  // Redirect back to improved-2 table submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-table?feedbackSuccess=true");
+});
+
+// Improved-2 SUMMARY submissions page route
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-summary", (req, res) => {
+  // Get the form data from the session
+  const formData = req.session.data || {};
+  
+  // Set up default form data
+  const form = {
+    id: formData.formId || "example-form",
+    name: formData.formName || "Example Form"
+  };
+
+  // Check if there's a success message to show
+  const showSuccessMessage = req.query.success === 'true';
+  const showFeedbackSuccessMessage = req.query.feedbackSuccess === 'true';
+
+  res.render("titan-mvp-1.2/form-overview/submissions/index-improved-2-summary", {
+    form: form,
+    pageName: `Submissions - ${form.name}`,
+    showSuccessMessage: showSuccessMessage,
+    showFeedbackSuccessMessage: showFeedbackSuccessMessage
+  });
+});
+
+// Download actions for improved-2 SUMMARY page (GET and POST)
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-summary/download", (req, res) => {
+  // Redirect back to improved-2 summary submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-summary?success=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/improved-2-summary/download", (req, res) => {
+  // Redirect back to improved-2 summary submissions page with success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-summary?success=true");
+});
+
+router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-summary/download-feedback", (req, res) => {
+  // Redirect back to improved-2 summary submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-summary?feedbackSuccess=true");
+});
+
+router.post("/titan-mvp-1.2/form-overview/submissions/improved-2-summary/download-feedback", (req, res) => {
+  // Redirect back to improved-2 summary submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-summary?feedbackSuccess=true");
+});
+router.post("/titan-mvp-1.2/form-overview/submissions/improved-2-table/download-feedback", (req, res) => {
+  // Redirect back to improved-2 table submissions page with feedback success flag
+  res.redirect("/titan-mvp-1.2/form-overview/submissions/improved-2-table?feedbackSuccess=true");
 });
 
 // Route handler for Livestock registration form
