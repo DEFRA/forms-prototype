@@ -167,41 +167,38 @@ activeLinkId: "nav-editor"
                                             {% set helpTextHtml %}
                                             {% set helpTextDefault -%}
 {% if data.locationSubType === 'field_number' %}
-Use the [MAGIC map tool](https://magic.defra.gov.uk/) to find the National Grid field numbers for your land or buildings. Follow these instructions:
+Use the [MAGIC map tool](https://magic.defra.gov.uk/) to find the National Grid field number for your land or buildings. Follow these instructions:
 
-1. Select ‘Get Started’.
-2. Search for a postcode or place.
-3. Using the map, locate the land or building. Use the +/- icons to zoom in and out.
-4. In the top toolbar, select the fourth icon along ('Where am I?') - it looks like a target.
-5. Click on the land or building.
-6. A pop-up box will appear showing the land details for this location. The National Grid field number is the fourth number down and comes after the ‘Grid Ref’ (Ordnance Survey grid reference). It’s made up of 2 letters and 8 numbers, for example, SO 0418 8589.
+  1. Select ‘Get Started’.
+  2. Search for a postcode or place.
+  3. Using the map, locate the land or building. Use the +/- icons to zoom in and out.
+  4. In the top toolbar, select the fourth icon along ('Where am I?') - it looks like a target.
+  5. Click on the land or building.
+  6. A pop-up box will appear showing the land details for this location. The National Grid field number is the third number from the top of the list. It is made up of 2 letters and 8 numbers, for example, SO04188589.
 {% elif data.locationSubType === 'easting_northing' %}
-Use the [MAGIC map tool](https://magic.defra.gov.uk/) to find the easting and northing for your land or buildings. Follow these instructions:
+Use the [MAGIC map tool](https://magic.defra.gov.uk/) to find the Easting and Northing for your land or buildings. Follow these instructions:
 
-1. Select ‘Get Started’.
-2. Search for a postcode or place.
-3. Using the map, locate the land or building. Use the +/- icons to zoom in and out.
-4. In the top toolbar, select the fourth icon along ('Where am I?') - it looks like a target.
-5. Click on the land or building.
-6. A pop-up box will appear showing the land details for this location. The easting and northing are the first two numbers down. They’re made up of 6 digits each, for example, 50000 and 100000.
+  1. Select ‘Get Started’.
+  2. Search for a postcode or place.
+  3. Using the map, locate the land or building. Use the +/- icons to zoom in and out.
+  4. In the top toolbar, select the fourth icon along ('Where am I?') - it looks like a target.
+  5. Click on the land or building.
+  6. A pop-up box will appear showing the land details for this location. Easting and Northing appear at the top of the list. They are made up of 6 digits each, for example, 248741 and 63688.
 {% elif data.locationSubType === 'os_grid_number' %}
-Use the [MAGIC map tool](https://magic.defra.gov.uk/) to find the Ordnance Survey (OS) grid reference for your land or buildings. Follow these instructions:
+Use the [Ordnance Survey](https://explore.osmaps.com/). Follow these instructions:
 
-1. Select ‘Get Started’.
-2. Search for a postcode or place.
-3. Using the map, locate the land or building. Use the +/- icons to zoom in and out.
-4. In the top toolbar, select the fourth icon along ('Where am I?') - it looks like a target.
-5. Click on the land or building.
-6. A pop-up box will appear showing the land details for this location. The Ordnance Survey (OS) grid reference two numbers down from the top of the list. It’s made up of 2 letters and up to 10 numbers, for example, TQ12345678910.
+1. Search for a county, place or postcode.
+2. Using the map, locate the field or building. Use the +/- icons to zoom in and out.
+3. Right click on each individual building or field to find the OS grid reference.
 {% elif data.locationSubType === 'longitude_latitude' %}
 Use the [MAGIC map tool](https://magic.defra.gov.uk/) to find the latitude and longitude for your land or buildings. Follow these instructions:
 
-1. Select ‘Get Started’.
-2. Search for a postcode or place.
-3. Using the map, locate the land or building. Use the +/- icons to zoom in and out.
-4. In the top toolbar, select the fourth icon along ('Where am I?') - it looks like a target.
-5. Click on the land or building.
-6. A pop-up box will appear showing the land details for this location. The latitude and longitude are four numbers down from the top of the list. They are made up of 6 digits each, for example, 40.3456 and -1.23456.
+  1. Select ‘Get Started’.
+  2. Search for a postcode or place.
+  3. Using the map, locate the land or building. Use the +/- icons to zoom in and out.
+  4. In the top toolbar, select the fourth icon along ('Where am I?') - it looks like a target.
+  5. Click on the land or building.
+  6. A pop-up box will appear showing the land details for this location. The latitude and longitude are four numbers down from the top of the list.
 {% else %}
 Provide instructions to help users answer this question.
 {% endif %}
@@ -465,7 +462,7 @@ text-align: center;"> Previews
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="question-label-legend">
                   Question
                 </legend>
-                <div class="govuk-hint" id="hint-text-output">Easting must be between 0 and 70000. Northing must be between 0 and 1300000.</div>
+                <div class="govuk-hint" id="hint-text-output">For example. Easting: 248741, Northing: 63688</div>
                 <div class="govuk-date-input row-prototype-coordinate-input" id="easting-northing-preview">
                   <div class="govuk-date-input__item govuk-!-margin-bottom-2">
                     <div class="govuk-form-group">
@@ -523,7 +520,7 @@ text-align: center;"> Previews
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l" id="question-label-legend">
                   Question
                 </legend>
-                <div class="govuk-hint" id="hint-text-output">Latitude must be between 49 and 60. Longitude must be between -9 and 2.</div>
+                <div class="govuk-hint" id="hint-text-output">For Great Britain, the latitude will be a number between 49.850 and 60.859 and the longitude will be a number between -13.687 and 1.767</div>
                 <div class="govuk-date-input row-prototype-coordinate-input" id="longitude-latitude-preview">
                   <div class="govuk-date-input__item govuk-!-margin-bottom-2">
                     <div class="govuk-form-group">
@@ -770,23 +767,23 @@ text-align: center;"> Previews
             // Get the location format from session data
             const locationSubType = "{{ data.locationSubType }}";
             if (!locationSubType) {
-                domElements.hintTextOutput.textContent = 'Easting must be between 0 and 70000. Northing must be between 0 and 1300000.';
+                domElements.hintTextOutput.textContent = 'For example. Easting: 248741, Northing: 63688';
                 return;
             }
 
             let defaultHint = '';
             switch (locationSubType) {
                 case 'easting_northing':
-                    defaultHint = 'Easting must be between 0 and 70000. Northing must be between 0 and 1300000.';
+                    defaultHint = 'For example. Easting: 248741, Northing: 63688';
                     break;
                 case 'field_number':
-                    defaultHint = 'Must be 10 characters like NG12345678';
+                    defaultHint = 'For Great Britain, the latitude will be a number between 49.850 and 60.859 and he longitude will be a number between -13.687 and 1.767';
                     break;
                 case 'os_grid_number':
-                    defaultHint = 'Must be between 8 and 12 characters like TQ123456';
+                    defaultHint = 'An OS grid reference number is made up of 2 letters followed by 10 numbers, for example, SO7394301364';
                     break;
                 case 'longitude_latitude':
-                    defaultHint = 'Latitude must be between 49 and 60. Longitude must be between -9 and 2.';
+                    defaultHint = 'For Great Britain, the latitude will be a number between 49.850 and 60.859 and the longitude will be a number between -13.687 and 1.767';
                     break;
                 default:
                     defaultHint = 'Easting must be between 0 and 70000. Northing must be between 0 and 1300000.';

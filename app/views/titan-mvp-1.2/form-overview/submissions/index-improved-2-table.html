@@ -56,7 +56,7 @@ activeLinkId: "nav-submissions"
                         {{ form.name or "Example Form" }}
                         </span> #}
 
-                    Form responses
+                    Download responses as an Excel spreadsheet
                 </h1>
             </div>
         </div>
@@ -114,20 +114,17 @@ activeLinkId: "nav-submissions"
             firstCellIsHeader: true,
             head: [
               { text: "Type of data" },
-              { text: "File type" },
               { text: "How long we keep it" },
               { text: "Download" }
             ],
             rows: [
               [
                 { text: "Form submissions" },
-                { text: "Excel spreadsheet" },
                 { text: "9 months after submission" },
                 { html: '<a class="govuk-link" href="/titan-mvp-1.2/form-overview/submissions/improved-2-table/download">Download submissions</a>' }
               ],
               [
                 { text: "User feedback" },
-                { text: "Excel spreadsheet" },
                 { text: "3 months after submission" },
                 { html: '<a class="govuk-link" href="/titan-mvp-1.2/form-overview/submissions/improved-2-table/download-feedback">Download feedback</a>' }
               ]
