@@ -34,6 +34,29 @@ Payment successful
       Check your answers before sending your form
     </h1>
 
+
+    <h2 class="govuk-heading-m">Declaration</h2>
+
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+      <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+          Terms and conditions
+        </dt>
+        <dd class="govuk-summary-list__value">
+          {% if data['declaration'] and data['declaration'].includes('confirmed') %}
+            I confirm that I understand and agree
+          {% else %}
+            Not provided
+          {% endif %}
+        </dd>
+        <dd class="govuk-summary-list__actions">
+          <a class="govuk-link" href="/declaration">
+            Change<span class="govuk-visually-hidden"> declaration</span>
+          </a>
+        </dd>
+      </div>
+    </dl>
+
     <h2 class="govuk-heading-m">Contact details</h2>
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
@@ -107,7 +130,7 @@ Payment successful
           </a>
         </dd>
       </div>
-      <div class="govuk-summary-list__row">
+      {# <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">
           Insurance certificate
         </dt>
@@ -119,7 +142,7 @@ Payment successful
             Change<span class="govuk-visually-hidden"> insurance certificate</span>
           </a>
         </dd>
-      </div>
+      </div> #}
     </dl>
 
     <h2 class="govuk-heading-m">Unicorn details</h2>
@@ -185,6 +208,7 @@ Payment successful
       </div>
     </dl>
 
+
     <form class="form" action="/confirmation" method="post">
 
              <!-- Payment Section - Clear separation -->
@@ -245,11 +269,11 @@ Payment successful
         }) }}
 
         <!-- Declaration Section -->
-        <h2 class="govuk-heading-m">Declaration</h2>
+        {# <h2 class="govuk-heading-m">Declaration</h2>
         <p class="govuk-body">
           By submitting this form you are confirming that, to the best of your knowledge, the details you are providing are
           correct.
-        </p>
+        </p> #}
 
 
 
@@ -258,7 +282,7 @@ Payment successful
 
 
             {{ govukButton({
-            text: "Accept and send",
+            text: "Send",
             classes: "govuk-button--primary govuk-!-margin-top-4 govuk-!-margin-bottom-0",
             href: "/accept-and-send"
             }) }}
