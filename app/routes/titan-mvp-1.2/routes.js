@@ -13067,13 +13067,43 @@ router.get("/summary", function (req, res) {
     console.log("Session data was null, initialized empty object");
   }
   
+  // Attempt restore from backup cookie if session appears empty (post external return)
+  try {
+    const hasNoUserData = Object.keys(req.session.data || {}).length === 0;
+    const cookieHeader = req.headers.cookie || "";
+    const resumeMatch = cookieHeader
+      .split("; ")
+      .find((c) => c.startsWith("resume="));
+    if (hasNoUserData && resumeMatch) {
+      const cookieValue = resumeMatch.split("=")[1];
+      // base64 decode with URL-safe handling
+      const b64 = cookieValue.replace(/-/g, "+").replace(/_/g, "/");
+      const json = Buffer.from(b64, "base64").toString("utf8");
+      const restored = JSON.parse(json);
+      if (restored && typeof restored === "object") {
+        req.session.data = restored;
+        // Clear cookie after restore
+        res.clearCookie("resume", { path: "/" });
+        console.log("Restored session data from resume cookie");
+      }
+    }
+  } catch (e) {
+    console.warn("Resume cookie restore failed:", e);
+  }
+
   // Debug specific fields
   console.log("Name:", req.session.data.name);
   console.log("Email:", req.session.data.email);
   console.log("Phone:", req.session.data.phoneNumber);
-  
+  const debugMode = req.query.debug === "1";
+  const sessionInfo = {
+    id: req.sessionID,
+    cookie: req.session.cookie
+  };
   res.render("titan-mvp-1.2/runner/summary", {
-    data: req.session.data
+    data: req.session.data,
+    debugMode,
+    sessionInfo
   });
 });
 
@@ -13086,8 +13116,36 @@ router.get("/titan-mvp-1.2/runner/summary.html", function (req, res) {
   if (!req.session.data) {
     req.session.data = {};
   }
+  // Attempt restore from backup cookie if session appears empty (post external return)
+  try {
+    const hasNoUserData = Object.keys(req.session.data || {}).length === 0;
+    const cookieHeader = req.headers.cookie || "";
+    const resumeMatch = cookieHeader
+      .split("; ")
+      .find((c) => c.startsWith("resume="));
+    if (hasNoUserData && resumeMatch) {
+      const cookieValue = resumeMatch.split("=")[1];
+      const b64 = cookieValue.replace(/-/g, "+").replace(/_/g, "/");
+      const json = Buffer.from(b64, "base64").toString("utf8");
+      const restored = JSON.parse(json);
+      if (restored && typeof restored === "object") {
+        req.session.data = restored;
+        res.clearCookie("resume", { path: "/" });
+        console.log("Restored session data from resume cookie (html route)");
+      }
+    }
+  } catch (e) {
+    console.warn("Resume cookie restore failed (html route):", e);
+  }
+  const debugMode = req.query.debug === "1";
+  const sessionInfo = {
+    id: req.sessionID,
+    cookie: req.session.cookie
+  };
   res.render("titan-mvp-1.2/runner/summary", {
     data: req.session.data,
+    debugMode,
+    sessionInfo
   });
 });
 
@@ -13161,6 +13219,24 @@ router.post("/question-8", function (req, res) {
 });
 
 router.get("/payment-question", function (req, res) {
+  // Write a short-lived backup of current answers to help survive external returns
+  try {
+    const snapshot = JSON.stringify(req.session.data || {});
+    const b64 = Buffer.from(snapshot, "utf8")
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+    res.cookie("resume", b64, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 10 * 60 * 1000,
+      path: "/",
+    });
+  } catch (e) {
+    console.warn("Failed to set resume cookie:", e);
+  }
   res.render("titan-mvp-1.2/runner/payment-question");
 });
 
