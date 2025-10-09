@@ -13153,7 +13153,11 @@ router.get("/confirmation", function (req, res) {
 
 // Handle return from GOV.UK Pay
 router.get("/payment-return", function (req, res) {
-  res.redirect("/payment-question?return_from_pay=true");
+  // This route will be called by GOV.UK Pay after payment
+  // We'll redirect to a page that can access localStorage
+  res.render("titan-mvp-1.2/runner/payment-return", {
+    title: "Payment Complete"
+  });
 });
 
 // Legacy form question routes (keeping for backward compatibility)
