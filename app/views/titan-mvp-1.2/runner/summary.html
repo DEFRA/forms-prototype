@@ -268,7 +268,7 @@ Payment successful
         {{ govukInput({
         label: {
         text: "Confirmation email (optional)",
-        classes: "govuk-label--m"
+        classes: "govuk-label--m govuk-!-padding-top-6"
         },
         hint: {
         text: "Enter your email address to get an email confirming your form has been submitted"
@@ -300,11 +300,13 @@ Payment successful
             }) }}
 
 
-            {{ govukButton({
-            text: "Save and exit",
-            classes: "govuk-button--secondary govuk-!-margin-top-4",
-            href: "/save-draft"
-            }) }}
+
+        {{ govukButton({
+          text: "Save and exit",
+          classes: "govuk-button--secondary",
+          href: "/save-progress",
+          type: "button"
+          }) }}
 
           </div>
 

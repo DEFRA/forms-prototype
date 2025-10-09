@@ -12923,6 +12923,8 @@ router.post("/whats-your-address", function (req, res) {
     delete req.session.data.error;
     res.redirect("/what-type-of-unicorns-will-you-breed");
   } else if (action === "exit") {
+    // Store the current page as returnUrl for when user resumes
+    req.session.data.returnUrl = "/whats-your-address";
     res.redirect("/save-progress");
   }
 });
@@ -13458,6 +13460,13 @@ router.post("/address-lookup-manual", function (req, res) {
 
 // Save and exit functionality routes
 router.get("/save-progress", function (req, res) {
+  const returnUrl = req.query.returnUrl;
+  
+  // Store the returnUrl for when user resumes their progress
+  if (returnUrl) {
+    req.session.data.returnUrl = returnUrl;
+  }
+  
   res.render("titan-mvp-1.2/runner/save-exit/save-progress");
 });
 
@@ -13466,11 +13475,17 @@ router.post("/save-progress", function (req, res) {
   const emailConfirm = req.body.emailConfirm;
   const securityAnswer = req.body.securityAnswer;
   const securityQuestion = req.body.securityQuestion;
+  const returnUrl = req.body.returnUrl || req.query.returnUrl;
 
   // Store the security answer for later validation
   req.session.data.securityAnswer = securityAnswer;
   req.session.data.securityQuestion = securityQuestion;
   req.session.data.email = email;
+  
+  // Store the returnUrl for when user resumes their progress
+  if (returnUrl) {
+    req.session.data.returnUrl = returnUrl;
+  }
 
   console.log("Saving progress - security answer:", securityAnswer);
   console.log("Saving progress - security question:", securityQuestion);
@@ -13545,7 +13560,53 @@ router.post("/validate-security-answer", function (req, res) {
 });
 
 router.get("/welcome-back", function (req, res) {
-  res.render("titan-mvp-1.2/runner/save-exit/welcome-back");
+  res.render("titan-mvp-1.2/runner/save-exit/welcome-back", {
+    data: req.session.data || {}
+  });
+});
+
+router.get("/resume-to-next-question", function (req, res) {
+  const sessionData = req.session.data || {};
+  
+  // Define the form flow sequence with their corresponding data fields
+  const formFlow = [
+    { url: '/whats-your-name', field: 'name' },
+    { url: '/whats-your-email-address', field: 'email' },
+    { url: '/whats-your-phone-number', field: 'phoneNumber' },
+    { url: '/whats-your-address', field: 'selectedAddress' },
+    { url: '/what-type-of-unicorns-will-you-breed', field: 'DyfjJC' },
+    { url: '/how-many-unicorns-do-you-expect-to-breed-each-year', field: 'aitzzV' },
+    { url: '/where-will-you-keep-the-unicorns', field: 'location-easting' },
+    { url: '/how-many-members-of-staff-will-look-after-the-unicorns', field: 'zhJMaM' },
+    { url: '/when-does-your-unicorn-insurance-policy-start', field: 'insuranceStartDate-day' },
+    { url: '/what-address-do-you-want-the-certificate-sent-to', field: 'AegFro-address-line-1' },
+    { url: '/upload-your-insurance-certificate', field: 'dLzALM' },
+    { url: '/declaration', field: 'declaration' },
+    { url: '/check-answers', field: null } // check-answers doesn't have a specific field
+  ];
+  
+  // Find the first unanswered question
+  let nextQuestion = '/check-answers'; // Default to check-answers if all are answered
+  
+  for (const question of formFlow) {
+    if (question.field === null) {
+      // For check-answers, always include it
+      nextQuestion = question.url;
+      break;
+    }
+    
+    const fieldValue = sessionData[question.field];
+    const isAnswered = fieldValue && 
+      (Array.isArray(fieldValue) ? fieldValue.length > 0 : fieldValue.toString().trim() !== '');
+    
+    if (!isAnswered) {
+      nextQuestion = question.url;
+      break;
+    }
+  }
+  
+  // Redirect to the next unanswered question
+  res.redirect(nextQuestion);
 });
 
 router.get("/failed-attempts", function (req, res) {

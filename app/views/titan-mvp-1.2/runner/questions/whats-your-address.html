@@ -46,10 +46,10 @@
               {{ govukInsetText({
                 html: '<h3 class="govuk-heading-s">Selected address:</h3>
                 <p class="govuk-body">
-                  ' + (data.finalAddress or data.selectedAddress) + '
+                  ' ~ (data.finalAddress or data.selectedAddress) ~ '
                 </p>
                 <p class="govuk-body">
-                  <a href="/address-lookup-results?returnUrl=/whats-your-address" class="govuk-link">Use a different address</a>
+                  <a href="/address-lookup-results?returnUrl=' ~ (data.returnUrl or '/whats-your-address') ~ '" class="govuk-link">Use a different address</a>
                 </p>',
                 classes: "govuk-!-margin-top-0 govuk-!-margin-bottom-0"
               }) }}
@@ -73,8 +73,8 @@
             {% else %}
               {# Show address selection buttons #}
               <div class="govuk-button-group govuk-!-margin-bottom-0">
-                <a href="/address-lookup-postcode?returnUrl=/whats-your-address" id="find-address-button" class="govuk-button govuk-button govuk-!-margin-right-1">Find an address</a>
-                <p class="govuk-body govuk-!-margin-bottom-0">or <a href="/address-lookup-manual?returnUrl=/whats-your-address" class="govuk-link">enter address manually</a></p>
+                <a href="/address-lookup-postcode?returnUrl={{ data.returnUrl or '/whats-your-address' }}" id="find-address-button" class="govuk-button govuk-button govuk-!-margin-right-1">Find an address</a>
+                <p class="govuk-body govuk-!-margin-bottom-0">or <a href="/address-lookup-manual?returnUrl={{ data.returnUrl or '/whats-your-address' }}" class="govuk-link">enter address manually</a></p>
               </div>
             {% endif %}
           </fieldset>

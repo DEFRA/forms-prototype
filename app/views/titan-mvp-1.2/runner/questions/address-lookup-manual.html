@@ -35,8 +35,7 @@
       {% endif %}
 
       <form method="post" autocomplete="off">
-        <h1 class="govuk-heading-l">Enter your address manually</h1>
-
+        <h1 class="govuk-heading-l">Where should we send your certificate?</h1>
 
         {{ govukInput({
           label: {
@@ -63,6 +62,7 @@
           label: {
             text: "Town or city"
           },
+          classes: "govuk-!-width-two-thirds",
           id: "town-city",
           name: "townCity",
           errorMessage: { text: error.townOrCityError } if error.townOrCityError else "",
@@ -86,12 +86,11 @@
           {{ govukButton({
             text: "Use this address",
             name: "action",
-            value: "use-manual-address"
+            value: "use-manual-address",
+            classes: "govuk-!-margin-right-1"
           }) }}
+          <p class="govuk-body govuk-!-margin-bottom-0">or <a href="/address-lookup-postcode?returnUrl={{ data.returnUrl or '/do-you-want-your-unicorn-breeder-certificate-sent-to-this-address' }}" class="govuk-link">find an address instead</a></p>
         </div>
-           <p class="govuk-body">
-          <a href="/address-lookup-postcode?returnUrl={{ data.returnUrl or '/do-you-want-your-unicorn-breeder-certificate-sent-to-this-address' }}" class="govuk-link">Find an address instead</a>
-        </p>
 
 
 

@@ -26,22 +26,33 @@
         }) }}
       {% endif %}
 
-      <form method="post" autocomplete="off">
-        <h1 class="govuk-heading-l">Select your address</h1>
+      {% if not data.addressResults or data.addressResults.length == 0 %}
+        {# Show no results case #}
+        <h1 class="govuk-heading-l">No address found</h1>
 
-        {% if data.addressResults.length == 1 %}
-          {# Show single address result #}
-          <p class="govuk-body">{{ data.addressResults.length }} address found for
-            <span class="govuk-body govuk-!-font-weight-bold">{{ data.addressPostcode }}</span>{% if data.buildingNameNumber %} and <span class="govuk-body govuk-!-font-weight-bold">{{ data.buildingNameNumber }}<span class="govuk-body govuk-!-font-weight-regular">.</span></span>{% else %}.{% endif %}
-            <a href="/address-lookup-postcode?returnUrl={{ data.returnUrl or '/do-you-want-your-unicorn-breeder-certificate-sent-to-this-address' }}" class="govuk-link">Search again</a>
-          </p>
+        <p class="govuk-body">We could not find an address that matches <strong>{{ data.addressPostcode }}</strong>{% if data.buildingNameNumber %} and <strong>{{ data.buildingNameNumber }}</strong>{% endif %}. You can search again or enter the address manually.</p>
 
-          <div class="govuk-inset-text">
-            {{ data.addressResults[0].text }}
-          </div>
-
+        <div class="govuk-button-group">
+          <a href="/address-lookup-postcode?returnUrl={{ data.returnUrl or '/do-you-want-your-unicorn-breeder-certificate-sent-to-this-address' }}" class="govuk-button govuk-!-margin-right-1">Search again</a>
+          <p class="govuk-body govuk-!-margin-bottom-0">or <a href="/address-lookup-manual?returnUrl={{ data.returnUrl or '/do-you-want-your-unicorn-breeder-certificate-sent-to-this-address' }}" class="govuk-link">enter address manually</a></p>
+        </div>
 
         {% else %}
+          <form method="post" autocomplete="off">
+            <h1 class="govuk-heading-l">Where should we send your certificate?</h1>
+
+            {% if data.addressResults.length == 1 %}
+              {# Show single address result #}
+              <p class="govuk-body">{{ data.addressResults.length }} address found for
+                <span class="govuk-body govuk-!-font-weight-bold">{{ data.addressPostcode }}</span>{% if data.buildingNameNumber %} and <span class="govuk-body govuk-!-font-weight-bold">{{ data.buildingNameNumber }}<span class="govuk-body govuk-!-font-weight-regular">.</span></span>{% else %}.{% endif %}
+                <a href="/address-lookup-postcode?returnUrl={{ data.returnUrl or '/do-you-want-your-unicorn-breeder-certificate-sent-to-this-address' }}" class="govuk-link">Search again</a>
+              </p>
+
+              <div class="govuk-inset-text">
+                {{ data.addressResults[0].text }}
+              </div>
+
+            {% else %}
           {# Show multiple address results #}
           <p class="govuk-body">{{ data.addressResults.length }} addresses found for
             <strong>{{ data.addressPostcode }}</strong>{% if data.buildingNameNumber %} and <strong>{{ data.buildingNameNumber }}</strong>{% endif %}.
@@ -74,25 +85,25 @@
 
         {% endif %}
 
-        <div class="govuk-button-group">
-          {{ govukButton({
-            text: "Use this address",
-            name: "action",
-            value: "use-address"
-          }) }}
-        </div>
+            <div class="govuk-button-group">
+              {{ govukButton({
+                text: "Use this address",
+                name: "action",
+                value: "use-address",
+                classes: "govuk-!-margin-right-1"
+              }) }}
+              <p class="govuk-body govuk-!-margin-bottom-0">or <a href="#" id="manual-entry-link" class="govuk-link">enter address manually</a></p>
+            </div>
 
-         <p class="govuk-body ">
-            <a href="#" id="manual-entry-link" class="govuk-link">Enter address manually</a>
-          </p>
-
-        <input type="hidden" name="returnUrl" value="{{ data.returnUrl }}">
-        <input type="hidden" name="addressPostcode" value="{{ data.addressPostcode }}">
-        <input type="hidden" name="buildingNameNumber" value="{{ data.buildingNameNumber }}">
-      </form>
+            <input type="hidden" name="returnUrl" value="{{ data.returnUrl }}">
+            <input type="hidden" name="addressPostcode" value="{{ data.addressPostcode }}">
+            <input type="hidden" name="buildingNameNumber" value="{{ data.buildingNameNumber }}">
+          </form>
+        {% endif %}
     </div>
   </div>
 
+  {% if data.addressResults and data.addressResults.length > 0 %}
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const selectAddress = document.getElementById('select-address');
@@ -134,5 +145,6 @@
       }
     });
   </script>
+  {% endif %}
 
 {% endblock %}

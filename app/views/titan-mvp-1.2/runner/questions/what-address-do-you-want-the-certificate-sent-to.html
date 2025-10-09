@@ -21,20 +21,23 @@ href: "javascript:window.history.back()"
     <div class="govuk-button-group">
       {{ govukButton({
       text: "Find address",
-      href: "/address-lookup-postcode?returnUrl=/when-does-your-unicorn-insurance-policy-start"
+      href: "/address-lookup-postcode?returnUrl=" + (data.returnUrl or "/what-address-do-you-want-the-certificate-sent-to")
       }) }}
 
       {{ govukButton({
       text: "Enter address manually",
       classes: "govuk-button--secondary",
-      href: "/address-lookup-manual?returnUrl=/when-does-your-unicorn-insurance-policy-start"
+      href: "/address-lookup-manual?returnUrl=" + (data.returnUrl or "/what-address-do-you-want-the-certificate-sent-to")
       }) }}
 
       {{ govukButton({
       text: "Save and exit",
       classes: "govuk-button--secondary",
       href: "/save-progress",
-      type: "button"
+      type: "button",
+      attributes: {
+        "data-save-exit": "true"
+      }
       }) }}
     </div>
 
@@ -56,7 +59,7 @@ href: "javascript:window.history.back()"
         {{ govukButton({
         text: "Change address",
         classes: "govuk-button--secondary",
-        href: "/address-lookup-postcode?returnUrl=/when-does-your-unicorn-insurance-policy-start"
+        href: "/address-lookup-postcode?returnUrl=" + (data.returnUrl or "/what-address-do-you-want-the-certificate-sent-to")
         }) }}
       </div>
     </form>
@@ -64,5 +67,23 @@ href: "javascript:window.history.back()"
 
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const saveExitButton = document.querySelector('[data-save-exit="true"]');
+  
+  if (saveExitButton) {
+    saveExitButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Get the current page URL
+      const currentUrl = window.location.pathname;
+      
+      // Redirect to save-progress with the current page as returnUrl
+      window.location.href = '/save-progress?returnUrl=' + encodeURIComponent(currentUrl);
+    });
+  }
+});
+</script>
 
 {% endblock %}
