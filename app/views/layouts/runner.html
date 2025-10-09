@@ -14,7 +14,7 @@ https://prototype-kit.service.gov.uk/docs/how-to-use-layouts
 {{ govukHeader({
   homepageUrl: "#",
   serviceName: "Register as a unicorn breeder",
-  serviceUrl: "#"
+  serviceUrl: "/titan-mvp-1.2/runner/questions/start.html"
 }) }}
 {% endblock %}
 
@@ -25,16 +25,14 @@ meta: {
 items: [
 
 {
-href: "#",
-text: "Privacy"
+href: "/titan-mvp-1.2/runner/questions/start.html",
+text: "Start of prototype"
 },
 {
-href: "#",
-text: "Accessibility"
+href: "/manage-prototype/clear-data",
+text: "Clear data"
 }
-],
-html: '<strong class="govuk-tag govuk-phase-banner__content__tag">Beta</strong>This is a new service. Help us improve it
-and <a class="govuk-footer__link" href="mailto:defraforms@defra.gov.uk">give your feedback by email</a>.'
+]
 }
 }) }}
 {% endblock %}
@@ -144,6 +142,10 @@ visuallyHiddenTitle: "Footer links"
 <style>
     body.in-iframe .govuk-footer {
         display: none !important;
+    }
+
+    .govuk-width-container {
+        max-width: 1200px;
     }
 </style>
 {% endblock %}
