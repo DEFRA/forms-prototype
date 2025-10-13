@@ -586,8 +586,11 @@ navigationItems: [
                     {% if question.type == 'phone' %}
                     {% set previewTemplate = previewTemplate ~ 'phone-preview.html' %}
 
-                    {% elseif question.type == 'address' %}
+                    {% elseif question.type == 'address' or (question.type == 'location' and question.subType == 'address') %}
                     {% set previewTemplate = previewTemplate ~ 'address-preview.html' %}
+
+                    {% elseif question.type == 'location' %}
+                    {% set previewTemplate = previewTemplate ~ 'coordinates-preview.html' %}
 
                     {% elseif question.type == 'email' %}
                     {% set previewTemplate = previewTemplate ~ 'email-preview.html' %}

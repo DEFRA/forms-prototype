@@ -75,6 +75,24 @@ activeLinkId: "nav-editor"
     .question-card {
         border-left: 10px solid #008938;
     }
+
+    .payment-summary-wrap {
+        border: 1px solid #b1b4b6;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .payment-summary {
+        border-top: 2px solid #1d70b8;
+        padding: 15px;
+        background-color: #f3f2f1;
+    }
+
+    @media all{
+        .amount  {
+            display: block;
+        }
+    }
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -673,9 +691,13 @@ activeLinkId: "nav-editor"
                                                             {% set previewTemplate =
                                                             '/titan-mvp-1.2/form-editor/question-type/questions/previews/phone-preview.html'
                                                             %}
-                                                            {% elif question.type == 'address' %}
+                                                            {% elif question.type == 'address' or (question.type == 'location' and question.subType == 'address') %}
                                                             {% set previewTemplate =
                                                             '/titan-mvp-1.2/form-editor/question-type/questions/previews/address-preview.html'
+                                                            %}
+                                                            {% elif question.type == 'location' %}
+                                                            {% set previewTemplate =
+                                                            '/titan-mvp-1.2/form-editor/question-type/questions/previews/coordinates-preview.html'
                                                             %}
                                                             {% elif question.type == 'file' %}
                                                             {% set previewTemplate =
@@ -855,11 +877,44 @@ activeLinkId: "nav-editor"
                                             Preview<span class="govuk-visually-hidden"> page {{ page.pageId }}</span>
                                         </a>
                                         <a class="govuk-link close-link" data-preview="preview-{{ page.pageId }}"
-                                            style="display: none;" href="#">
+                                            id="close-before-content-{{ page.pageId }}" style="display: none;" href="#">
                                             Close Preview<span class="govuk-visually-hidden"> page {{ page.pageId }}</span>
                                         </a>
                                     </li>
                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Preview Column for Payment Page -->
+                    <div class="govuk-grid-column-one-half-from-desktop govuk-grid-column-full-from-tablet govuk-grid-column-full-from-mobile">
+                        <div class="preview-container govuk-!-margin-top-1" id="preview-{{ page.pageId }}">
+                            <div id="dynamic-preview-content-{{ page.pageId }}">
+                                <!-- Preview Header -->
+                                <div id="before-content"
+                                    style="background-color: #cce2d8; display: flex; justify-content: space-between; align-items: center; padding: 8px;">
+                                    <p class="govuk-body-s" style="margin-bottom: 0; color: #005a30;">
+                                        Preview of Payment page
+                                    </p>
+                                    <a href="#" id="close-before-content-{{ page.pageId }}" class="govuk-link"
+                                        style="color: #005a30;" aria-label="Close Previews">
+                                        Close<span class="govuk-visually-hidden"> Previews
+                                            section</span>
+                                    </a>
+                                </div>
+                                <div style="margin-top: 60px;">
+                                    <!-- Payment Preview Content -->
+                                    <div class="payment-summary-wrap">
+                                        <div class="payment-summary">
+                                            <h1 class="govuk-heading-l" id="preview-question-label">Payment required</h1>
+                                            <p id="preview-payment-description" class="govuk-body">{{ page.questions[0].paymentDescription or 'Payment description' }}</p>
+                                            {{ govukWarningText({ text: "You must pay before you can send your form", classes: "govuk-!-margin-bottom-4", iconFallbackText: "Warning" }) }}
+                                            <p class="govuk-body">When your payment is complete, you'll able to continue with your form.</p>
+                                            <p class="govuk-body govuk-!-font-weight-bold">Total amount: <span id="preview-payment-amount" class="amount govuk-!-font-size-36 govuk-!-font-weight-bold">£{{ page.questions[0].paymentAmount or '0.00' }}</span></p>
+                                            {{ govukButton({ text: "Pay now", classes: "govuk-button--primary govuk-!-margin-top-4 govuk-!-margin-bottom-0" }) }}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1322,7 +1377,8 @@ activeLinkId: "nav-editor"
 
                 // Show preview link if we have pages
                 const pageCards = document.querySelectorAll('.app-page-card');
-                if (pageCards.length > 0) {
+                const paymentCards = document.querySelectorAll('[id^="card-title-payment"]').length > 0;
+                if (pageCards.length > 0 || paymentCards) {
                     previewLink.style.display = 'inline-block';
                     document.getElementById('reorder-button').style.display = 'inline-block';
                 }
@@ -1334,6 +1390,7 @@ activeLinkId: "nav-editor"
                     // Collect data from all pages
                     const formPages = [];
 
+                    // Process regular page cards
                     pageCards.forEach((card, index) => {
                         console.log(`Processing card ${index + 1}:`, card);
 
@@ -1406,6 +1463,49 @@ activeLinkId: "nav-editor"
 
                         console.log('Adding page:', pageData);
                         formPages.push(pageData);
+                    });
+
+                    // Process payment pages
+                    const paymentPageCards = document.querySelectorAll('[id^="card-title-payment"]');
+                    paymentPageCards.forEach((card, index) => {
+                        console.log(`Processing payment card ${index + 1}:`, card);
+
+                        // Get the page ID from the edit link
+                        const editLink = card.closest('.govuk-summary-card').querySelector('a[href*="/titan-mvp-1.2/edit-page/"]');
+                        if (!editLink) {
+                            console.warn(`No edit link found for payment card ${index + 1}`);
+                            return;
+                        }
+
+                        const pageId = editLink.href.split('/titan-mvp-1.2/edit-page/')[1];
+
+                        // Create payment page object
+                        const paymentPageData = {
+                            pageId: pageId || Date.now() + Math.random(),
+                            pageType: 'payment',
+                            title: 'Payment page',
+                            pageHeading: 'Payment page',
+                            guidanceTextarea: '',
+                            guidanceOnlyHeadingInput: '',
+                            guidanceOnlyGuidanceTextInput: '',
+                            questions: [{
+                                questionId: Date.now() + Math.random(),
+                                label: 'Payment',
+                                hint: '',
+                                type: 'payment',
+                                subType: 'payment',
+                                paymentAmount: '0.00',
+                                paymentDescription: 'Payment description',
+                                errorMessage: 'payment',
+                                testApiKey: '',
+                                liveApiKey: '',
+                                options: []
+                            }],
+                            order: formPages.length + index + 1
+                        };
+
+                        console.log('Adding payment page:', paymentPageData);
+                        formPages.push(paymentPageData);
                     });
 
                     console.log('Preview data:', formPages);

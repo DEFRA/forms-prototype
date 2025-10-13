@@ -73,6 +73,7 @@ activeLinkId: "nav-editor"
                         <h2 class="govuk-heading-l">Edit question {{ questionNumber }}</h2>
 
                         <form id="s" action="/titan-mvp-1.2/question-configuration-save" method="post">
+                          <input type="hidden" name="questionType" value="address">
 
                           {% from "govuk/components/input/macro.njk" import govukInput %}
 
@@ -420,7 +421,7 @@ text-align: center;"> Previews
             minCharactersPreview: document.querySelectorAll("#min-characters, #min-length, #min-length-range"),
             maxCharactersPreview: document.querySelectorAll("#max-characters, #max-length, #max-length-range"),
             errorMessagePreviewSummary: document.getElementById('error-message-preview-summary'), // Add the details component
-            postcodeLookupCheckbox: document.getElementById('postcode-lookup'),
+            postcodeLookupCheckbox: document.querySelector('input[name="postcodeLookup"]'),
             previewFieldset: document.querySelector('#tab-one .border-left-container-address fieldset'),
             guidanceAddress: document.getElementById('guidance-address')
           };
@@ -705,21 +706,36 @@ text-align: center;"> Previews
             const questionLabelLegend = document.querySelector('#tab-one #question-label-legend');
             const questionInput = domElements.multiQuestionLabelInputAddress; // real id set above
             if (questionInput && questionLabelLegend) {
-              // Only bind once per lifecycle of the input
+              // Bind once; handler always targets the current legend in the DOM
               if (!questionInput.dataset.previewBound) {
-                applyHighlightOnFocus(questionInput, questionLabelLegend);
-                questionInput.addEventListener('input', function () {
-                  const suffix = domElements.makeOptionalCheckbox && domElements.makeOptionalCheckbox.checked ? ' (optional)' : '';
-                  questionLabelLegend.textContent = this.value || 'Question';
-                  questionLabelLegend.textContent += suffix;
+                // Focus/blur: highlight the CURRENT legend node when input is focused
+                questionInput.addEventListener('focus', function () {
+                  const currentLegend = document.querySelector('#tab-one #question-label-legend');
+                  if (currentLegend) currentLegend.classList.add('highlight');
                 });
-                // Mark as bound to avoid duplicate listeners
+                questionInput.addEventListener('blur', function () {
+                  const currentLegend = document.querySelector('#tab-one #question-label-legend');
+                  if (currentLegend) currentLegend.classList.remove('highlight');
+                });
+
+                // Input: update the CURRENT legend text each time
+                questionInput.addEventListener('input', function () {
+                  const currentLegend = document.querySelector('#tab-one #question-label-legend');
+                  if (!currentLegend) return;
+                  const suffix = domElements.makeOptionalCheckbox && domElements.makeOptionalCheckbox.checked ? ' (optional)' : '';
+                  currentLegend.textContent = this.value || 'Question';
+                  currentLegend.textContent += suffix;
+                });
+
                 questionInput.dataset.previewBound = 'true';
               }
-              // Immediately reflect current value
-              const suffixNow = domElements.makeOptionalCheckbox && domElements.makeOptionalCheckbox.checked ? ' (optional)' : '';
-              questionLabelLegend.textContent = questionInput.value || 'Question';
-              questionLabelLegend.textContent += suffixNow;
+              // Immediately reflect current value on the CURRENT legend
+              const currentLegendNow = document.querySelector('#tab-one #question-label-legend');
+              if (currentLegendNow) {
+                const suffixNow = domElements.makeOptionalCheckbox && domElements.makeOptionalCheckbox.checked ? ' (optional)' : '';
+                currentLegendNow.textContent = questionInput.value || 'Question';
+                currentLegendNow.textContent += suffixNow;
+              }
             }
 
             // Ensure the optional checkbox continues to control the suffix after toggling
@@ -736,14 +752,16 @@ text-align: center;"> Previews
             // Re-bind hint text updates
             const hintTextOutput = document.querySelector('#tab-one #hint-text-output');
             const guidanceInput = domElements.guidanceAddress;
-            if (guidanceInput && hintTextOutput) {
+            if (guidanceInput) {
               if (!guidanceInput.dataset.previewBound) {
                 guidanceInput.addEventListener('input', function () {
-                  hintTextOutput.textContent = this.value || '';
+                  const currentHint = document.querySelector('#tab-one #hint-text-output');
+                  if (currentHint) currentHint.textContent = this.value || '';
                 });
                 guidanceInput.dataset.previewBound = 'true';
               }
-              hintTextOutput.textContent = guidanceInput.value || '';
+              const currentHintNow = document.querySelector('#tab-one #hint-text-output');
+              if (currentHintNow) currentHintNow.textContent = guidanceInput.value || '';
             }
 
             // Re-bind short description updates

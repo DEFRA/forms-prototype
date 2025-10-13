@@ -1857,11 +1857,11 @@ router.get("/titan-mvp-1.2/form-editor/listing", function (req, res) {
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
-    
+
     // Payment pages come before check answers
     if (aHasPayment && bIsCheckAnswers) return -1;
     if (bHasPayment && aIsCheckAnswers) return 1;
-    
+
     // Otherwise maintain original order
     return 0;
   });
@@ -1907,11 +1907,11 @@ router.get("/titan-mvp-1.2/form-editor/listing.html", function (req, res) {
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
-    
+
     // Payment pages come before check answers
     if (aHasPayment && bIsCheckAnswers) return -1;
     if (bHasPayment && aIsCheckAnswers) return 1;
-    
+
     // Otherwise maintain original order
     return 0;
   });
@@ -1959,11 +1959,11 @@ router.get("/titan-mvp-1.2/form-editor/listing-v2", function (req, res) {
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
-    
+
     // Payment pages come before check answers
     if (aHasPayment && bIsCheckAnswers) return -1;
     if (bHasPayment && aIsCheckAnswers) return 1;
-    
+
     // Otherwise maintain original order
     return 0;
   });
@@ -2014,11 +2014,11 @@ router.get("/titan-mvp-1.2/form-editor/listing-v2.html", function (req, res) {
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
-    
+
     // Payment pages come before check answers
     if (aHasPayment && bIsCheckAnswers) return -1;
     if (bHasPayment && aIsCheckAnswers) return 1;
-    
+
     // Otherwise maintain original order
     return 0;
   });
@@ -2381,7 +2381,8 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
     currentPage.questions = [];
   }
 
-  const questionType = req.session.data["currentQuestionType"];
+  // Prefer explicit body field (when provided) otherwise session
+  const questionType = req.body["questionType"] || req.session.data["currentQuestionType"];
   const writtenSubType = req.session.data["writtenSubType"];
   const dateSubType = req.session.data["dateSubType"];
   const listSubType = req.session.data["listSubType"];
@@ -2435,6 +2436,10 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
     case "date":
       questionLabel = req.body["questionLabelInputDate"] || "Date question";
       break;
+    case "location":
+      // Precise location label input
+      questionLabel = req.body["questionLabelInputPreciseLocation"] || "Location";
+      break;
     case "address":
       questionLabel = req.body["questionLabelInputAddress"] || "Address";
       break;
@@ -2486,6 +2491,8 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
   let questionHint = "";
   if (questionType === "address") {
     questionHint = req.body["hintTextInputAddress"] || "";
+  } else if (questionType === "location") {
+    questionHint = req.body["hintTextInputPreciseLocation"] || "";
   } else if (
     (questionType === "list" &&
       (listSubType === "select" || listSubType === "autocomplete")) ||
@@ -2707,6 +2714,33 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
       currentPage.questions[existingQuestionIndex].liveApiKey =
         req.body["liveApiKey"] || "";
     }
+
+    // Update address-specific fields for existing questions (covers address and location/address)
+    {
+      const postcodeLookupRaw =
+        req.body["postcodeLookup"] ?? req.body["postcode-lookup"] ?? req.body["postcodeLookup[]"];
+      const postcodeLookup = Array.isArray(postcodeLookupRaw)
+        ? postcodeLookupRaw.includes("postcodeLookup") || postcodeLookupRaw.includes("true") || postcodeLookupRaw.includes("on")
+        : Boolean(postcodeLookupRaw && (postcodeLookupRaw === "postcodeLookup" || postcodeLookupRaw === "true" || postcodeLookupRaw === "on"));
+
+      const isAddressQuestion =
+        questionType === "address" || (questionType === "location" && locationSubType === "address");
+
+      if (isAddressQuestion) {
+        currentPage.questions[existingQuestionIndex].postcodeLookup = postcodeLookup;
+        currentPage.questions[existingQuestionIndex].errorMessage = req.body["errorMessageInputAddress"] || "";
+        currentPage.questions[existingQuestionIndex].isOptional = req.body["makeOptional"] === "optional";
+      }
+    }
+
+    // Update location-specific fields for existing questions
+    if (questionType === "location") {
+      const addl = req.body["additionalSettings"];
+      const additional = Array.isArray(addl) ? addl : (addl ? [addl] : []);
+      const showHelp = additional.includes("add-help-text");
+      currentPage.questions[existingQuestionIndex].helpText = req.body["helpTextInputPreciseLocation"] || "";
+      currentPage.questions[existingQuestionIndex].showHelp = showHelp && !!currentPage.questions[existingQuestionIndex].helpText;
+    }
   } else {
     const newQuestion = {
       questionId: Date.now(),
@@ -2740,6 +2774,33 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
         req.body["testApiKey"] || "";
       newQuestion.liveApiKey =
         req.body["liveApiKey"] || "";
+    }
+
+    // Add address-specific fields (covers address and location/address)
+    {
+      const postcodeLookupRaw =
+        req.body["postcodeLookup"] ?? req.body["postcode-lookup"] ?? req.body["postcodeLookup[]"];
+      const postcodeLookup = Array.isArray(postcodeLookupRaw)
+        ? postcodeLookupRaw.includes("postcodeLookup") || postcodeLookupRaw.includes("true") || postcodeLookupRaw.includes("on")
+        : Boolean(postcodeLookupRaw && (postcodeLookupRaw === "postcodeLookup" || postcodeLookupRaw === "true" || postcodeLookupRaw === "on"));
+
+      const isAddressQuestion =
+        questionType === "address" || (questionType === "location" && locationSubType === "address");
+
+      if (isAddressQuestion) {
+        newQuestion.postcodeLookup = postcodeLookup;
+        newQuestion.errorMessage = req.body["errorMessageInputAddress"] || "";
+        newQuestion.isOptional = req.body["makeOptional"] === "optional";
+      }
+    }
+
+    // Add location-specific fields
+    if (questionType === "location") {
+      const addl = req.body["additionalSettings"];
+      const additional = Array.isArray(addl) ? addl : (addl ? [addl] : []);
+      const showHelp = additional.includes("add-help-text");
+      newQuestion.helpText = req.body["helpTextInputPreciseLocation"] || "";
+      newQuestion.showHelp = showHelp && !!newQuestion.helpText;
     }
 
     currentPage.questions.push(newQuestion);
@@ -3170,7 +3231,7 @@ router.get("/titan-mvp-1.2/form-overview/index/", (req, res) => {
 router.get("/titan-mvp-1.2/form-overview/poc", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data for POC
   const form = {
     id: formData.formId || "example-form",
@@ -3202,7 +3263,7 @@ router.get("/titan-mvp-1.2/form-overview/poc", (req, res) => {
 router.get("/titan-mvp-1.2/form-overview/submissions", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3225,7 +3286,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions", (req, res) => {
 router.get("/titan-mvp-1.2/form-overview/submissions/improved", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3248,7 +3309,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions/improved", (req, res) => {
 router.get("/titan-mvp-1.2/form-overview/submissions/improved-2", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3271,7 +3332,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions/improved-2", (req, res) => 
 router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3296,7 +3357,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table", (req, re
 router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table-error", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3314,7 +3375,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table-error", (r
 router.get("/titan-mvp-1.2/form-overview/submissions/email", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3331,7 +3392,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions/email", (req, res) => {
 router.get("/titan-mvp-1.2/form-overview/submissions/download/index", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3348,7 +3409,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions/download/index", (req, res)
 router.get("/titan-mvp-1.2/form-overview/submissions/download/downloading", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -3445,7 +3506,7 @@ router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-table/download-f
 router.get("/titan-mvp-1.2/form-overview/submissions/improved-2-summary", (req, res) => {
   // Get the form data from the session
   const formData = req.session.data || {};
-  
+
   // Set up default form data
   const form = {
     id: formData.formId || "example-form",
@@ -6734,10 +6795,33 @@ module.exports = router;
 
 // Add preview route
 router.get("/titan-mvp-1.2/form-editor/preview", function (req, res) {
-  const formPages = req.session.data["formPages"] || [];
   const formData = req.session.data || {};
+  const rawPages = formData["formPages"] || [];
+  // Show only the pages the user has explicitly added; never inject demo runner pages
+  // Whitelist question types that are supported in editor preview (exclude payment here)
+  const allowedTypes = new Set([
+    "text",
+    "list",
+    "date",
+    "email",
+    "phone",
+    "file",
+    "address",
+    "declaration",
+    "autocomplete",
+    "location",
+    "payment"
+  ]);
+
+  const formPages = rawPages.map(p => ({
+    ...p,
+    questions: Array.isArray(p.questions)
+      ? p.questions.filter(q => q && allowedTypes.has(q.type))
+      : []
+  }));
+
   res.render("titan-mvp-1.2/form-editor/preview", {
-    data: { formPages: formPages },
+    data: { formPages },
     form: { name: formData.formName || "Form name" },
   });
 });
@@ -12949,12 +13033,12 @@ router.get("/declaration", function (req, res) {
 
 router.post("/declaration", function (req, res) {
   const { declaration } = req.body;
-  
+
   if (!declaration || !declaration.includes("confirmed")) {
     req.session.data.error = { declarationError: "You must accept the declaration to continue" };
     return res.redirect("/declaration");
   }
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/whats-your-name");
@@ -12968,16 +13052,16 @@ router.get("/whats-your-name", function (req, res) {
 
 router.post("/whats-your-name", function (req, res) {
   const { name } = req.body;
-  
+
   if (!name || name.trim() === "") {
     req.session.data.error = { nameError: "Enter your full name" };
     return res.redirect("/whats-your-name");
   }
-  
+
   // Save the data
   req.session.data.name = name;
   console.log("Name saved to session:", req.session.data.name);
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/whats-your-email-address");
@@ -12991,22 +13075,22 @@ router.get("/whats-your-email-address", function (req, res) {
 
 router.post("/whats-your-email-address", function (req, res) {
   const { email } = req.body;
-  
+
   if (!email || email.trim() === "") {
     req.session.data.error = { emailError: "Enter your email address" };
     return res.redirect("/whats-your-email-address");
   }
-  
+
   // Basic email validation
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(email)) {
     req.session.data.error = { emailError: "Enter a valid email address" };
     return res.redirect("/whats-your-email-address");
   }
-  
+
   // Save the data
   req.session.data.email = email;
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/whats-your-phone-number");
@@ -13020,22 +13104,22 @@ router.get("/whats-your-phone-number", function (req, res) {
 
 router.post("/whats-your-phone-number", function (req, res) {
   const { phoneNumber } = req.body;
-  
+
   if (!phoneNumber || phoneNumber.trim() === "") {
     req.session.data.error = { phoneError: "Enter your phone number" };
     return res.redirect("/whats-your-phone-number");
   }
-  
+
   // Basic phone number validation (UK format)
   const phoneRegex = /^(\+44\s?7\d{3}|\(?07\d{3}\)?)\s?\d{3}\s?\d{3}$/;
   if (!phoneRegex.test(phoneNumber.replace(/\s/g, ""))) {
     req.session.data.error = { phoneError: "Enter a valid UK phone number" };
     return res.redirect("/whats-your-phone-number");
   }
-  
+
   // Save the data
   req.session.data.phoneNumber = phoneNumber;
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/whats-your-address");
@@ -13049,14 +13133,14 @@ router.get("/whats-your-address", function (req, res) {
 
 router.post("/whats-your-address", function (req, res) {
   const { action } = req.body;
-  
+
   if (action === "continue") {
     // Check if address is selected
     if (!req.session.data.selectedAddress && !req.session.data.finalAddress && !req.session.data['wZLWPy-address-line-1']) {
       req.session.data.error = { addressError: true };
       return res.redirect("/whats-your-address");
     }
-    
+
     // Clear any errors
     delete req.session.data.error;
     res.redirect("/what-type-of-unicorns-will-you-breed");
@@ -13084,24 +13168,24 @@ router.get("/when-does-your-unicorn-insurance-policy-start", function (req, res)
 
 router.post("/when-does-your-unicorn-insurance-policy-start", function (req, res) {
   const { 'insuranceStartDate-day': day, 'insuranceStartDate-month': month, 'insuranceStartDate-year': year } = req.body;
-  
+
   if (!day || !month || !year) {
     req.session.data.error = { dateError: "Enter the insurance policy start date" };
     return res.redirect("/when-does-your-unicorn-insurance-policy-start");
   }
-  
+
   // Basic date validation
   const date = new Date(year, month - 1, day);
   if (date.getDate() != day || date.getMonth() != month - 1 || date.getFullYear() != year) {
     req.session.data.error = { dateError: "Enter a valid date" };
     return res.redirect("/when-does-your-unicorn-insurance-policy-start");
   }
-  
+
   // Save the data
   req.session.data['insuranceStartDate-day'] = day;
   req.session.data['insuranceStartDate-month'] = month;
   req.session.data['insuranceStartDate-year'] = year;
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/upload-your-insurance-certificate");
@@ -13121,15 +13205,15 @@ router.get("/how-many-unicorns-do-you-expect-to-breed-each-year", function (req,
 
 router.post("/how-many-unicorns-do-you-expect-to-breed-each-year", function (req, res) {
   const { aitzzV } = req.body;
-  
+
   if (!aitzzV) {
     req.session.data.error = { numberError: "Select how many unicorns you expect to breed" };
     return res.redirect("/how-many-unicorns-do-you-expect-to-breed-each-year");
   }
-  
+
   // Save the data
   req.session.data.aitzzV = aitzzV;
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/where-will-you-keep-the-unicorns");
@@ -13141,15 +13225,15 @@ router.get("/what-type-of-unicorns-will-you-breed", function (req, res) {
 
 router.post("/what-type-of-unicorns-will-you-breed", function (req, res) {
   const { DyfjJC } = req.body;
-  
+
   if (!DyfjJC || DyfjJC.length === 0) {
     req.session.data.error = { typeError: "Select at least one type of unicorn" };
     return res.redirect("/what-type-of-unicorns-will-you-breed");
   }
-  
+
   // Save the data
   req.session.data.DyfjJC = DyfjJC;
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/how-many-unicorns-do-you-expect-to-breed-each-year");
@@ -13161,16 +13245,16 @@ router.get("/where-will-you-keep-the-unicorns", function (req, res) {
 
 router.post("/where-will-you-keep-the-unicorns", function (req, res) {
   const { 'location-easting': easting, 'location-northing': northing } = req.body;
-  
+
   if (!easting || !northing) {
     req.session.data.error = { locationError: "Enter both easting and northing coordinates" };
     return res.redirect("/where-will-you-keep-the-unicorns");
   }
-  
+
   // Save the data
   req.session.data['location-easting'] = easting;
   req.session.data['location-northing'] = northing;
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/how-many-members-of-staff-will-look-after-the-unicorns");
@@ -13182,15 +13266,15 @@ router.get("/how-many-members-of-staff-will-look-after-the-unicorns", function (
 
 router.post("/how-many-members-of-staff-will-look-after-the-unicorns", function (req, res) {
   const { zhJMaM } = req.body;
-  
+
   if (!zhJMaM || zhJMaM.trim() === "") {
     req.session.data.error = { staffError: "Enter the number of staff members" };
     return res.redirect("/how-many-members-of-staff-will-look-after-the-unicorns");
   }
-  
+
   // Save the data
   req.session.data.zhJMaM = zhJMaM;
-  
+
   // Clear any errors
   delete req.session.data.error;
   res.redirect("/payment-question");
@@ -13200,7 +13284,7 @@ router.get("/summary", function (req, res) {
   console.log("Summary route - session data:", req.session.data);
   console.log("Summary route - session ID:", req.sessionID);
   console.log("Summary route - session keys:", Object.keys(req.session));
-  
+
   // Ensure session data exists
   if (!req.session.data) {
     req.session.data = {};
@@ -13215,10 +13299,10 @@ router.get("/summary", function (req, res) {
       console.log("Creating tempStore as it doesn't exist (summary route)");
       req.app.locals.tempStore = new Map();
     }
-    
+
     const tempStore = req.app.locals.tempStore;
     const stored = tempStore.get(resumeToken);
-    
+
     if (stored && stored.expires > Date.now()) {
       req.session.data = stored.data;
       tempStore.delete(resumeToken); // Clean up after use
@@ -13253,7 +13337,7 @@ router.get("/titan-mvp-1.2/runner/summary.html", function (req, res) {
   if (!req.session.data) {
     req.session.data = {};
   }
-  
+
   // Try to restore from server-side store using token from query param
   const resumeToken = req.query.token;
   if (resumeToken) {
@@ -13262,10 +13346,10 @@ router.get("/titan-mvp-1.2/runner/summary.html", function (req, res) {
       console.log("Creating tempStore as it doesn't exist (html route)");
       req.app.locals.tempStore = new Map();
     }
-    
+
     const tempStore = req.app.locals.tempStore;
     const stored = tempStore.get(resumeToken);
-    
+
     if (stored && stored.expires > Date.now()) {
       req.session.data = stored.data;
       tempStore.delete(resumeToken); // Clean up after use
@@ -13274,7 +13358,7 @@ router.get("/titan-mvp-1.2/runner/summary.html", function (req, res) {
       console.log("Token not found or expired (html route):", resumeToken);
     }
   }
-  
+
   const debugMode = req.query.debug === "1";
   const sessionInfo = {
     id: req.sessionID,
@@ -13368,24 +13452,24 @@ router.post("/question-8", function (req, res) {
 router.get("/payment-question", function (req, res) {
   // Generate unique token and store form data server-side
   const token = require('crypto').randomBytes(32).toString('hex');
-  
+
   // Ensure tempStore exists
   if (!req.app.locals.tempStore) {
     console.log("Creating tempStore as it doesn't exist");
     req.app.locals.tempStore = new Map();
   }
-  
+
   const tempStore = req.app.locals.tempStore;
-  
+
   // Store current form data with 30-minute expiry
   tempStore.set(token, {
     data: req.session.data || {},
     expires: Date.now() + (30 * 60 * 1000)
   });
-  
+
   console.log("Stored form data with token:", token);
   console.log("tempStore size:", tempStore.size);
-  
+
   res.render("titan-mvp-1.2/runner/payment-question", {
     resumeToken: token
   });
@@ -13412,13 +13496,13 @@ router.get("/address-lookup-postcode", function (req, res) {
 
 router.post("/address-lookup-postcode", function (req, res) {
   const { addressPostcode, buildingNameNumber, action, returnUrl } = req.body;
-  
+
   if (action === "lookup") {
     if (!addressPostcode) {
       req.session.data.error = { addressError: true };
       return res.redirect("/address-lookup-postcode?returnUrl=" + encodeURIComponent(returnUrl));
     }
-    
+
     // Use real address API
     const {
       getAddressesPostcode,
@@ -13435,13 +13519,13 @@ router.post("/address-lookup-postcode", function (req, res) {
               value: address,
               text: address
             }));
-            
+
             req.session.data.addressResults = formattedAddresses;
             req.session.data.addressPostcode = addressPostcode;
             req.session.data.buildingNameNumber = buildingNameNumber;
             req.session.data.returnUrl = returnUrl;
             delete req.session.data.error;
-            
+
             res.redirect("/address-lookup-results?returnUrl=" + encodeURIComponent(returnUrl));
           } else {
             // No addresses found
@@ -13450,7 +13534,7 @@ router.post("/address-lookup-postcode", function (req, res) {
             req.session.data.buildingNameNumber = buildingNameNumber;
             req.session.data.returnUrl = returnUrl;
             delete req.session.data.error;
-            
+
             res.redirect("/address-lookup-results?returnUrl=" + encodeURIComponent(returnUrl));
           }
         })
@@ -13469,13 +13553,13 @@ router.post("/address-lookup-postcode", function (req, res) {
               value: address,
               text: address
             }));
-            
+
             req.session.data.addressResults = formattedAddresses;
             req.session.data.addressPostcode = addressPostcode;
             req.session.data.buildingNameNumber = buildingNameNumber;
             req.session.data.returnUrl = returnUrl;
             delete req.session.data.error;
-            
+
             res.redirect("/address-lookup-results?returnUrl=" + encodeURIComponent(returnUrl));
           } else {
             // No addresses found
@@ -13484,7 +13568,7 @@ router.post("/address-lookup-postcode", function (req, res) {
             req.session.data.buildingNameNumber = buildingNameNumber;
             req.session.data.returnUrl = returnUrl;
             delete req.session.data.error;
-            
+
             res.redirect("/address-lookup-results?returnUrl=" + encodeURIComponent(returnUrl));
           }
         })
@@ -13505,20 +13589,20 @@ router.get("/address-lookup-results", function (req, res) {
 
 router.post("/address-lookup-results", function (req, res) {
   const { selectAddress, action, returnUrl } = req.body;
-  
+
   if (action === "use-address") {
     if (!selectAddress) {
       req.session.data.error = { addressError: true };
       return res.redirect("/address-lookup-results?returnUrl=" + encodeURIComponent(returnUrl));
     }
-    
+
     // Store the selected address for display
     req.session.data.selectedAddress = selectAddress;
     req.session.data.finalAddress = selectAddress;
-    
+
     // Parse the selected address and store in session
     const addressParts = selectAddress.split(", ");
-    
+
     // Determine which address field to use based on return URL
     if (returnUrl && returnUrl.includes("when-does-your-unicorn-insurance-policy-start")) {
       // Certificate address
@@ -13533,13 +13617,13 @@ router.post("/address-lookup-results", function (req, res) {
       req.session.data['wZLWPy-town'] = addressParts[2] || "";
       req.session.data['wZLWPy-postcode'] = addressParts[3] || "";
     }
-    
+
     // Clear lookup data
     delete req.session.data.addressResults;
     delete req.session.data.addressPostcode;
     delete req.session.data.buildingNameNumber;
     delete req.session.data.error;
-    
+
     res.redirect(returnUrl || "/whats-your-address");
   }
 });
@@ -13552,28 +13636,28 @@ router.get("/address-lookup-manual", function (req, res) {
 
 router.post("/address-lookup-manual", function (req, res) {
   const { addressLine1, addressLine2, townCity, addressPostcode, action, returnUrl } = req.body;
-  
+
   if (action === "use-manual-address") {
     // Validate required fields
     const errors = {};
     if (!addressLine1) errors.addressLineError = "Enter address line 1";
     if (!townCity) errors.townOrCityError = "Enter town or city";
     if (!addressPostcode) errors.postcodeError = "Enter postcode";
-    
+
     if (Object.keys(errors).length > 0) {
       req.session.data.error = errors;
       return res.redirect("/address-lookup-manual?returnUrl=" + encodeURIComponent(returnUrl));
     }
-    
+
     // Create formatted address for display
     const formattedAddress = [addressLine1, addressLine2, townCity, addressPostcode]
       .filter(part => part && part.trim())
       .join(", ");
-    
+
     // Store the formatted address for display
     req.session.data.selectedAddress = formattedAddress;
     req.session.data.finalAddress = formattedAddress;
-    
+
     // Determine which address field to use based on return URL
     if (returnUrl && returnUrl.includes("when-does-your-unicorn-insurance-policy-start")) {
       // Certificate address
@@ -13588,10 +13672,10 @@ router.post("/address-lookup-manual", function (req, res) {
       req.session.data['wZLWPy-town'] = townCity;
       req.session.data['wZLWPy-postcode'] = addressPostcode;
     }
-    
+
     // Clear any errors
     delete req.session.data.error;
-    
+
     res.redirect(returnUrl || "/whats-your-address");
   }
 });
@@ -13599,12 +13683,12 @@ router.post("/address-lookup-manual", function (req, res) {
 // Save and exit functionality routes
 router.get("/save-progress", function (req, res) {
   const returnUrl = req.query.returnUrl;
-  
+
   // Store the returnUrl for when user resumes their progress
   if (returnUrl) {
     req.session.data.returnUrl = returnUrl;
   }
-  
+
   res.render("titan-mvp-1.2/runner/save-exit/save-progress");
 });
 
@@ -13619,7 +13703,7 @@ router.post("/save-progress", function (req, res) {
   req.session.data.securityAnswer = securityAnswer;
   req.session.data.securityQuestion = securityQuestion;
   req.session.data.email = email;
-  
+
   // Store the returnUrl for when user resumes their progress
   if (returnUrl) {
     req.session.data.returnUrl = returnUrl;
@@ -13705,7 +13789,7 @@ router.get("/welcome-back", function (req, res) {
 
 router.get("/resume-to-next-question", function (req, res) {
   const sessionData = req.session.data || {};
-  
+
   // Define the form flow sequence with their corresponding data fields
   const formFlow = [
     { url: '/whats-your-name', field: 'name' },
@@ -13722,27 +13806,27 @@ router.get("/resume-to-next-question", function (req, res) {
     { url: '/declaration', field: 'declaration' },
     { url: '/check-answers', field: null } // check-answers doesn't have a specific field
   ];
-  
+
   // Find the first unanswered question
   let nextQuestion = '/check-answers'; // Default to check-answers if all are answered
-  
+
   for (const question of formFlow) {
     if (question.field === null) {
       // For check-answers, always include it
       nextQuestion = question.url;
       break;
     }
-    
+
     const fieldValue = sessionData[question.field];
-    const isAnswered = fieldValue && 
+    const isAnswered = fieldValue &&
       (Array.isArray(fieldValue) ? fieldValue.length > 0 : fieldValue.toString().trim() !== '');
-    
+
     if (!isAnswered) {
       nextQuestion = question.url;
       break;
     }
   }
-  
+
   // Redirect to the next unanswered question
   res.redirect(nextQuestion);
 });
