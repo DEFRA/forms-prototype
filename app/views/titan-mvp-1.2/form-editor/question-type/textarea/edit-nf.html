@@ -141,38 +141,39 @@ activeLinkId: "nav-editor"
                             </summary>
                             <div class="govuk-details__text">
                               <!-- Default Content for Question 1 -->
-                              <div id="question-1-content" class="question-content" style="margin-top: 10px;">
-                                {{ govukTextarea({
+                              {{ govukInput({
                                 label: {
-                                text: commonTerms.form_editor.question_settings.answer_limits.classes.title,
-                                classes: "govuk-label--m",
-                                isPageHeading: false
+                                  text: "Minimum character length (optional)",
+                                  classes: "govuk-label--m",
+                                  isPageHeading: false
                                 },
-                                hint: {
-                                text: commonTerms.form_editor.question_settings.answer_limits.classes.hint
-                                },
-                                id: "classes",
-                                rows: "1",
-                                name: "classes",
-                                spellcheck: false
-                                }) }}
-
-                                {{ govukInput({
-                                label: {
-                                text: commonTerms.form_editor.question_settings.answer_limits.max_words.title,
-                                classes: "govuk-label--m",
-                                isPageHeading: false
-                                },
-                                hint: {
-                                text: commonTerms.form_editor.question_settings.answer_limits.max_words.hint
-                                },
-                                id: "max-words",
                                 classes: "govuk-input--width-3",
-                                name: "maxWords",
+                                hint: {
+                                  text: "The minimum number of characters users can enter"
+                                },
+                                id: "min-characters",
+                                name: "minCharacters",
+                                inputmode: "numeric",
                                 spellcheck: false
-                                }) }}
+                              }) }}
 
-                                {{ govukInput({
+                              {{ govukInput({
+                                label: {
+                                  text: "Maximum character length (optional)",
+                                  classes: "govuk-label--m",
+                                  isPageHeading: false
+                                },
+                                classes: "govuk-input--width-3",
+                                hint: {
+                                  text: "The maximum number of characters users can enter"
+                                },
+                                id: "max-characters",
+                                name: "maxCharacters",
+                                inputmode: "numeric",
+                                spellcheck: false
+                              }) }}
+
+                              {{ govukInput({
                                 label: {
                                 text: commonTerms.form_editor.question_settings.answer_limits.rows.title,
                                 classes: "govuk-label--m",
@@ -186,6 +187,40 @@ activeLinkId: "nav-editor"
                                 name: "rows",
                                 spellcheck: false
                                 }) }}
+
+
+                              <div id="question-1-content" class="question-content" style="margin-top: 10px;">
+                                {{ govukTextarea({
+                                label: {
+                                text: "Regex (optional)",
+                                classes: "govuk-label--m",
+                                isPageHeading: false
+                                },
+                                hint: {
+                                text: "Specifies a regular expression to validate users’ inputs. Use JavaScript syntax"
+                                },
+                                id: "regex",
+                                rows: "3",
+                                name: "regex",
+                                spellcheck: false
+                                }) }}
+
+                                {{ govukTextarea({
+                                label: {
+                                text: "Classes (optional)",
+                                classes: "govuk-label--m",
+                                isPageHeading: false
+                                },
+                                hint: {
+                                text: "Apply CSS classes to this field. For example, ‘govuk-input govuk-!-width-full’"
+                                },
+                                id: "classes",
+                                rows: "1",
+                                name: "classes",
+                                spellcheck: false
+                                }) }}
+
+
                               </div>
                             </div>
                           </details>
@@ -276,7 +311,6 @@ activeLinkId: "nav-editor"
             <div class="govuk-tabs__panel" id="tab-one">
               <!-- Page Preview Content -->
 
-
               <p class="govuk-body-s" style="margin-bottom: 0; border-bottom: #008938 1px;">
                 <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener" target="_blank">
                   Preview this page in a new tab
@@ -320,7 +354,7 @@ activeLinkId: "nav-editor"
               <li>
                 <a id="too-long-input-error-textarea" class="govuk-error-message">
                   <span class="govuk-visually-hidden">Error:</span>
-                  <span id="error-dynamic-text-long">[Short description]</span> must be
+                  <span id="error-dynamic-text-long" class="govuk-error-message">[Short description]</span> must be
                   <span id="max-length">[max length]</span> characters or less
                 </a>
               </li>
@@ -328,7 +362,7 @@ activeLinkId: "nav-editor"
               <li>
                 <a id="too-short-input-error-textarea" class="govuk-error-message">
                   <span class="govuk-visually-hidden">Error:</span>
-                  <span id="error-dynamic-text-short">[Short description]</span> must be
+                  <span id="error-dynamic-text-short" class="govuk-error-message">[Short description]</span> must be
                   <span id="min-length">[min length]</span> characters or more
                 </a>
               </li>
@@ -548,6 +582,26 @@ activeLinkId: "nav-editor"
           if (domElements.minCharactersInput && domElements.maxCharactersInput) {
             domElements.minCharactersInput.addEventListener('input', updateCharacterLimits);
             domElements.maxCharactersInput.addEventListener('input', updateCharacterLimits);
+
+            // Add focus/blur events to show/hide character count placeholder
+            domElements.maxCharactersInput.addEventListener('focus', showCharacterCountPlaceholder);
+            domElements.maxCharactersInput.addEventListener('blur', hideCharacterCountPlaceholder);
+
+            // Initialize character count on page load if max characters is already set
+            updateCharacterLimits();
+
+            // Add real-time character count updates to preview textarea
+            const previewTextarea = document.getElementById('text-input-field');
+            if (previewTextarea) {
+              previewTextarea.addEventListener('input', updateRealTimeCharacterCount);
+            }
+          }
+
+          // Update error message when short description changes
+          if (domElements.errorMessageInputTextarea) {
+            domElements.errorMessageInputTextarea.addEventListener('input', updateCharacterCountErrorMessage);
+            domElements.errorMessageInputTextarea.addEventListener('focus', showCharacterCountErrorHighlight);
+            domElements.errorMessageInputTextarea.addEventListener('blur', hideCharacterCountErrorHighlight);
           }
         }
 
@@ -569,6 +623,335 @@ activeLinkId: "nav-editor"
           domElements.maxCharactersPreview.forEach(element => {
             element.textContent = maxCharacters;
           });
+
+          // Update preview textarea to use character count component
+          updatePreviewTextarea(maxCharacters);
+        }
+
+        function updatePreviewTextarea(maxCharacters) {
+          const previewTextarea = document.getElementById('text-input-field');
+          const previewFormGroup = previewTextarea.closest('.govuk-form-group');
+
+          if (maxCharacters && maxCharacters !== '[max length]' && !isNaN(maxCharacters)) {
+            // Add character count functionality
+            previewFormGroup.classList.add('govuk-character-count');
+            previewFormGroup.setAttribute('data-module', 'govuk-character-count');
+            previewFormGroup.setAttribute('data-maxlength', maxCharacters);
+
+            // Add character count classes to textarea
+            previewTextarea.classList.add('govuk-js-character-count');
+            // Don't set maxlength to allow typing beyond limit
+
+            // Create or update character count message
+            let countMessage = document.getElementById('character-count-message');
+            if (!countMessage) {
+              countMessage = document.createElement('div');
+              countMessage.id = 'character-count-message';
+              countMessage.className = 'govuk-hint govuk-character-count__message';
+              countMessage.setAttribute('aria-live', 'polite');
+              previewFormGroup.appendChild(countMessage);
+            }
+
+            countMessage.innerHTML = `You can enter up to <span class="highlight">${maxCharacters}</span> characters`;
+            countMessage.style.color = ''; // Remove placeholder styling
+
+            // Only remove highlighting if the input is not currently focused
+            if (document.activeElement !== domElements.maxCharactersInput) {
+              // Remove highlighting spans and restore normal text
+              const highlightedSpans = countMessage.querySelectorAll('span.highlight');
+              highlightedSpans.forEach(span => {
+                span.outerHTML = span.textContent;
+              });
+            }
+
+            countMessage.setAttribute('aria-live', 'polite');
+
+            // Update aria-describedby to include character count message
+            const currentAriaDescribedBy = previewTextarea.getAttribute('aria-describedby') || '';
+            const hintId = 'hint-text-output';
+            const newAriaDescribedBy = currentAriaDescribedBy.includes('character-count-message')
+              ? currentAriaDescribedBy
+              : `${hintId} character-count-message`;
+            previewTextarea.setAttribute('aria-describedby', newAriaDescribedBy);
+
+          } else {
+            // Remove character count functionality
+            previewFormGroup.classList.remove('govuk-character-count');
+            previewFormGroup.removeAttribute('data-module');
+            previewFormGroup.removeAttribute('data-maxlength');
+
+            previewTextarea.classList.remove('govuk-js-character-count');
+
+            // Remove character count message
+            const countMessage = document.getElementById('character-count-message');
+            if (countMessage) {
+              countMessage.remove();
+            }
+
+            // Update aria-describedby to remove character count message
+            const currentAriaDescribedBy = previewTextarea.getAttribute('aria-describedby') || '';
+            const newAriaDescribedBy = currentAriaDescribedBy.replace(' character-count-message', '').trim();
+            previewTextarea.setAttribute('aria-describedby', newAriaDescribedBy);
+          }
+        }
+
+        function showCharacterCountPlaceholder() {
+          const previewTextarea = document.getElementById('text-input-field');
+          const previewFormGroup = previewTextarea.closest('.govuk-form-group');
+
+          // Only show placeholder if there's no actual value in the input
+          if (!domElements.maxCharactersInput.value) {
+            // Add character count functionality with placeholder
+            previewFormGroup.classList.add('govuk-character-count');
+            previewFormGroup.setAttribute('data-module', 'govuk-character-count');
+            previewFormGroup.setAttribute('data-maxlength', '200'); // Default placeholder value
+
+             // Add character count classes to textarea
+             previewTextarea.classList.add('govuk-js-character-count');
+             // Don't set maxlength to allow typing beyond limit
+
+            // Create or update character count message with placeholder
+            let countMessage = document.getElementById('character-count-message');
+            if (!countMessage) {
+              countMessage = document.createElement('div');
+              countMessage.id = 'character-count-message';
+              countMessage.className = 'govuk-hint govuk-character-count__message';
+              countMessage.setAttribute('aria-live', 'polite');
+              previewFormGroup.appendChild(countMessage);
+            }
+
+             countMessage.innerHTML = 'You can enter up to <span class="highlight">[maximum character length]</span> characters';
+             countMessage.style.color = ''; // Remove gray color when focused
+             countMessage.setAttribute('aria-live', 'polite');
+
+            // Update aria-describedby to include character count message
+            const currentAriaDescribedBy = previewTextarea.getAttribute('aria-describedby') || '';
+            const hintId = 'hint-text-output';
+            const newAriaDescribedBy = currentAriaDescribedBy.includes('character-count-message')
+              ? currentAriaDescribedBy
+              : `${hintId} character-count-message`;
+            previewTextarea.setAttribute('aria-describedby', newAriaDescribedBy);
+           } else {
+             // If there's already a value, just add highlighting to existing message
+             const countMessage = document.getElementById('character-count-message');
+             if (countMessage) {
+               countMessage.style.color = ''; // Ensure text is black when focused
+               // Add highlighting to the existing message
+               const currentText = countMessage.textContent;
+               if (currentText && !currentText.includes('<span class="highlight">')) {
+                 // Extract the number from the current text and highlight it
+                 const match = currentText.match(/(\d+)/);
+                 if (match) {
+                   const number = match[1];
+                   countMessage.innerHTML = currentText.replace(number, `<span class="highlight">${number}</span>`);
+                 }
+               }
+             }
+           }
+        }
+
+        function updateCharacterCountErrorMessage() {
+          // Update the error message if it exists
+          const errorMessage = document.getElementById('character-count-error-message');
+          if (errorMessage) {
+            const shortDescription = domElements.errorMessageInputTextarea?.value || '[Short description]';
+            const previewFormGroup = document.getElementById('text-input-field').closest('.govuk-form-group');
+            const maxLength = previewFormGroup.getAttribute('data-maxlength');
+
+            if (maxLength) {
+              // Check if the short description input is currently focused to preserve highlighting
+              const isShortDescFocused = document.activeElement === domElements.errorMessageInputTextarea;
+
+              if (isShortDescFocused) {
+                // Keep highlighting when short description input is focused
+                errorMessage.innerHTML = `<span class="highlight">${shortDescription}</span> must be ${maxLength} characters or less`;
+              } else {
+                // Remove highlighting when short description input is not focused
+                errorMessage.textContent = `${shortDescription} must be ${maxLength} characters or less`;
+              }
+            }
+          }
+        }
+
+        function showCharacterCountErrorHighlight() {
+          const errorMessage = document.getElementById('character-count-error-message');
+          if (errorMessage) {
+            const shortDescription = domElements.errorMessageInputTextarea?.value || '[Short description]';
+            const previewFormGroup = document.getElementById('text-input-field').closest('.govuk-form-group');
+            const maxLength = previewFormGroup.getAttribute('data-maxlength');
+
+            if (maxLength) {
+              errorMessage.innerHTML = `<span class="highlight">${shortDescription}</span> must be ${maxLength} characters or less`;
+            }
+          }
+        }
+
+        function hideCharacterCountErrorHighlight() {
+          const errorMessage = document.getElementById('character-count-error-message');
+          if (errorMessage) {
+            // Remove highlighting spans and restore normal text
+            const highlightedSpans = errorMessage.querySelectorAll('span.highlight');
+            highlightedSpans.forEach(span => {
+              span.outerHTML = span.textContent;
+            });
+          }
+        }
+
+        function updateRealTimeCharacterCount() {
+          const countMessage = document.getElementById('character-count-message');
+          if (!countMessage) return;
+
+          const previewTextarea = document.getElementById('text-input-field');
+          const previewFormGroup = previewTextarea.closest('.govuk-form-group');
+          const maxLength = previewFormGroup.getAttribute('data-maxlength');
+
+          if (maxLength) {
+            const currentLength = previewTextarea.value.length;
+            const maxLengthNum = parseInt(maxLength);
+
+            // Check if the input is currently focused to preserve highlighting
+            const isInputFocused = document.activeElement === domElements.maxCharactersInput;
+
+            if (currentLength <= maxLengthNum) {
+              // Within limit - remove error styling
+              removeErrorStyling(previewFormGroup, previewTextarea, countMessage);
+
+              const remaining = maxLengthNum - currentLength;
+              if (isInputFocused) {
+                countMessage.innerHTML = `You have <span class="highlight">${remaining}</span> characters remaining`;
+              } else {
+                countMessage.textContent = `You have ${remaining} characters remaining`;
+              }
+            } else {
+              // Over limit - add error styling
+              addErrorStyling(previewFormGroup, previewTextarea, countMessage, maxLengthNum);
+
+              const overLimit = currentLength - maxLengthNum;
+              if (isInputFocused) {
+                countMessage.innerHTML = `You have <span class="highlight">${overLimit}</span> characters too many`;
+                countMessage.className = 'govuk-error-message';
+              } else {
+                countMessage.textContent = `You have ${overLimit} characters too many`;
+                countMessage.className = 'govuk-error-message';
+              }
+            }
+
+            // Update the count message with live feedback
+            countMessage.setAttribute('aria-live', 'polite');
+          }
+        }
+
+        function addErrorStyling(formGroup, textarea, countMessage) {
+          // Add error class to form group
+          formGroup.classList.add('govuk-form-group--error');
+
+          // Add error class to textarea
+          textarea.classList.add('govuk-textarea--error');
+
+          // Create or update error message as plain red text (not in error message box)
+          let errorMessage = document.getElementById('character-count-error-message');
+          if (!errorMessage) {
+            errorMessage = document.createElement('p');
+            errorMessage.id = 'character-count-error-message';
+            errorMessage.style.color = '#d4351c'; // GOV.UK red color
+            errorMessage.style.marginBottom = '15px';
+            errorMessage.style.marginTop = '0';
+            errorMessage.className = 'govuk-error-message';
+
+            // Insert error message after the label, before the textarea
+            const label = formGroup.querySelector('label');
+            if (label) {
+              label.parentNode.insertBefore(errorMessage, label.nextSibling);
+            } else {
+              textarea.parentNode.insertBefore(errorMessage, textarea);
+            }
+          }
+
+          // Update error message text
+          const shortDescription = domElements.errorMessageInputTextarea?.value || '[Short description]';
+          const maxLength = formGroup.getAttribute('data-maxlength');
+          errorMessage.textContent = `${shortDescription} must be ${maxLength} characters or less`;
+
+          // Update aria-describedby to include error message
+          const currentAriaDescribedBy = textarea.getAttribute('aria-describedby') || '';
+          const hintId = 'hint-text-output';
+          const countMessageId = 'character-count-message';
+          const errorMessageId = 'character-count-error-message';
+
+          let newAriaDescribedBy = hintId;
+          if (currentAriaDescribedBy.includes(countMessageId)) {
+            newAriaDescribedBy += ` ${countMessageId}`;
+          }
+          if (!currentAriaDescribedBy.includes(errorMessageId)) {
+            newAriaDescribedBy += ` ${errorMessageId}`;
+          }
+
+          textarea.setAttribute('aria-describedby', newAriaDescribedBy);
+        }
+
+        function removeErrorStyling(formGroup, textarea, countMessage) {
+          // Remove error class from form group
+          formGroup.classList.remove('govuk-form-group--error');
+
+          // Remove error class from textarea
+          textarea.classList.remove('govuk-textarea--error');
+
+          // Remove error message
+          const errorMessage = document.getElementById('character-count-error-message');
+          if (errorMessage) {
+            errorMessage.remove();
+          }
+
+          // Reset character count message styling to normal
+          if (countMessage) {
+            countMessage.className = 'govuk-hint govuk-character-count__message';
+            countMessage.style.color = ''; // Reset to normal color
+          }
+
+          // Update aria-describedby to remove error message
+          const currentAriaDescribedBy = textarea.getAttribute('aria-describedby') || '';
+          const newAriaDescribedBy = currentAriaDescribedBy.replace(' character-count-error-message', '').trim();
+          textarea.setAttribute('aria-describedby', newAriaDescribedBy);
+        }
+
+        function hideCharacterCountPlaceholder() {
+          // Remove highlighting from character count message
+          const countMessage = document.getElementById('character-count-message');
+          if (countMessage) {
+            // Remove highlighting spans and restore normal text
+            const highlightedSpans = countMessage.querySelectorAll('span.highlight');
+            highlightedSpans.forEach(span => {
+              span.outerHTML = span.textContent;
+            });
+
+            // Restore gray color if there's no value
+            if (!domElements.maxCharactersInput.value) {
+              countMessage.style.color = '#6b7280';
+            }
+          }
+
+          // Only hide if there's no actual value in the input
+          if (!domElements.maxCharactersInput.value) {
+            const previewTextarea = document.getElementById('text-input-field');
+            const previewFormGroup = previewTextarea.closest('.govuk-form-group');
+
+            // Remove character count functionality
+            previewFormGroup.classList.remove('govuk-character-count');
+            previewFormGroup.removeAttribute('data-module');
+            previewFormGroup.removeAttribute('data-maxlength');
+
+            previewTextarea.classList.remove('govuk-js-character-count');
+
+            // Remove character count message
+            if (countMessage) {
+              countMessage.remove();
+            }
+
+            // Update aria-describedby to remove character count message
+            const currentAriaDescribedBy = previewTextarea.getAttribute('aria-describedby') || '';
+            const newAriaDescribedBy = currentAriaDescribedBy.replace(' character-count-message', '').trim();
+            previewTextarea.setAttribute('aria-describedby', newAriaDescribedBy);
+          }
         }
 
         function applyHighlightOnFocus(inputElement, targetElements) {

@@ -6,7 +6,7 @@
 {{ serviceHeader({
 organisationName: "Defra",
 productName: "Form Designer",
-serviceName: "Apply for an individual licence to release gamebirds on or near a European Site ",
+serviceName: "",
 accountName: "Chris Smith",
 homepageLink: "/",
 signOutLink: "/titan-mvp-1.2/onboarding/sign-out-confirmation",
@@ -41,19 +41,11 @@ activeLinkId: "nav-overview"
     <div class="govuk-width-container">
         {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
 
-        {{ govukBreadcrumbs({
-          classes: "govuk-breadcrumbs--inverse",
-          items: [
-            {
-              text: "Forms library",
-              href: "/titan-mvp-1.2/library"
-            },
-            {
-              text: "Forms overview",
-              href: "/titan-mvp-1.2/form-overview/{{ form.id }}"
-            }
-          ]
-        }) }}
+        {{ govukBackLink({
+            text: "Back to Forms library",
+            classes: "govuk-back-link--inverse govuk-!-margin-bottom-0",
+            href: "/titan-mvp-1.2/library"
+          }) }}
 
         <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
             style="border-bottom: 1px solid white; margin-bottom: 0" />

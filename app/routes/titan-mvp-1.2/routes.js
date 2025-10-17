@@ -6946,12 +6946,28 @@ router.get("/titan-mvp-1.2/roles/admin-panel", function (req, res) {
   // Store and clear the success message
   const successMessage = req.session.data.successMessage;
   delete req.session.data.successMessage;
+  
+  // Check if there's a success message to show from query parameter
+  const showSuccessMessage = req.query.success === 'true';
+  
   res.render("titan-mvp-1.2/roles/admin-panel.html", {
     data: {
       users: usersWithNames,
       successMessage: successMessage,
     },
+    showSuccessMessage: showSuccessMessage,
   });
+});
+
+// Admin panel download route (GET and POST)
+router.get("/titan-mvp-1.2/roles/admin-panel/download", (req, res) => {
+  // Redirect back to admin panel with success flag
+  res.redirect("/titan-mvp-1.2/roles/admin-panel?success=true");
+});
+
+router.post("/titan-mvp-1.2/roles/admin-panel/download", (req, res) => {
+  // Redirect back to admin panel with success flag
+  res.redirect("/titan-mvp-1.2/roles/admin-panel?success=true");
 });
 
 // Manage users page (GET)

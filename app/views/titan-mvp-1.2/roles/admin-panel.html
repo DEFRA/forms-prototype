@@ -11,7 +11,7 @@
 {{ serviceHeader({
 organisationName: "Defra",
 productName: "Form Designer",
-serviceName: "Admin",
+serviceName: "",
 containerClasses: containerClasses,
 accountName: "Chris Smith ",
 homepageLink: "/",
@@ -51,6 +51,22 @@ activeLinkId: "admin-tools"
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
+        {% if showSuccessMessage %}
+        {% set html %}
+          <h3 class="govuk-notification-banner__heading">
+            We have emailed a link to your email
+          </h3>
+          <p class="govuk-body">This might take a couple of minutes.</p>
+
+          <p class="govuk-body">Email: example@example.com</p>
+        {% endset %}
+
+        {{ govukNotificationBanner({
+          html: html,
+          type: "success"
+        }) }}
+        {% endif %}
+
         <div class="govuk-!-margin-bottom-8">
             <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Data management</h2>
             <p class="govuk-body govuk-!-margin-bottom-6">Manage and export user data according to retention policies.</p>
@@ -60,15 +76,15 @@ activeLinkId: "admin-tools"
             head: [
             { text: "Type of data" },
             { text: "How long we keep it" },
-            { text: "Send to shared mailbox" }
+            { text: "Send to your email" }
             ],
             rows: [
             [
             { text: "User feedback across all forms" },
             { text: "9 months after submission" },
-            { html: '<a class="govuk-link" href="/titan-mvp-1.2/form-overview/submissions/improved-2-table/download"
-                id="download-submissions">Send submissions data</a><span class="govuk-visually-hidden"> to shared
-                mailbox</span>' }
+            { html: '<a class="govuk-link" href="/titan-mvp-1.2/roles/admin-panel/download"
+                id="download-submissions">Send feedback data</a><span class="govuk-visually-hidden"> to your email
+                </span>' }
             ]
             ]
             }) }}
