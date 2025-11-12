@@ -1,5 +1,6 @@
 {% extends "layouts/main.html" %}
 {% from "components/service-header/macro.njk" import serviceHeader %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
 2. Usability testing with users – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
@@ -60,26 +61,26 @@ activeLinkId: "nav-resources"
         text: "3. Testing all parts of the service",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-3"
         }, {
-        text: "4. Designing for a range of devices",
+        text: "4. Users with lowest digital skills",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-4"
         }, {
-        text: "5. Users with lowest digital skills",
+        text: "5. Accessibility requirements",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-5"
         }, {
-        text: "6. Accessibility requirements",
+        text: "6. Performance research",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
         }, {
-        text: "7. Performance research",
+        text: "7. Continuous improvement",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
         }, {
-        text: "8. Continuous improvement",
+        text: "8. Data-driven decisions",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
         }, {
-        text: "9. Data-driven decisions",
+        text: "9. Continual monitoring",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
         }, {
-        text: "10. Continual monitoring",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-10"
+        text: "Summary",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/summary"
         }]
         }]
         }) }}
@@ -108,14 +109,31 @@ activeLinkId: "nav-resources"
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>Identified specific issues: confusion with "shared team email" hint text, unclear markdown limitations, error message input ambiguity</li>
-                <li>Captured direct quotes: "Preview is very smart!", "It works very well!", "The error messages don't work clearly"</li>
                 <li>Generated 10 specific recommendations for improvements</li>
                 <li>Validated that file upload notification emails were clear and effective</li>
             </ul>
 
+            <h4 class="govuk-heading-s">User feedback</h4>
+            {{ govukInsetText({
+            text: "Preview is very smart!"
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 3, Round 7 (October 2024)</p>
+
+            {{ govukInsetText({
+            text: "It works very well!"
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 3, Round 7 (October 2024)</p>
+
+            {{ govukInsetText({
+            text: "I don't know what I have to use it for, but that tells me what I need to know."
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 1, Round 7 (October 2024) - on file upload notification email</p>
+
             <p class="govuk-body">
-                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/form-editor/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Form editor</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/file-upload/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">File upload</a>
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/editor-redesign/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Editor redesign</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/form-editor/markdown-support/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Markdown support</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/form-editor/error-messages/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Error messages</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/form-editor/repeaters/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Repeaters</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/file-upload/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">File upload</a>
             </p>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
             <h3 class="govuk-heading-m">Example 2: Round 11 - Page Conditions and Repeater Questions</h3>
 
@@ -144,6 +162,8 @@ activeLinkId: "nav-resources"
                 <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/page-conditions/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Page conditions</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a>
             </p>
 
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
             <h3 class="govuk-heading-m">Example 3: Round 12 - Iteration Testing</h3>
 
             <p class="govuk-body"><strong>Situation:</strong><br>
@@ -171,6 +191,95 @@ activeLinkId: "nav-resources"
                 <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/page-conditions/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Page conditions</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a>
             </p>
 
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            <h3 class="govuk-heading-m">Example 4: Private Beta User Experience Research</h3>
+
+            <p class="govuk-body"><strong>Situation:</strong><br>
+            After onboarding users in July 2025, the service entered Private Beta. Needed to validate the end-to-end user experience with actual onboarded users using the service in real-world scenarios.</p>
+
+            <p class="govuk-body"><strong>Task:</strong><br>
+            Conduct interviews with Private Beta users to understand their experience of the end-to-end service, including support options, and evaluate usability of existing features.</p>
+
+            <p class="govuk-body"><strong>Action:</strong></p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Conducted interviews with 20 onboarded Private Beta users across 3 rounds (July-October 2025)</li>
+                <li>Reached out to users who had started creating forms to participate in research</li>
+                <li>Explored three key areas: their experience using the tool, features they'd like to see, and usability testing of features in development</li>
+                <li>Analysed support channels to identify problems and areas for improvement</li>
+            </ul>
+
+            <p class="govuk-body"><strong>Result:</strong></p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Overall user experience was "generally very positive" across all 20 interviews</li>
+                <li>Users frequently described the interface as "intuitive and straightforward"</li>
+                <li>Users felt everything was laid out where they expected it to be</li>
+                <li>Users were able to design and modify forms quickly</li>
+                <li>Basic functions like drag and drop were described as simple</li>
+                <li>Changing question types was straightforward</li>
+                <li>Interactive preview panel was consistently popular - some users felt it was essential</li>
+                <li>GDS format familiarity was a plus</li>
+            </ul>
+
+            <h4 class="govuk-heading-s">User feedback</h4>
+            {{ govukInsetText({
+            text: "Users frequently describing the interface as intuitive and straightforward"
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Private Beta User Research, October 2025</p>
+
+            {{ govukInsetText({
+            text: "Users felt that everything was laid out where they expected it to be, and that they were able to design and modify forms quickly"
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Private Beta User Research, October 2025</p>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            <h3 class="govuk-heading-m">Example 5: Round 14 - Onboarding and Auditing Features Evaluation</h3>
+
+            <p class="govuk-body"><strong>Situation:</strong><br>
+            New onboarding and auditing features were added to the service. Needed to evaluate user needs, identify usability issues, and gather feedback on these functionalities.</p>
+
+            <p class="govuk-body"><strong>Task:</strong><br>
+            Conduct user research to evaluate the new onboarding and auditing features, including user management, permissions, and form history/audit trail.</p>
+
+            <p class="govuk-body"><strong>Action:</strong></p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Conducted user research sessions in May 2025 (Round 14)</li>
+                <li>Asked participants to perform tasks related to onboarding and auditing: add new user with specific permissions, edit permissions for existing user, remove user, check history/audit trail of a form, attempt to publish a form to test permission restrictions</li>
+                <li>Evaluated usability of user management interface and audit trail features</li>
+            </ul>
+
+            <p class="govuk-body"><strong>Result:</strong></p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>Roles and permissions (Admin, Form publisher, Form creator) were generally understood and hierarchy made sense</li>
+                <li>Editing permissions and removing users was perceived as simple and clear once the 'Manage Users' section was found</li>
+                <li>Email notifications sent to users were found to be clear and useful</li>
+                <li>History/audit trail section was generally found and placement recognized as similar to Whitehall Publisher's history feature</li>
+                <li>History information (who made change, date/time, description) was found to be useful and clear - allows users to see "at a glance what changed and when"</li>
+                <li>Identified usability issue: participants struggled to find the "Manage Users" link - initially looked on main forms library screen or form settings, eventually found under user's profile section</li>
+                <li>Generated specific recommendations for improvement including: move 'Manage Users' link to more intuitive location, allow optional comment field when making edits, introduce visual highlighting in form preview for recent edits</li>
+            </ul>
+
+            <h4 class="govuk-heading-s">User feedback</h4>
+            {{ govukInsetText({
+            text: "History section is clear and useful. Can see at a glance what changed and when."
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 1, Round 14 (May 2025)</p>
+
+            {{ govukInsetText({
+            text: "Yeah. And it's kind of in hierarchy, isn't it? So the top level the admin people can do everything and it kind of goes down."
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 1, Round 14 (May 2025) - on roles and permissions</p>
+
+            {{ govukInsetText({
+            text: "That's totally familiar. That's what Whitehall do."
+            }) }}
+            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 2, Round 14 (May 2025) - on history feature placement</p>
+
+            <p class="govuk-body">
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/roles/manage-users.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Manage users</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/form-overview/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Form overview - History section</a>
+            </p>
+
             <h3 class="govuk-heading-m">Overall Testing Programme</h3>
 
             <p class="govuk-body"><strong>Situation:</strong><br>
@@ -182,20 +291,68 @@ activeLinkId: "nav-resources"
             <p class="govuk-body"><strong>Action:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>Conducted 13 rounds of user research between May 2024 and April 2025</li>
-                <li>Involved over 50 participants including content designers, proxy users, and internal stakeholders</li>
-                <li>Tested 33 features with 77 research iterations</li>
-                <li>Used consistent methods: remote usability testing with think-aloud protocol</li>
+                <li>Conducted 3 additional rounds of Private Beta user research (July-October 2025) with 20 onboarded users</li>
+                <li>Conducted Round 14 (May 2025) to evaluate new onboarding and auditing features</li>
+                <li>Involved over 70 participants including content designers, proxy users, internal stakeholders, and Private Beta users</li>
+                <li>Tested 32 features with 77 research iterations</li>
+                <li>Used consistent methods: remote usability testing with think-aloud protocol, interviews for Private Beta research, and task-based evaluation for feature testing</li>
                 <li>Participants from multiple Defra departments: APHA, RPA, Countryside Stewardship, Farming, SFI, Flood Services, Trade, Policy Lab, Cefas, Environment Agency, Nature, Forestry, Climate Change, BAU, Whitehall</li>
             </ul>
 
             <p class="govuk-body"><strong>Result:</strong></p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>Average of 2.3 iterations per feature</li>
-                <li>64% of features tested 2 or more times</li>
-                <li>45% of features tested 3 or more times</li>
-                <li>27 features marked as "Tested" (82%)</li>
-                <li>All major features validated with real users before release</li>
-            </ul>
+
+            <div class="govuk-grid-row govuk-!-margin-top-4">
+                <div class="govuk-grid-column-one-half">
+                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
+                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Average iterations per feature</h4>
+                        <p class="govuk-body" style="font-size: 3rem; font-weight: 700; line-height: 1; margin: 10px 0; color: #1d70b8;">2.4</p>
+                        <p class="govuk-body-s" style="color: #505a5f; margin-top: 10px;">Across 32 features with 77 total iterations</p>
+                    </div>
+                </div>
+                <div class="govuk-grid-column-one-half">
+                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
+                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Features tested</h4>
+                        <p class="govuk-body" style="font-size: 3rem; font-weight: 700; line-height: 1; margin: 10px 0; color: #1d70b8;">27</p>
+                        <p class="govuk-body-s" style="color: #505a5f; margin-top: 10px;">Out of 32 features (84%)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-full">
+                    <h4 class="govuk-heading-s govuk-!-margin-top-4">Testing frequency</h4>
+
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span class="govuk-body-s"><strong>Features tested 2 or more times</strong></span>
+                            <span class="govuk-body-s"><strong>66%</strong></span>
+                        </div>
+                        <div style="background-color: #dee0e2; height: 30px; border-radius: 4px; position: relative; overflow: hidden;">
+                            <div style="background-color: #1d70b8; height: 100%; width: 66%; min-width: 80px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; box-sizing: border-box;">
+                                <span class="govuk-body-s" style="color: white; font-weight: 700; margin-top:15px;white-space: nowrap; display: inline-block;">66%</span>
+                            </div>
+                        </div>
+                        <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">21 out of 32 features</p>
+                    </div>
+
+                    <div style="margin-bottom: 30px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <span class="govuk-body-s"><strong>Features tested 3 or more times</strong></span>
+                            <span class="govuk-body-s"><strong>47%</strong></span>
+                        </div>
+                        <div style="background-color: #dee0e2; height: 30px; border-radius: 4px; position: relative; overflow: hidden;">
+                            <div style="background-color: #00703c; height: 100%; width: 47%; min-width: 80px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; box-sizing: border-box;">
+                                <span class="govuk-body-s" style="color: white; font-weight: 700; margin-top:15px; white-space: nowrap; display: inline-block;">47%</span>
+                            </div>
+                        </div>
+                        <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">15 out of 32 features</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="govuk-inset-text govuk-!-margin-top-4">
+                <p class="govuk-body"><strong>All major features validated with real users before release</strong></p>
+            </div>
 
             <p class="govuk-body">
                 <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">All features and research rounds</a>

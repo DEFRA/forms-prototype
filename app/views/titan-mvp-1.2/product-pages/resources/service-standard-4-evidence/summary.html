@@ -1,0 +1,122 @@
+{% extends "layouts/main.html" %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
+
+{% block pageTitle %}
+Summary – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block header %}
+{{ serviceHeader({
+organisationName: "Defra",
+productName: "Form Designer",
+serviceName: "",
+homepageLink: "/titan-mvp-1.2/product-pages/homepage",
+signInLink: "/titan-mvp-1.2/library",
+showSupportLink: false,
+navigationItems: [
+{ href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
+{ href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
+{ href: "/titan-mvp-1.2/product-pages/features", text: "Features", id: "nav-features" },
+{ href: "/titan-mvp-1.2/product-pages/resources", text: "Resources", id: "nav-resources" },
+{ href: "/titan-mvp-1.2/product-pages/support", text: "Support", id: "nav-support" }
+],
+activeLinkId: "nav-resources"
+}) }}
+
+<div class="x-govuk-masthead x-govuk-masthead--large">
+    <div class="govuk-width-container">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full-from-desktop">
+                <h1 class="x-govuk-masthead__title">
+                    <span class="govuk-caption-l" style="color: white;">Service Standard Assessment</span>
+                    Service Standard Point 4: Make the service simple to use - Evidence
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-one-quarter app-contents-list--sticky govuk-!-padding-right-0">
+        {{ xGovukSubNavigation({
+        visuallyHiddenTitle: "Section navigation",
+        items: [{
+        text: "Service Standard Point 4 Evidence",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence",
+        parent: true,
+        children: [{
+        text: "Executive Summary",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence"
+        }, {
+        text: "1. Making the service simple to use",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-1"
+        }, {
+        text: "2. Usability testing with users",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-2"
+        }, {
+        text: "3. Testing all parts of the service",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-3"
+        }, {
+        text: "4. Users with lowest digital skills",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-4"
+        }, {
+        text: "5. Accessibility requirements",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-5"
+        }, {
+        text: "6. Performance research",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
+        }, {
+        text: "7. Continuous improvement",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
+        }, {
+        text: "8. Data-driven decisions",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
+        }, {
+        text: "9. Continual monitoring",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
+        }, {
+        text: "Summary",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/summary",
+        current: true
+        }]
+        }]
+        }) }}
+    </div>
+    <div class="govuk-grid-column-two-thirds">
+        <div class="app-prose-scope">
+
+            <h2 class="govuk-heading-l">Summary</h2>
+
+            <p class="govuk-body">The Defra Forms Designer demonstrates strong evidence for Service Standard point 4 through specific, documented examples:</p>
+
+            <ol class="govuk-list govuk-list--number">
+                <li><strong>Simple, user-centred design</strong> - Complete redesign from component-driven to task-driven approach, validated through 13 rounds of research</li>
+                <li><strong>Regular usability testing</strong> - 13 rounds with 50+ participants, 77 research iterations across 32 features</li>
+                <li><strong>Comprehensive testing</strong> - Both online features and offline communications (emails) tested with specific findings</li>
+                <li><strong>Device compatibility</strong> - Responsive design implemented with specific breakpoints and mobile navigation</li>
+                <li><strong>Support for all users</strong> - Training provided, guidance improved based on user feedback, visual feedback implemented</li>
+                <li><strong>Accessibility compliance</strong> - WCAG 2.2 focus with independent review, specific screen reader implementations documented</li>
+                <li><strong>Performance research</strong> - Initial evaluation led to complete redesign, specific issues identified and addressed</li>
+                <li><strong>Continuous improvement</strong> - 77 research iterations with specific examples of terminology changes, flow improvements, and feature enhancements</li>
+                <li><strong>Data-driven decisions</strong> - AI compliance checker implemented, research data systematically collected and used</li>
+                <li><strong>Ongoing monitoring</strong> - Feedback mechanisms in place, regular testing schedule, design history documents all changes</li>
+            </ol>
+
+            <p class="govuk-body">All evidence includes specific dates, participant quotes, actions taken, and measurable results, demonstrating a systematic approach to making the service simple to use.</p>
+
+            {% from "govuk/components/pagination/macro.njk" import govukPagination %}
+
+            {{ govukPagination({
+            previous: {
+            labelText: "9. Continual monitoring",
+            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
+            }
+            }) }}
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+

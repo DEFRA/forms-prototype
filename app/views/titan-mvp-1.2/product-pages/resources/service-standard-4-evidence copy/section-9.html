@@ -2,7 +2,7 @@
 {% from "components/service-header/macro.njk" import serviceHeader %}
 
 {% block pageTitle %}
-8. Data-driven decisions – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
+9. Data-driven decisions – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block header %}
@@ -59,27 +59,27 @@ activeLinkId: "nav-resources"
         text: "3. Testing all parts of the service",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-3"
         }, {
-        text: "4. Users with lowest digital skills",
+        text: "4. Designing for a range of devices",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-4"
         }, {
-        text: "5. Accessibility requirements",
+        text: "5. Users with lowest digital skills",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-5"
         }, {
-        text: "6. Performance research",
+        text: "6. Accessibility requirements",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
         }, {
-        text: "7. Continuous improvement",
+        text: "7. Performance research",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
         }, {
-        text: "8. Data-driven decisions",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8",
+        text: "8. Continuous improvement",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
+        }, {
+        text: "9. Data-driven decisions",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9",
         current: true
         }, {
-        text: "9. Continual monitoring",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
-        }, {
-        text: "Summary",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/summary"
+        text: "10. Continual monitoring",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-10"
         }]
         }]
         }) }}
@@ -87,7 +87,7 @@ activeLinkId: "nav-resources"
     <div class="govuk-grid-column-two-thirds">
         <div class="app-prose-scope">
 
-            <h2 class="govuk-heading-l">8. How data is used to understand service performance</h2>
+            <h2 class="govuk-heading-l">9. How data is used to understand service performance</h2>
 
             <h3 class="govuk-heading-m">Example 1: Research Data Collection and Analysis</h3>
 
@@ -111,48 +111,19 @@ activeLinkId: "nav-resources"
                 <li>Systematic documentation of all research</li>
                 <li>Data available to inform design decisions</li>
                 <li>Clear evidence of why changes were made</li>
-                <li>77 research iterations documented across 32 features</li>
-            </ul>
-
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-
-            <h3 class="govuk-heading-m">Example 2: Using Performance Metrics to Understand User Feedback</h3>
-
-            <p class="govuk-body"><strong>Situation:</strong><br>
-            A user got in touch after being locked out of the "save and exit" feature on a long, complex application form. They'd carefully noted down their password, but when they tried to get back in the system wouldn't let them. Losing progress on something that takes hours to fill in is understandably very frustrating, and it kicked off a discussion in the team about how this could happen and whether it was a wider issue.</p>
-
-            <p class="govuk-body"><strong>Task:</strong><br>
-            Understand whether this was an isolated incident or a wider problem affecting multiple users, and determine the best approach to address it.</p>
-
-            <p class="govuk-body"><strong>Action:</strong></p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>Rather than guessing, the team looked at the logs to see what was really happening</li>
-                <li>On the same day this complaint came in, found that 94 people had successfully resumed a saved form</li>
-                <li>Over the past week, only six people had been locked out after too many failed password attempts</li>
-                <li>Calculated the success rate: approximately 96% of users successfully use the feature</li>
-                <li>Recognised that while the feature works smoothly most of the time, when it goes wrong the consequences for users are significant</li>
-                <li>Used both the user's story and the data side by side to get a rounded picture of the problem</li>
-            </ul>
-
-            <p class="govuk-body"><strong>Result:</strong></p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>Data showed the feature works smoothly most of the time (about a 96% success rate)</li>
-                <li>Identified that when it goes wrong, the consequences for users are big</li>
-                <li>With that context, the conversation moved to how to make things better</li>
-                <li>Generated ideas for improvements including: clearer warnings about case sensitivity, better messaging before someone runs out of attempts, a reset option, and considering alternatives like one-time codes instead of passwords</li>
-                <li>Demonstrated how feedback and data together can shape the next steps for service improvement</li>
+                <li>77 research iterations documented across 33 features</li>
             </ul>
 
             {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
             {{ govukPagination({
             previous: {
-            labelText: "7. Continuous improvement",
-            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
+            labelText: "8. Continuous improvement",
+            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
             },
             next: {
-            labelText: "9. Continual monitoring",
-            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
+            labelText: "10. Continual monitoring",
+            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-10"
             }
             }) }}
 

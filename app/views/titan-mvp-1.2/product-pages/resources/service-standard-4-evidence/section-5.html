@@ -1,8 +1,9 @@
 {% extends "layouts/main.html" %}
 {% from "components/service-header/macro.njk" import serviceHeader %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
-5. Users with lowest digital skills – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
+5. Accessibility requirements – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block header %}
@@ -59,27 +60,27 @@ activeLinkId: "nav-resources"
         text: "3. Testing all parts of the service",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-3"
         }, {
-        text: "4. Designing for a range of devices",
+        text: "4. Users with lowest digital skills",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-4"
         }, {
-        text: "5. Users with lowest digital skills",
+        text: "5. Accessibility requirements",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-5",
         current: true
         }, {
-        text: "6. Accessibility requirements",
+        text: "6. Performance research",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
         }, {
-        text: "7. Performance research",
+        text: "7. Continuous improvement",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
         }, {
-        text: "8. Continuous improvement",
+        text: "8. Data-driven decisions",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
         }, {
-        text: "9. Data-driven decisions",
+        text: "9. Continual monitoring",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
         }, {
-        text: "10. Continual monitoring",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-10"
+        text: "Summary",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/summary"
         }]
         }]
         }) }}
@@ -87,87 +88,205 @@ activeLinkId: "nav-resources"
     <div class="govuk-grid-column-two-thirds">
         <div class="app-prose-scope">
 
-            <h2 class="govuk-heading-l">5. Usability testing with users with the lowest level of digital skills</h2>
+            <h2 class="govuk-heading-l">5. How the service meets accessibility requirements</h2>
 
-            <h3 class="govuk-heading-m">Example 1: Training and Support Provision</h3>
+            <h3 class="govuk-heading-m">Example 1: Screen Reader Support for List Reordering</h3>
 
             <p class="govuk-body"><strong>Situation:</strong><br>
-            All content designers within Defra need to use the tool, regardless of their digital skill level. Some users may be new to digital form creation.</p>
+            Users need to reorder list items (radio options, checkboxes) but this functionality must work with screen readers for users who are blind or have visual impairments.</p>
 
             <p class="govuk-body"><strong>Task:</strong><br>
-            Provide training and support so all users can use the tool successfully, regardless of their digital skill level.</p>
+            Implement accessible list reordering that works with screen readers and provides clear announcements.</p>
 
             <p class="govuk-body"><strong>Action:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>Provided training support to all content designers within Defra to use the tool</li>
-                <li>Created guidance pages and help text throughout the service</li>
-                <li>Added contextual help and examples where needed</li>
-                <li>Implemented markdown support with reminders and guidance</li>
-                <li>Made help accessible at any point in the service</li>
+                <li>Implemented ARIA live regions for dynamic content updates</li>
+                <li>Added screen reader announcements when focusing on "Move" buttons: "Button, Move [Option text]: [Up or Down], [Option text] is currently option [Position] of [Total options] options"</li>
+                <li>Added announcements when reordering: "The list has been reordered, [Option text] is now option [new position] of [Total options] options"</li>
+                <li>Implemented focus retention after reordering so users can continue making adjustments</li>
+                <li>Made button labels update dynamically to reflect new positions</li>
             </ul>
 
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>All users have access to training and support</li>
-                <li>Guidance available throughout the service</li>
-                <li>Users can access help when needed without leaving their current task</li>
+                <li>Screen reader users can understand current position and new position after reordering</li>
+                <li>All announcements include: what happened, which item was moved, and the new position</li>
+                <li>Focus management allows users to continue working without losing their place</li>
+                <li>Documented in design history with specific code examples</li>
             </ul>
 
-            <h3 class="govuk-heading-m">Example 2: Improving Guidance Visibility</h3>
+            <h4 class="govuk-heading-s">Implementation example</h4>
+            <p class="govuk-body">Screen reader announcements when focusing on "Move" buttons:</p>
+            {{ govukInsetText({
+            text: "Button, Move [Option text]: [Up or Down], [Option text] is currently option [Position] of [Total options] options"
+            }) }}
+
+            <p class="govuk-body">Announcement when reordering:</p>
+            {{ govukInsetText({
+            text: "The list has been reordered, [Option text] is now option [new position] of [Total options] options"
+            }) }}
+
+            <div class="govuk-grid-row govuk-!-margin-top-4">
+                <div class="govuk-grid-column-full">
+                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
+                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Screen reader support flow</h4>
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #1d70b8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span class="govuk-body govuk-!-font-weight-bold govuk-!-margin-0" style="color: white;">1</span></div>
+                                <div style="flex: 1;">
+                                    <p class="govuk-body-s govuk-!-margin-0" style="font-weight: 700;">User focuses on "Move" button</p>
+                                    <p class="govuk-body-s govuk-!-margin-0" style="color: #505a5f;">Screen reader announces current position</p>
+                                </div>
+                            </div>
+                            <div style="border-left: 2px solid #1d70b8; margin-left: 20px; padding-left: 35px;">
+                                <p class="govuk-body-s" style="font-style: italic; color: #505a5f;">"Button, Move Option A: Up, Option A is currently option 2 of 4 options"</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #1d70b8; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span class="govuk-body govuk-!-font-weight-bold govuk-!-margin-0" style="color: white;">2</span></div>
+                                <div style="flex: 1;">
+                                    <p class="govuk-body-s govuk-!-margin-0" style="font-weight: 700;">User activates "Move" button</p>
+                                    <p class="govuk-body-s govuk-!-margin-0" style="color: #505a5f;">List reorders and focus retained</p>
+                                </div>
+                            </div>
+                            <div style="border-left: 2px solid #1d70b8; margin-left: 20px; padding-left: 35px;">
+                                <p class="govuk-body-s" style="font-style: italic; color: #505a5f;">"The list has been reordered, Option A is now option 1 of 4 options"</p>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #00703c; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><span class="govuk-body govuk-!-font-weight-bold govuk-!-margin-0" style="color: white;">✓</span></div>
+                                <div style="flex: 1;">
+                                    <p class="govuk-body-s govuk-!-margin-0" style="font-weight: 700;">User can continue adjustments</p>
+                                    <p class="govuk-body-s govuk-!-margin-0" style="color: #505a5f;">Focus remains on moved item</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h4 class="govuk-heading-s">Related design history</h4>
+            <ul class="govuk-list">
+                <li><a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature - Accessibility section</a></li>
+            </ul>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            <h3 class="govuk-heading-m">Example 2: Keyboard Navigation and Skip Links</h3>
 
             <p class="govuk-body"><strong>Situation:</strong><br>
-            Round 6 (August/September 2024) found users needed reminders for markdown but couldn't easily find help. Participant 7 said: "I sometimes need a reminder for markdown. Whitehall does this really well."</p>
+            Users who navigate using keyboards need efficient ways to move through the interface and skip repetitive content. Long forms and complex interfaces can be time-consuming to navigate with Tab key alone.</p>
 
             <p class="govuk-body"><strong>Task:</strong><br>
-            Make guidance and help more visible and accessible so users don't need to remember everything.</p>
+            Implement comprehensive keyboard navigation with skip links to allow users to jump directly to main content areas and key features.</p>
 
             <p class="govuk-body"><strong>Action:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>Improved visibility of markdown guidance links</li>
-                <li>Added contextual help where markdown is used</li>
-                <li>Provided inline help rather than requiring external guides</li>
-                <li>Added examples and guidance text throughout</li>
+                <li>Implemented skip links throughout the interface to allow users to jump directly to specific sections</li>
+                <li>Added "Close preview and skip" functionality that closes preview panels and moves focus to target sections</li>
+                <li>Ensured all interactive elements are keyboard accessible with clear focus states</li>
+                <li>Implemented focus management when closing previews or modals to return focus to appropriate elements</li>
+                <li>Added keyboard shortcuts for common actions where appropriate</li>
+                <li>Tested keyboard navigation flow to ensure logical tab order</li>
             </ul>
 
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>Round 8 recommendation: "Improve visibility of markdown guidance"</li>
-                <li>Users can access help without leaving their current task</li>
-                <li>Guidance is available when and where users need it</li>
+                <li>Keyboard users can efficiently navigate the entire interface without a mouse</li>
+                <li>Skip links allow users to bypass repetitive navigation and jump to main content</li>
+                <li>Focus management ensures users never lose their place when interacting with previews or modals</li>
+                <li>All features are accessible via keyboard navigation</li>
+                <li>Clear visual focus indicators help users understand their current position</li>
             </ul>
 
-            <h3 class="govuk-heading-m">Example 3: Visual Feedback for All Users</h3>
+            <div class="govuk-grid-row govuk-!-margin-top-4">
+                <div class="govuk-grid-column-full">
+                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
+                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Keyboard navigation features</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                            <div style="padding: 15px; background-color: white; border-left: 4px solid #1d70b8;">
+                                <p class="govuk-body-s govuk-!-margin-0" style="font-weight: 700;">Skip links</p>
+                                <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">Jump to main content areas</p>
+                            </div>
+                            <div style="padding: 15px; background-color: white; border-left: 4px solid #1d70b8;">
+                                <p class="govuk-body-s govuk-!-margin-0" style="font-weight: 700;">Focus management</p>
+                                <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">Maintains context when closing previews</p>
+                            </div>
+                            <div style="padding: 15px; background-color: white; border-left: 4px solid #1d70b8;">
+                                <p class="govuk-body-s govuk-!-margin-0" style="font-weight: 700;">Clear focus states</p>
+                                <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">Visual indicators for keyboard users</p>
+                            </div>
+                            <div style="padding: 15px; background-color: white; border-left: 4px solid #1d70b8;">
+                                <p class="govuk-body-s govuk-!-margin-0" style="font-weight: 700;">Logical tab order</p>
+                                <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">Intuitive navigation flow</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="govuk-body">
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/preview-panel/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Preview panel</a>
+            </p>
+
+            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+            <h3 class="govuk-heading-m">Example 3: Accessibility Evaluation and Independent Review</h3>
 
             <p class="govuk-body"><strong>Situation:</strong><br>
-            Users need clear visual feedback to understand what actions to take, especially users with lower digital skills who may not be confident exploring interfaces.</p>
+            Initial evaluation (March 2024) found accessibility issues in the existing service. Needed to ensure redesign met accessibility standards.</p>
 
             <p class="govuk-body"><strong>Task:</strong><br>
-            Provide clear visual feedback that helps all users understand what to do next.</p>
+            Ensure service meets WCAG 2.2 compliance and inclusive design patterns.</p>
 
             <p class="govuk-body"><strong>Action:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>Implemented success banners with clear call-to-actions</li>
-                <li>Added autosave feedback messages</li>
-                <li>Used green boxes for important actions and confirmations</li>
-                <li>Provided clear visual indicators for completed actions</li>
+                <li>Conducted initial heuristic and accessibility evaluation (March 2024)</li>
+                <li>Engaged Defra accessibility team for independent review</li>
+                <li>Focused on WCAG 2.2 compliance throughout redesign</li>
+                <li>Implemented keyboard navigation for all features</li>
+                <li>Added ARIA labels and roles for all interactive elements</li>
+                <li>Ensured color contrast meets standards</li>
+                <li>Implemented clear focus states for keyboard navigation</li>
             </ul>
 
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>Round 13 (April 2025): Participant 1 said "Whatever appears in a green box, I just do it" - showing that clear visual feedback helps users understand what to do</li>
-                <li>Users feel more confident taking actions when they see clear visual feedback</li>
-                <li>Success banners guide users to next steps</li>
+                <li>Independent accessibility review completed</li>
+                <li>361+ references to accessibility across the codebase</li>
+                <li>11 features (33%) have explicit accessibility considerations documented</li>
+                <li>All features follow GOV.UK accessibility patterns</li>
+                <li>Keyboard navigation works for all features</li>
             </ul>
+
+            <div class="govuk-grid-row govuk-!-margin-top-4">
+                <div class="govuk-grid-column-one-half">
+                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
+                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Accessibility references</h4>
+                        <p class="govuk-body" style="font-size: 3rem; font-weight: 700; line-height: 1; margin: 10px 0; color: #1d70b8;">361+</p>
+                        <p class="govuk-body-s" style="color: #505a5f; margin-top: 10px;">Across the codebase</p>
+                    </div>
+                </div>
+                <div class="govuk-grid-column-one-half">
+                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
+                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Features with accessibility docs</h4>
+                        <p class="govuk-body" style="font-size: 3rem; font-weight: 700; line-height: 1; margin: 10px 0; color: #1d70b8;">11</p>
+                        <p class="govuk-body-s" style="color: #505a5f; margin-top: 10px;">Out of 32 features (33%)</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="govuk-body">
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/forms-designer/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Forms Designer redesign - Initial assessment</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature - Accessibility section</a>
+            </p>
 
             {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 
             {{ govukPagination({
             previous: {
-            labelText: "4. Designing for a range of devices",
+            labelText: "4. Users with lowest digital skills",
             href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-4"
             },
             next: {
-            labelText: "6. Accessibility requirements",
+            labelText: "6. Performance research",
             href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
             }
             }) }}

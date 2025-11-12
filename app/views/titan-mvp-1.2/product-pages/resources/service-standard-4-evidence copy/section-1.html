@@ -1,6 +1,5 @@
 {% extends "layouts/main.html" %}
 {% from "components/service-header/macro.njk" import serviceHeader %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
 1. Making the service simple to use – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
@@ -61,26 +60,26 @@ activeLinkId: "nav-resources"
         text: "3. Testing all parts of the service",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-3"
         }, {
-        text: "4. Users with lowest digital skills",
+        text: "4. Designing for a range of devices",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-4"
         }, {
-        text: "5. Accessibility requirements",
+        text: "5. Users with lowest digital skills",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-5"
         }, {
-        text: "6. Performance research",
+        text: "6. Accessibility requirements",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
         }, {
-        text: "7. Continuous improvement",
+        text: "7. Performance research",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
         }, {
-        text: "8. Data-driven decisions",
+        text: "8. Continuous improvement",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
         }, {
-        text: "9. Continual monitoring",
+        text: "9. Data-driven decisions",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
         }, {
-        text: "Summary",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/summary"
+        text: "10. Continual monitoring",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-10"
         }]
         }]
         }) }}
@@ -109,39 +108,15 @@ activeLinkId: "nav-resources"
 
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
+                <li>Round 11 (March 2025): Participant 4 said "It feels like it's really intuitive... very like, methodical step by step"</li>
+                <li>Round 12 (March 2025): Participant 4 said "It feels like it's really intuitive and the design feels really clean, really like a lot of space, very like, methodical kind of step by step"</li>
+                <li>Round 2 (May/June 2024): User quote "Even just doing it once made it less confusing the second time"</li>
                 <li>Users found the redesign "clean, well-spaced, and intuitive"</li>
             </ul>
 
-            <h4 class="govuk-heading-s">User feedback</h4>
-            {{ govukInsetText({
-            text: "It feels like it's really intuitive... very like, methodical step by step"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 4, Round 11 (March 2025)</p>
-
-            {{ govukInsetText({
-            text: "It feels like it's really intuitive and the design feels really clean, really like a lot of space, very like, methodical kind of step by step"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 4, Round 12 (March 2025)</p>
-
-            {{ govukInsetText({
-            text: "Even just doing it once made it less confusing the second time"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— User quote, Round 2 (May/June 2024)</p>
-
-            {{ govukInsetText({
-            text: "I feel quite unstressed about that! It looks pretty good!"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 1, Round 6 (August/September 2024) - on initial redesign</p>
-
-            <h4 class="govuk-heading-s">Related design history</h4>
-            <ul class="govuk-list">
-                <li><a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/forms-designer/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Forms Designer redesign overview</a></li>
-                <li><a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/forms-designer/summary-of-changes.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Summary of changes</a></li>
-                <li><a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/editor-redesign/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Editor redesign</a></li>
-                <li><a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/preview-panel/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Preview panel</a></li>
-            </ul>
-
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            <p class="govuk-body">
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/forms-designer/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Forms Designer redesign overview</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/forms-designer/summary-of-changes.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Summary of changes</a>
+            </p>
 
             <h3 class="govuk-heading-m">Example 2: Improving question creation flow</h3>
 
@@ -161,26 +136,13 @@ activeLinkId: "nav-resources"
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>Round 12 (March 2025): "Moving question text before options improved logic and usability. No usability issues observed; setup was clear"</li>
+                <li>Participant 1 said: "Because you have to add them one at a time and come back to this point, you never get to like see your list in the drafting stage altogether" - this was addressed by keeping users on the same page</li>
                 <li>Users successfully completed question creation without confusion</li>
             </ul>
 
-            <h4 class="govuk-heading-s">User feedback</h4>
-            {{ govukInsetText({
-            text: "It would be really nice to... think about what's my question text then think about all of my radios at the same time."
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 3, Round 11 (March 2025)</p>
-
-            {{ govukInsetText({
-            text: "Because you have to add them one at a time and come back to this point, you never get to like see your list in the drafting stage altogether"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 1, Round 12 (March 2025) - addressed by keeping users on the same page</p>
-
-            <h4 class="govuk-heading-s">Related design history</h4>
-            <ul class="govuk-list">
-                <li><a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a></li>
-            </ul>
-
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+            <p class="govuk-body">
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/form-editor/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Form editor</a>
+            </p>
 
             <h3 class="govuk-heading-m">Example 3: Adding bulk option entry for lists</h3>
 
@@ -204,62 +166,9 @@ activeLinkId: "nav-resources"
                 <li>Improved drafting visibility - users can see their complete list while editing</li>
             </ul>
 
-            <h4 class="govuk-heading-s">User feedback</h4>
-            {{ govukInsetText({
-            text: "Why can't I enter them comma-separated?"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant, Round 8 (November 2024)</p>
-
-            <h4 class="govuk-heading-s">Related design history</h4>
-            <ul class="govuk-list">
-                <li><a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a></li>
-            </ul>
-
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
-
-            <h3 class="govuk-heading-m">Example 4: Private Beta User Experience Validation</h3>
-
-            <p class="govuk-body"><strong>Situation:</strong><br>
-            After onboarding users in July 2025, the service entered Private Beta. Needed to validate that the redesigned service met user needs and was simple to use in real-world usage.</p>
-
-            <p class="govuk-body"><strong>Task:</strong><br>
-            Conduct interviews with Private Beta users to understand their end-to-end experience using the service, including support options and feature usability.</p>
-
-            <p class="govuk-body"><strong>Action:</strong></p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>Conducted interviews with 20 onboarded Private Beta users across 3 rounds (July-October 2025)</li>
-                <li>Reached out to users who had started creating forms to participate in research</li>
-                <li>Explored three key areas: experience using the tool, features they'd like to see, and usability testing of features in development</li>
-                <li>Analysed support channels to identify problems and areas for improvement</li>
-            </ul>
-
-            <p class="govuk-body"><strong>Result:</strong></p>
-            <ul class="govuk-list govuk-list--bullet">
-                <li>Overall user experience was "generally very positive" across all 20 interviews</li>
-                <li>Users frequently described the interface as "intuitive and straightforward"</li>
-                <li>Users felt everything was laid out where they expected it to be</li>
-                <li>Users were able to design and modify forms quickly</li>
-                <li>Basic functions like creating and moving questions via drag and drop were described as simple</li>
-                <li>Changing question types (e.g., converting radio buttons to checkboxes) was straightforward</li>
-                <li>The interactive preview panel was consistently popular - some users felt it was essential</li>
-                <li>Familiarity of the GDS (Government Digital Service) format was a plus</li>
-            </ul>
-
-            <h4 class="govuk-heading-s">User feedback</h4>
-            {{ govukInsetText({
-            text: "Users frequently describing the interface as intuitive and straightforward"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Private Beta User Research, October 2025</p>
-
-            {{ govukInsetText({
-            text: "Users felt that everything was laid out where they expected it to be, and that they were able to design and modify forms quickly"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Private Beta User Research, October 2025</p>
-
-            {{ govukInsetText({
-            text: "The interactive preview panel located on the right side is consistently popular with users, as it allows designers to immediately confirm that their changes look as expected. Some users felt this feature – which is unique to Defra Forms - was essential"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Private Beta User Research, October 2025</p>
+            <p class="govuk-body">
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a>
+            </p>
 
             {% from "govuk/components/pagination/macro.njk" import govukPagination %}
 

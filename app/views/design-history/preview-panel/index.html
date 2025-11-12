@@ -9,11 +9,92 @@
 real time while editing." %}
 {% set phase = "Private beta" %}
 {% set category = "Form creation" %}
-{% set description = "The preview panel allows users to see what their form will look like to members of the public
+{% set description %}
+The preview panel allows users to see what their form will look like to members of the public
 while building it. It updates in real time and supports list-based question types such as radio buttons, checkboxes, and
 repeatable question sets. You can <a href='/design-system/editor/preview-panel'
     class='govuk-link govuk-link--no-visited-state'>view the design system preview panel</a> to see the current
-implementation." %}
+implementation.
+
+<details class='govuk-details govuk-!-margin-top-2' data-module='govuk-details'>
+    <summary class='govuk-details__summary'>
+        <span class='govuk-details__summary-text'>
+            Key Features and Accessibility
+        </span>
+    </summary>
+    <div class='govuk-details__text'>
+        <ul class='govuk-list govuk-list--bullet'>
+            <li><strong>Real-time updates:</strong> The preview panel updates automatically as users edit questions, labels, and guidance text.</li>
+            <li><strong>Visual validation:</strong> Users can see exactly how their form will appear to members of the public, including layout, spacing, and formatting.</li>
+            <li><strong>Supports all question types:</strong> Preview accurately represents radio buttons, checkboxes, text inputs, repeatable question sets, and more.</li>
+            <li><strong>Accessible by default:</strong> The preview uses GOV.UK Design System components, ensuring accessibility standards are maintained.</li>
+        </ul>
+        <p class='govuk-body govuk-!-margin-top-2'><strong>Recent improvements:</strong></p>
+        <ul class='govuk-list govuk-list--bullet'>
+            <li><strong>Live preview panel:</strong> Shows question formatting in real time as users type.</li>
+            <li><strong>Repeatable questions support:</strong> Preview accurately displays how repeater question sets will appear to users.</li>
+            <li><strong>Improved clarity:</strong> Better visual distinction between edit and preview areas.</li>
+            <li><strong>Enhanced guidance:</strong> Updated guidance for using repeaters and list options in the preview context.</li>
+        </ul>
+    </div>
+</details>
+
+<details class='govuk-details govuk-!-margin-top-2' data-module='govuk-details'>
+    <summary class='govuk-details__summary'>
+        <span class='govuk-details__summary-text'>
+            Key features and benefits
+        </span>
+    </summary>
+    <div class='govuk-details__text'>
+        <ul class='govuk-list govuk-list--bullet'>
+            <li><strong>Real-time feedback:</strong> See changes instantly as you edit questions, labels, and guidance.</li>
+            <li><strong>Visual validation:</strong> Check layout, spacing, and formatting before publishing your form.</li>
+            <li><strong>Context awareness:</strong> Preview shows how questions appear in the full form context.</li>
+            <li><strong>Accessibility preview:</strong> Verify that your form meets accessibility standards visually.</li>
+            <li><strong>User experience testing:</strong> Validate how the form will look and feel to end users.</li>
+            <li><strong>Error prevention:</strong> Catch layout and formatting issues before going live.</li>
+        </ul>
+    </div>
+</details>
+
+<details class='govuk-details govuk-!-margin-top-2' data-module='govuk-details'>
+    <summary class='govuk-details__summary'>
+        <span class='govuk-details__summary-text'>
+            What users experience
+        </span>
+    </summary>
+    <div class='govuk-details__text'>
+        <ol class='govuk-list govuk-list--number'>
+            <li><strong>Edit your form:</strong> Add questions, labels, guidance text, and configure question types.</li>
+            <li><strong>View preview:</strong> The preview panel automatically updates to show how your form looks.</li>
+            <li><strong>Check layout:</strong> Verify spacing, formatting, and visual hierarchy in the preview.</li>
+            <li><strong>Validate content:</strong> Ensure questions and guidance text appear correctly to users.</li>
+            <li><strong>Test interactions:</strong> See how repeatable questions, conditionals, and other features render.</li>
+            <li><strong>Iterate:</strong> Make adjustments based on what you see in the preview.</li>
+        </ol>
+    </div>
+</details>
+{% endset %}
+
+{# --- Research rounds for the summary table --- #}
+{% set researchRounds = [
+"Private Beta Round 3 – October 2025",
+"Round 13 – April 2025",
+"Round 7 – July 2024",
+"Round 6 – June 2024"
+] %}
+
+{# --- Key improvements in the latest version --- #}
+{% set improvements = [
+"Live preview panel shows question formatting in real time",
+"Supports repeatable questions (repeater)",
+"Improved clarity between edit and preview areas",
+"Updated guidance for using repeaters and list options",
+"Enhanced visual representation of all question types",
+"Better integration with form editor interface",
+"Improved accessibility preview capabilities",
+"Real-time updates as users edit content"
+] %}
 
 {# --- Journey steps --- #}
 {% set journeySteps = [
@@ -39,23 +120,14 @@ subtitles: [ { text: "Preview form", isCurrent: true } ]
 }
 ] %}
 
-{# --- Research rounds for the summary table --- #}
-{% set researchRounds = [
-"Round 13 – April 2025",
-"Round 7 – July 2024",
-"Round 6 – June 2024"
-] %}
-
-{# --- Key improvements in the latest version --- #}
-{% set improvements = [
-"Live preview panel shows question formatting in real time",
-"Supports repeatable questions (repeater)",
-"Improved clarity between edit and preview areas",
-"Updated guidance for using repeaters and list options"
-] %}
-
 {# --- Research history table --- #}
 {% set researchHistory = [
+{
+roundNumber: "Private Beta 3",
+researchDate: "October 2025",
+researchFinding: "Interactive preview panel consistently popular with users. Some users felt this feature – which is unique to Defra Forms - was essential. Allows designers to immediately confirm that their changes look as expected.",
+changeMade: "Confirmed preview panel as essential feature for Private Beta users."
+},
 {
 roundNumber: "13",
 researchDate: "April 2025",
@@ -79,6 +151,32 @@ changeMade: "Confirmed core value of preview panel for form validation."
 {# --- Detailed research summaries --- #}
 {% set researchSummaries = [
 {
+title: "Private Beta Round 3 – October 2025",
+summary: "Private Beta user experience validation including preview panel feedback.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** Interviews with Private Beta users (October 2025)\n\n**Participants:** 20 onboarded Private Beta users across 3 rounds (July-October 2025)\n\n**Objectives:**\n- Understand end-to-end user experience of the service\n- Evaluate usability of existing features including preview panel\n- Gather feedback on feature utility and importance"
+},
+{
+type: "findings",
+content: [
+"Interactive preview panel located on the right side is consistently popular with users",
+"Preview panel allows designers to immediately confirm that their changes look as expected",
+"Some users felt this feature – which is unique to Defra Forms - was essential",
+"Users frequently described the interface as intuitive and straightforward",
+"Users felt everything was laid out where they expected it to be"
+]
+},
+{
+type: "quotes",
+content: [
+"The interactive preview panel located on the right side is consistently popular with users, as it allows designers to immediately confirm that their changes look as expected. Some users felt this feature – which is unique to Defra Forms - was essential."
+]
+}
+]
+},
+{
 title: "Round 13 – April 2025",
 summary: "Testing grouped layouts and repeatable sections using the preview panel.",
 sections: [
@@ -98,44 +196,139 @@ content: [
 ]
 },
 {
-title: "Round 7 – July 2024",
-summary: "Testing repeater and preview functionality.",
+title: "Round 7 - July 2024",
+summary: "Testing preview and repeater functionality in the Form Editor redesign",
 sections: [
 {
 type: "content",
-content: "**Participants:** 4 content designers (APHA, Farming, GOV.UK Forms) and 1 admin officer (RPA)\n\n**Tasks
-included:**\n- Creating repeatable question sets\n- Reviewing how preview displays repeated fields"
+content: "**Research conducted:** Remote usability testing (July 2024)\n\n**Participants:** 4 content designers (APHA,
+BaU APHA, BaU Farming, Single Front Door – all Whitehall), 1 admin officer (RPA – Countryside Stewardship scheme), 1
+proxy user (xGov, GOV.UK Forms)\n\n**Objectives:**\n- Validate the usability of the new DXT 'Form Editor' re-design\n-
+Validate DXT labels and content used through the new design\n- Identify what works well and what does not work well\n-
+Identify any missing functionality/information\n- Identify any additional user needs and expectations\n- Validate the
+content of the email received by form owners once a form with files uploaded is submitted by members of the
+public\n\n**Scenario:** Create a form for members of the public to request a county parish holding (CPH) number for
+land/buildings used for livestock.\n\n**Tasks included:**\n- Create a new form\n- Ask a single question to be answered
+once (e.g. when did you buy your cattle?)\n- Ask more than one question per page, to be answered more than once
+(repeater, e.g. for each cow: breed, date left, date arrived)\n\n**Key finding:** The repeater concept was not clear to
+all, but the preview helped participants understand how repeated questions would appear to users."
 },
 {
 type: "findings",
 content: [
-"Preview helped clarify how repeatable question sets would look to users.",
-"Repeater instructions and terminology were confusing to some participants."
+"Preview helped clarify how repeatable question sets would look to users",
+"Repeater labels and instructions were confusing to some participants",
+"Participants suggested clearer examples and guidance for repeaters",
+"Preview was valuable for validating question flow and user experience"
 ]
 },
+
 {
 type: "quotes",
 content: [
-"“The preview helped!”",
-"“The word question pops up... 1, 2, 3, 4, 5 times in that whole thing, which I think is just blowing my mind.”"
+"...was not clear to all, but the preview helped!"
 ]
 }
 ]
 },
 {
-title: "Round 6 – June 2024",
-summary: "Initial testing of the preview panel feature.",
+title: "Round 6 - June 2024",
+summary: "Initial usability and value testing of the preview panel in the Form Editor redesign",
 sections: [
 {
 type: "content",
-content: "**Participants:** 7 content designers across policy teams\n\n**Tasks included:**\n- Creating new forms\n-
-Editing labels and help text\n- Viewing updates via the preview panel"
+content: "**Research conducted:** Remote interviews and remote usability testing (June 2024)
+
+**Participants:** 7
+content designers (BaU Farming/SFI, BaU, Flood services, Trade, Farming Policy Lab – all Whitehall)
+
+**Method:**
+Exploratory interviews and usability testing with scenarios and tasks.
+
+**Objectives:**
+- Validate usability of the
+new Form Editor redesign
+- Validate labels used in the new design
+- Identify what works well and what does not
+- Identify missing functionality/information
+- Identify additional user needs and expectations
+
+**Scenario:** Create a
+form for members of the public to request a county parish holding (CPH) number for land/buildings used for
+livestock.
+
+**Tasks included:**
+- Create a new form
+- Add questions (single and multiple)
+- Add and reorder guidance
+- Change question order"
+},
+{
+type: "preview",
+url: "https://www.guidejar.com/embed/a3627126-11c6-4849-b5c7-04376c072c69?type=1&controls=on",
+previewLabel: "Page by page breakdown of what was tested in round 6",
+showSectionBreak: true
+},
+{
+type: "details",
+summary: "View some of the pages that contained the preview panel",
+content: "",
+images: [
+{
+src: "/public/images/preview-panel/round-6/01.png",
+alt: "Editing a question label",
+caption: "Editing a question label"
+}
+],
+items: [
+{
+type: "images",
+content: {
+src: "/public/images/preview-panel/round-6/02.png",
+alt: "Editing a short description",
+caption: "Editing a short description"
+}
+},
+{
+type: "images",
+content: {
+src: "/public/images/preview-panel/round-6/03.png",
+alt: "Editing a page heading",
+caption: "Editing a page heading"
+}
+},
+{
+type: "images",
+content: {
+src: "/public/images/preview-panel/round-6/04.png",
+alt: "Editing guidance text",
+caption: "Editing guidance text"
+}
+}
+]
+},
+{
+type: "findings",
+content: [
+"Preview feature was seen as very helpful by all participants",
+"Helped users see how the form would actually look for the public",
+"Supported validation of usability and labels",
+"Helped identify missing functionality and user needs"
+]
 },
 {
 type: "quotes",
 content: [
-"“The preview thing is quite handy because you can sort of see how it would actually look for the users.”",
-"“Inside it's the edit screen and on the right-hand side it's like the rendered screen. That's really helpful.”"
+"The preview thing is quite handy because you can sort of see how it would actually look for the users.",
+"I think it's really good that what I'm doing here, I've just noticed actually that what I'm doing here is being can't
+believe I missed it, but yeah, yeah. So this is is creating the the, the, the page while I'm building, while I'm
+building it, which I really like. Actually, I do like that. That's really smart.",
+"So I like, I like the preview on the right hand side because as I'm coming out this fresh and I've not used this tool
+before, it's quite handy to be able to see how it's going to look. I mean, I'd obviously get used to that very quickly
+But I do, you know, when I'm editing Gov UK pages, I like to preview a lot because it's just really helpful to see how
+it's going to look.",
+"Inside it's the edit screen and on the right hand side it's like the rendered screen. That's really helpful. Yeah, I
+think it is very helpful to sit in context."
 ]
 }
 ]

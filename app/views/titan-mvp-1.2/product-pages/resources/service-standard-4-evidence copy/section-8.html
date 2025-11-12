@@ -1,9 +1,8 @@
 {% extends "layouts/main.html" %}
 {% from "components/service-header/macro.njk" import serviceHeader %}
-{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block pageTitle %}
-7. Continuous improvement – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
+8. Continuous improvement – Service Standard Point 4 Evidence – Defra Form Designer – GOV.UK Prototype Kit
 {% endblock %}
 
 {% block header %}
@@ -60,27 +59,27 @@ activeLinkId: "nav-resources"
         text: "3. Testing all parts of the service",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-3"
         }, {
-        text: "4. Users with lowest digital skills",
+        text: "4. Designing for a range of devices",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-4"
         }, {
-        text: "5. Accessibility requirements",
+        text: "5. Users with lowest digital skills",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-5"
         }, {
-        text: "6. Performance research",
+        text: "6. Accessibility requirements",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
         }, {
-        text: "7. Continuous improvement",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7",
+        text: "7. Performance research",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
+        }, {
+        text: "8. Continuous improvement",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8",
         current: true
         }, {
-        text: "8. Data-driven decisions",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
-        }, {
-        text: "9. Continual monitoring",
+        text: "9. Data-driven decisions",
         href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
         }, {
-        text: "Summary",
-        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/summary"
+        text: "10. Continual monitoring",
+        href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-10"
         }]
         }]
         }) }}
@@ -88,7 +87,7 @@ activeLinkId: "nav-resources"
     <div class="govuk-grid-column-two-thirds">
         <div class="app-prose-scope">
 
-            <h2 class="govuk-heading-l">7. Evidence of continuous improvement</h2>
+            <h2 class="govuk-heading-l">8. Evidence of continuous improvement</h2>
 
             <h3 class="govuk-heading-m">Example 1: Terminology Improvements Based on User Feedback</h3>
 
@@ -109,37 +108,14 @@ activeLinkId: "nav-resources"
 
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
+                <li>Round 12: Participant 1 said condition setup was "Pretty straightforward", Participant 2 said "Easy peasy"</li>
                 <li>Users understand terminology without needing technical knowledge</li>
                 <li>Improved comprehension of complex features</li>
             </ul>
 
-            <h4 class="govuk-heading-s">User feedback</h4>
-            {{ govukInsetText({
-            text: "Pretty straightforward"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 1, Round 12 (March 2025) - on condition setup</p>
-
-            {{ govukInsetText({
-            text: "Easy peasy"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant 2, Round 12 (March 2025) - on condition setup</p>
-
-            <p class="govuk-body"><strong>Round 13 (April 2025) - Latest validation:</strong></p>
-            {{ govukInsetText({
-            text: "Very intuitive"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant, Round 13 (April 2025) - on overall page conditions setup</p>
-
-            {{ govukInsetText({
-            text: "Super duper clear"
-            }) }}
-            <p class="govuk-body govuk-!-font-size-14 govuk-!-margin-top-0 govuk-!-margin-bottom-4" style="color: #505a5f;">— Participant, Round 13 (April 2025) - on overall page conditions setup</p>
-
             <p class="govuk-body">
                 <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/page-conditions/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Page conditions</a>
             </p>
-
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
             <h3 class="govuk-heading-m">Example 2: Question Creation Flow Iteration</h3>
 
@@ -165,10 +141,8 @@ activeLinkId: "nav-resources"
             </ul>
 
             <p class="govuk-body">
-                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a>
+                <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/lists/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Lists feature</a> | <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/design-history/form-editor/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">Form editor</a>
             </p>
-
-            <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
             <h3 class="govuk-heading-m">Example 3: Filter Visibility Improvement</h3>
 
@@ -209,71 +183,22 @@ activeLinkId: "nav-resources"
             <p class="govuk-body"><strong>Action:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
                 <li>Conducted 13 rounds of research between May 2024 and April 2025</li>
-                <li>77 research iterations across 32 features</li>
-                <li>Average of 2.4 iterations per feature</li>
-                <li>66% of features tested 2 or more times</li>
-                <li>47% of features tested 3 or more times</li>
+                <li>77 research iterations across 33 features</li>
+                <li>Average of 2.3 iterations per feature</li>
+                <li>64% of features tested 2 or more times</li>
+                <li>45% of features tested 3 or more times</li>
                 <li>Every major change documented with research findings</li>
                 <li>User quotes captured to show why changes were made</li>
             </ul>
 
             <p class="govuk-body"><strong>Result:</strong></p>
             <ul class="govuk-list govuk-list--bullet">
-                <li>27 features marked as "Tested" (84%)</li>
+                <li>27 features marked as "Tested" (82%)</li>
                 <li>3 features "In progress"</li>
                 <li>All features tracked through Private beta phase</li>
                 <li>Clear documentation of what changed and why</li>
                 <li>Service continuously improved based on real user needs</li>
             </ul>
-
-            <div class="govuk-grid-row govuk-!-margin-top-4">
-                <div class="govuk-grid-column-one-half">
-                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
-                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Average iterations per feature</h4>
-                        <p class="govuk-body" style="font-size: 3rem; font-weight: 700; line-height: 1; margin: 10px 0; color: #1d70b8;">2.4</p>
-                        <p class="govuk-body-s" style="color: #505a5f; margin-top: 10px;">Across 32 features with 77 total iterations</p>
-                    </div>
-                </div>
-                <div class="govuk-grid-column-one-half">
-                    <div style="border: 2px solid #1d70b8; padding: 20px; background-color: #f3f2f1; margin-bottom: 20px;">
-                        <h4 class="govuk-heading-s govuk-!-margin-top-0">Features tested</h4>
-                        <p class="govuk-body" style="font-size: 3rem; font-weight: 700; line-height: 1; margin: 10px 0; color: #1d70b8;">27</p>
-                        <p class="govuk-body-s" style="color: #505a5f; margin-top: 10px;">Out of 32 features (84%)</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <h4 class="govuk-heading-s govuk-!-margin-top-4">Testing frequency</h4>
-
-                    <div style="margin-bottom: 30px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                            <span class="govuk-body-s"><strong>Features tested 2 or more times</strong></span>
-                            <span class="govuk-body-s"><strong>66%</strong></span>
-                        </div>
-                        <div style="background-color: #dee0e2; height: 30px; border-radius: 4px; position: relative; overflow: hidden;">
-                            <div style="background-color: #1d70b8; height: 100%; width: 66%; min-width: 80px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; box-sizing: border-box;">
-                                <span class="govuk-body-s" style="color: white; font-weight: 700; margin-top:15px;white-space: nowrap; display: inline-block;">66%</span>
-                            </div>
-                        </div>
-                        <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">21 out of 32 features</p>
-                    </div>
-
-                    <div style="margin-bottom: 30px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                            <span class="govuk-body-s"><strong>Features tested 3 or more times</strong></span>
-                            <span class="govuk-body-s"><strong>47%</strong></span>
-                        </div>
-                        <div style="background-color: #dee0e2; height: 30px; border-radius: 4px; position: relative; overflow: hidden;">
-                            <div style="background-color: #00703c; height: 100%; width: 47%; min-width: 80px; display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; box-sizing: border-box;">
-                                <span class="govuk-body-s" style="color: white; font-weight: 700; margin-top:15px; white-space: nowrap; display: inline-block;">47%</span>
-                            </div>
-                        </div>
-                        <p class="govuk-body-s govuk-!-margin-top-5" style="color: #505a5f;">15 out of 32 features</p>
-                    </div>
-                </div>
-            </div>
 
             <p class="govuk-body">
                 <strong>Design history:</strong> <a href="https://dxt-prototype-682ae311ff10.herokuapp.com/index.html" class="govuk-link" target="_blank" rel="noopener noreferrer">All features status</a>
@@ -283,12 +208,12 @@ activeLinkId: "nav-resources"
 
             {{ govukPagination({
             previous: {
-            labelText: "6. Performance research",
-            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-6"
+            labelText: "7. Performance research",
+            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-7"
             },
             next: {
-            labelText: "8. Data-driven decisions",
-            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-8"
+            labelText: "9. Data-driven decisions",
+            href: "/titan-mvp-1.2/product-pages/resources/service-standard-4-evidence/section-9"
             }
             }) }}
 

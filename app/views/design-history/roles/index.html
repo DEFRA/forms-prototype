@@ -1,0 +1,161 @@
+{% extends "design-history/template.html" %}
+
+{# --- Feature metadata --- #}
+{% set featureName = "Roles and user management" %}
+{% set latestVersionLink = "/titan-mvp-1.2/roles/manage-users.html" %}
+{% set status = "Tested" %}
+{% set statusColor = "green" %}
+{% set userNeed = "Users need to manage access to the service, assign appropriate permissions, and onboard new team members." %}
+{% set phase = "Private beta" %}
+{% set category = "Form admin" %}
+{% set description %}
+This feature allows administrators to manage users, assign roles with specific permissions, and control access to the Defra Forms Designer service. It includes user onboarding, role management, and permission controls.
+
+<details class='govuk-details govuk-!-margin-top-2' data-module='govuk-details'>
+    <summary class='govuk-details__summary'>
+        <span class='govuk-details__summary-text'>
+            Roles and Permissions
+        </span>
+    </summary>
+    <div class='govuk-details__text'>
+        <p class='govuk-body'>The service supports three role levels:</p>
+        <ul class='govuk-list govuk-list--bullet'>
+            <li><strong>Admin:</strong> Full access including user management, form creation, editing, publishing, and deletion</li>
+            <li><strong>Form publisher:</strong> Can create, edit, publish, and delete forms, but cannot manage users</li>
+            <li><strong>Form creator:</strong> Can create and edit forms, but cannot publish or delete forms, and cannot manage users</li>
+        </ul>
+    </div>
+</details>
+
+<details class='govuk-details govuk-!-margin-top-2' data-module='govuk-details'>
+    <summary class='govuk-details__summary'>
+        <span class='govuk-details__summary-text'>
+            Key Features
+        </span>
+    </summary>
+    <div class='govuk-details__text'>
+        <ul class='govuk-list govuk-list--bullet'>
+            <li><strong>Add new users:</strong> Invite team members with specific role assignments</li>
+            <li><strong>Edit user permissions:</strong> Update roles and permissions for existing users</li>
+            <li><strong>Remove users:</strong> Remove access when team members leave or change roles</li>
+            <li><strong>Email notifications:</strong> Automatic emails sent to users when added or removed</li>
+            <li><strong>Permission restrictions:</strong> Clear indication of what actions users can and cannot perform</li>
+        </ul>
+    </div>
+</details>
+{% endset %}
+
+{# --- Research rounds for the summary table --- #}
+{% set researchRounds = [
+"Round 14 - May 2025"
+] %}
+
+{# --- Key improvements in the latest version --- #}
+{% set improvements = [
+"Clear role hierarchy and permissions",
+"Email notifications for user changes",
+"Confirmation dialogs for user removal",
+"Permission restrictions clearly indicated"
+] %}
+
+{# --- Journey steps --- #}
+{% set journeySteps = [
+{
+number: "1",
+title: "Onboarding",
+subtitles: [ { text: "Sign in/out", isCurrent: true }, { text: "Manage users", isCurrent: true } ]
+},
+{
+number: "2",
+title: "Create new form",
+subtitles: [ { text: "Add form details", isCurrent: false } ]
+},
+{
+number: "3",
+title: "Form design",
+subtitles: [ { text: "Create and edit questions", isCurrent: false } ]
+},
+{
+number: "4",
+title: "Form overview",
+subtitles: [ { text: "View and edit form details", isCurrent: false } ]
+},
+{
+number: "5",
+title: "Testing",
+subtitles: [ { text: "Preview form", isCurrent: false } ]
+}
+] %}
+
+{# --- Research history table --- #}
+{% set researchHistory = [
+{
+roundNumber: "14",
+researchDate: "May 2025",
+researchFinding: "Roles and permissions (Admin, Form publisher, Form creator) were generally understood and hierarchy made sense. Editing permissions and removing users was perceived as simple and clear once the 'Manage Users' section was found. Email notifications were found to be clear and useful. Participants struggled to find the 'Manage Users' link - initially looked on main forms library screen or form settings, eventually found under user's profile section.",
+changeMade: "Validated role hierarchy and permissions clarity. Identified need to improve discoverability of 'Manage Users' link."
+}
+] %}
+
+{# --- Detailed research summaries --- #}
+{% set researchSummaries = [
+{
+title: "Round 14 – May 2025",
+summary: "Evaluation of onboarding and user management features including roles, permissions, and user management interface.",
+sections: [
+{
+type: "content",
+content: "**Research conducted:** User research sessions (May 2025)\n\n**Objectives:**\n- Evaluate new onboarding and user management features\n- Understand user needs for managing team access\n- Identify usability issues with user management interface\n- Validate role and permission clarity\n\n**Tasks included:**\n- Add a new user with specific permissions (create and edit forms only)\n- Edit permissions for an existing user\n- Remove a user from the system\n- Attempt to publish a form (to test permission restrictions)"
+},
+{
+type: "findings",
+content: [
+"Roles and permissions (Admin, Form publisher, Form creator) were generally understood and hierarchy made sense",
+"Editing permissions and removing users was perceived as simple and clear once the 'Manage Users' section was found",
+"Email notifications sent to users were found to be clear and useful",
+"Confirmation dialog for removing users was seen as standard and expected",
+"Participants struggled to find the 'Manage Users' link - initially looked on main forms library screen or form settings, eventually found under user's profile section",
+"One participant suggested there might be a need for a permission level that allows editing existing forms but restricts users from creating new forms",
+"Admin users did not expect an email confirmation when they removed a user, correctly assuming the user list would update immediately"
+]
+},
+{
+type: "quotes",
+content: [
+"Yeah. And it's kind of in hierarchy, isn't it? So the top level the admin people can do everything and it kind of goes down.",
+"I wouldn't expect to go to my own profile to manage users.",
+"Do you think it would be helpful to say you can't publish with this? ... So it's really clear that I can't."
+]
+},
+{
+type: "recommendations",
+content: [
+"Move 'Manage Users' link to a more intuitive location (e.g., main navigation or form library)",
+"Add clearer email text for user permissions explicitly stating what permissions the user does not have",
+"Consider adding a permission level that allows editing existing forms but restricts creating new forms",
+"Ensure permission restrictions are clearly indicated throughout the interface"
+]
+}
+]
+}
+] %}
+
+{# --- Related posts --- #}
+{% set relatedPosts = [
+{
+title: "Manage users",
+link: "/design-history/roles/manage-users.html",
+date: "May 2025"
+},
+{
+title: "Add new user",
+link: "/design-history/roles/add-new-user.html",
+date: "May 2025"
+},
+{
+title: "Edit user",
+link: "/design-history/roles/edit-user.html",
+date: "May 2025"
+}
+] %}
+
