@@ -1,0 +1,684 @@
+{% extends "layouts/main.html" %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
+{%- from "moj/components/filter/macro.njk" import mojFilter -%}
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/radios/macro.njk" import govukRadios -%}
+{%- from "govuk/components/select/macro.njk" import govukSelect -%}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
+{%- from "govuk/components/details/macro.njk" import govukDetails -%}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+
+{% block pageTitle %}
+Form metrics dashboard – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block header %}
+{{ serviceHeader({
+    organisationName: "Defra",
+    productName: "Form Designer",
+    serviceName: "",
+    homepageLink: "/titan-mvp-1.2/product-pages/homepage",
+    signInLink: "/titan-mvp-1.2/library",
+    showSupportLink: false,
+    navigationItems: [
+    { href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
+    { href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
+    { href: "/titan-mvp-1.2/product-pages/features", text: "Features", id: "nav-features" },
+    { href: "/titan-mvp-1.2/product-pages/resources", text: "Resources", id: "nav-resources" },
+    { href: "/titan-mvp-1.2/product-pages/support", text: "Support", id: "nav-support" }
+    ],
+    activeLinkId: "nav-about"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Form metrics dashboard</h1>
+    <p class="govuk-body-l">
+      Key performance indicators for forms created and managed in Form Designer.
+    </p>
+  </div>
+</div>
+
+{% set filterOptionsHtml %}
+
+  {{ govukButton({
+    text: "Apply filters",
+    type: "submit"
+  }) }}
+
+  {{ govukSelect({
+    id: "aggregation",
+    name: "aggregation",
+    label: {
+      text: "View",
+      classes: "govuk-label--m"
+    },
+    items: [
+      {
+        value: "overall",
+        text: "Overall",
+        selected: true
+      },
+      {
+        value: "by-alb",
+        text: "By form / ALB group"
+      },
+      {
+        value: "per-form",
+        text: "Per form"
+      }
+    ]
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: "form-type",
+    name: "form-type",
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: "Form type",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    items: [
+      {
+        value: "new",
+        text: "New"
+      },
+      {
+        value: "existing",
+        text: "Existing (replacing paper form)"
+      }
+    ]
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: "status",
+    name: "status",
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: "Status",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    items: [
+      {
+        value: "live",
+        text: "Live"
+      },
+      {
+        value: "draft",
+        text: "Draft"
+      }
+    ]
+  }) }}
+
+  {{ govukSelect({
+    id: "alb-group",
+    name: "alb-group",
+    label: {
+      text: "ALB group",
+      classes: "govuk-label--m"
+    },
+    items: [
+      {
+        value: "all",
+        text: "All",
+        selected: true
+      },
+      {
+        value: "defra",
+        text: "Defra"
+      },
+      {
+        value: "ea",
+        text: "Environment Agency"
+      },
+      {
+        value: "rpa",
+        text: "Rural Payments Agency"
+      },
+      {
+        value: "ne",
+        text: "Natural England"
+      },
+      {
+        value: "apha",
+        text: "APHA"
+      },
+      {
+        value: "fc",
+        text: "Forestry Commission"
+      }
+    ]
+  }) }}
+
+{% endset %}
+
+<div class="moj-filter-layout">
+
+  <div class="moj-filter-layout__filter" style="display: none;">
+
+    {{ mojFilter({
+      heading: {
+        text: "Filter"
+      },
+      selectedFilters: {
+        heading: {
+          text: "Selected filters"
+        },
+        clearLink: {
+          text: "Clear filters"
+        },
+        categories: []
+      },
+      optionsHtml: filterOptionsHtml
+    }) }}
+
+  </div>
+
+  <div class="moj-filter-layout__content">
+
+    <div class="moj-action-bar">
+      <div class="moj-action-bar__filter">
+        {{ govukButton({
+          text: "Show filter",
+          classes: "govuk-button--secondary moj-button--filter",
+          attributes: {
+            "aria-controls": "moj-filter",
+            "aria-expanded": "false"
+          }
+        }) }}
+      </div>
+    </div>
+
+    <!-- Form Creation & Status KPIs -->
+    <div class="kpi-section govuk-!-margin-bottom-8">
+      <h2 class="govuk-heading-l">Form creation & status</h2>
+      
+      {{ govukDetails({
+        summaryText: "Why we track these metrics",
+        text: "So we can understand: 1) Adoption and frequency of new forms being created and published, 2) Measure against the original 20% PAC outcome, 3) Scalability, 4) Digital maturity and transformation of Defra"
+      }) }}
+
+      <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-one-third">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-forms-created">142</span>
+            <span class="gem-c-big-number__label">Forms created in Form Designer</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-forms-draft">56</span>
+            <span class="gem-c-big-number__label">Forms in draft status</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-third">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-forms-published">86</span>
+            <span class="gem-c-big-number__label">Forms published to live status</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-inset-text govuk-!-margin-top-4">
+        <p class="govuk-body-s"><strong>Filter / Aggregation:</strong> Overall, By form / ALB group, New, Existing (replacing an existing paper form), State (Live, Draft)</p>
+      </div>
+    </div>
+
+    <!-- Form Iteration & Revision KPIs -->
+    <div class="kpi-section govuk-!-margin-bottom-8">
+      <h2 class="govuk-heading-l">Form iteration & revision</h2>
+      
+      {{ govukDetails({
+        summaryText: "Why we track these metrics",
+        text: "1) Shows forms are actively being iterated on, 2) Shows forms are being iterated based on data (qualitative or quantitative)"
+      }) }}
+
+      <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-one-half">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-republished">234</span>
+            <span class="gem-c-big-number__label">Times forms have been re-published</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-half">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-revised-insights">89</span>
+            <span class="gem-c-big-number__label">Forms revised based on insights (UR, Analytics, Policy amendments)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-inset-text govuk-!-margin-top-4">
+        <p class="govuk-body-s"><strong>Filter / Aggregation:</strong> Overall, By form / ALB group</p>
+      </div>
+    </div>
+
+    <!-- Form Structure & Features KPIs -->
+    <div class="kpi-section govuk-!-margin-bottom-8">
+      <h2 class="govuk-heading-l">Form structure & features</h2>
+      
+      {{ govukDetails({
+        summaryText: "Why we track these metrics",
+        text: "Complexity and length of form(s), Frequency of use of form features"
+      }) }}
+
+      <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-avg-pages">12.3</span>
+            <span class="gem-c-big-number__label">Avg pages per form</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-avg-question-types">8.5</span>
+            <span class="gem-c-big-number__label">Avg question types per form</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-avg-conditions">9.2</span>
+            <span class="gem-c-big-number__label">Avg conditions per form</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-avg-sections">4.1</span>
+            <span class="gem-c-big-number__label">Avg sections per form</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-file-upload">68</span>
+            <span class="gem-c-big-number__label">Forms with file upload</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-email-confirmation">124</span>
+            <span class="gem-c-big-number__label">Forms with email confirmation</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-declarations">45</span>
+            <span class="gem-c-big-number__label">Forms with declarations</span>
+          </div>
+        </div>
+        <div class="govuk-grid-column-one-quarter">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-govuk-pay">32</span>
+            <span class="gem-c-big-number__label">Forms using GOV.UK Pay</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-inset-text govuk-!-margin-top-4">
+        <p class="govuk-body-s"><strong>Filter / Aggregation:</strong> Per form, Aggregated, Per ALB</p>
+      </div>
+    </div>
+
+    <!-- Form Lifespan KPI -->
+    <div class="kpi-section govuk-!-margin-bottom-8">
+      <h2 class="govuk-heading-l">Form lifecycle</h2>
+
+      <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-one-third">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-days-to-publish">18</span>
+            <span class="gem-c-big-number__label">Avg days between form creation and first publication</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Submissions KPI -->
+    <div class="kpi-section govuk-!-margin-bottom-8">
+      <h2 class="govuk-heading-l">Form submissions</h2>
+      
+      {{ govukDetails({
+        summaryText: "Why we track these metrics",
+        text: "1) Understand how many submissions are currently being processed through DEFRA Forms, 2) Will help to understand trends and possibly troubleshooting if we see dips"
+      }) }}
+
+      <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-one-third">
+          <div class="gem-c-big-number">
+            <span class="gem-c-big-number__value" id="kpi-submitted-forms">12.5k</span>
+            <span class="gem-c-big-number__label">Submitted forms</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="govuk-inset-text govuk-!-margin-top-4">
+        <p class="govuk-body-s"><strong>Filter / Aggregation:</strong> Overall, By form / ALB group</p>
+      </div>
+    </div>
+
+    <!-- Detailed breakdown table -->
+    <div class="govuk-!-margin-top-8">
+      <h2 class="govuk-heading-l">Detailed breakdown</h2>
+      
+      {{ govukTable({
+        firstCellIsHeader: true,
+        head: [
+          { text: "Form name" },
+          { text: "ALB group" },
+          { text: "Status" },
+          { text: "Pages" },
+          { text: "Question types" },
+          { text: "Conditions" },
+          { text: "Sections" },
+          { text: "Re-published" },
+          { text: "Days to publish" },
+          { text: "Features" },
+          { text: "Submissions" }
+        ],
+        rows: [
+          [
+            { html: '<a href="#" class="govuk-link">Waste carrier registration</a>' },
+            { text: "Environment Agency" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "14" },
+            { text: "8" },
+            { text: "12" },
+            { text: "3" },
+            { text: "5" },
+            { text: "12" },
+            { html: "File upload, Email confirmation" },
+            { text: "1,234" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Export health certificate</a>' },
+            { text: "APHA" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "28" },
+            { text: "12" },
+            { text: "18" },
+            { text: "5" },
+            { text: "3" },
+            { text: "21" },
+            { html: "File upload, Declarations, GOV.UK Pay" },
+            { text: "856" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Fishing licence application</a>' },
+            { text: "Defra" },
+            { html: '<span class="govuk-tag govuk-tag--yellow">Draft</span>' },
+            { text: "8" },
+            { text: "5" },
+            { text: "4" },
+            { text: "2" },
+            { text: "0" },
+            { text: "-" },
+            { html: "Email confirmation" },
+            { text: "0" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Basic Payment Scheme claim</a>' },
+            { text: "Rural Payments Agency" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "42" },
+            { text: "15" },
+            { text: "28" },
+            { text: "8" },
+            { text: "7" },
+            { text: "15" },
+            { html: "File upload, Email confirmation, Declarations, GOV.UK Pay" },
+            { text: "3,421" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Protected species licence</a>' },
+            { text: "Natural England" },
+            { html: '<span class="govuk-tag govuk-tag--yellow">Draft</span>' },
+            { text: "18" },
+            { text: "10" },
+            { text: "9" },
+            { text: "4" },
+            { text: "0" },
+            { text: "-" },
+            { html: "File upload, Declarations" },
+            { text: "0" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Water abstraction return</a>' },
+            { text: "Environment Agency" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "6" },
+            { text: "4" },
+            { text: "2" },
+            { text: "1" },
+            { text: "2" },
+            { text: "8" },
+            { html: "Email confirmation" },
+            { text: "567" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Pet travel declaration</a>' },
+            { text: "Defra" },
+            { html: '<span class="govuk-tag govuk-tag--yellow">Draft</span>' },
+            { text: "5" },
+            { text: "3" },
+            { text: "1" },
+            { text: "1" },
+            { text: "0" },
+            { text: "-" },
+            { html: "Email confirmation" },
+            { text: "0" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Countryside Stewardship application</a>' },
+            { text: "Rural Payments Agency" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "35" },
+            { text: "14" },
+            { text: "22" },
+            { text: "6" },
+            { text: "4" },
+            { text: "18" },
+            { html: "File upload, Email confirmation, Declarations, GOV.UK Pay" },
+            { text: "2,189" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Hazardous waste consignment</a>' },
+            { text: "Environment Agency" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "12" },
+            { text: "7" },
+            { text: "8" },
+            { text: "3" },
+            { text: "3" },
+            { text: "14" },
+            { html: "File upload, Email confirmation, Declarations" },
+            { text: "923" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Tree felling licence</a>' },
+            { text: "Forestry Commission" },
+            { html: '<span class="govuk-tag govuk-tag--yellow">Draft</span>' },
+            { text: "9" },
+            { text: "6" },
+            { text: "5" },
+            { text: "2" },
+            { text: "0" },
+            { text: "-" },
+            { html: "File upload" },
+            { text: "0" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Animal movement licence</a>' },
+            { text: "Defra" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "4" },
+            { text: "3" },
+            { text: "1" },
+            { text: "1" },
+            { text: "1" },
+            { text: "6" },
+            { html: "Email confirmation" },
+            { text: "445" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Land management grant</a>' },
+            { text: "Natural England" },
+            { html: '<span class="govuk-tag govuk-tag--yellow">Draft</span>' },
+            { text: "22" },
+            { text: "13" },
+            { text: "15" },
+            { text: "5" },
+            { text: "0" },
+            { text: "-" },
+            { html: "File upload, Email confirmation, Declarations" },
+            { text: "0" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Farm waste management</a>' },
+            { text: "Environment Agency" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "16" },
+            { text: "9" },
+            { text: "11" },
+            { text: "4" },
+            { text: "6" },
+            { text: "22" },
+            { html: "File upload, Email confirmation, GOV.UK Pay" },
+            { text: "1,567" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Wildlife survey return</a>' },
+            { text: "Natural England" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "7" },
+            { text: "5" },
+            { text: "3" },
+            { text: "2" },
+            { text: "2" },
+            { text: "9" },
+            { html: "Email confirmation" },
+            { text: "678" }
+          ],
+          [
+            { html: '<a href="#" class="govuk-link">Agricultural subsidy claim</a>' },
+            { text: "Rural Payments Agency" },
+            { html: '<span class="govuk-tag govuk-tag--green">Live</span>' },
+            { text: "38" },
+            { text: "16" },
+            { text: "25" },
+            { text: "7" },
+            { text: "8" },
+            { text: "19" },
+            { html: "File upload, Email confirmation, Declarations, GOV.UK Pay" },
+            { text: "4,123" }
+          ]
+        ]
+      }) }}
+    </div>
+
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block pageScripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle filter panel visibility
+    const filterPanel = document.querySelector('.moj-filter-layout__filter');
+    const showFilterButton = document.querySelector('.moj-button--filter');
+    
+    if (filterPanel && showFilterButton) {
+      filterPanel.style.display = 'none';
+      
+      showFilterButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        const isHidden = filterPanel.style.display === 'none' || filterPanel.style.display === '';
+        filterPanel.style.display = isHidden ? 'block' : 'none';
+        showFilterButton.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+        showFilterButton.textContent = isHidden ? 'Hide filter' : 'Show filter';
+      });
+    }
+
+    // Filter functionality
+    const filterForm = document.querySelector('.moj-filter form');
+    const applyButton = filterForm ? filterForm.querySelector('button[type="submit"]') : null;
+    
+    if (applyButton && filterForm) {
+      filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // In a real implementation, this would filter the data
+        // For now, we'll just show a message
+        console.log('Filters applied');
+        // Update KPI values based on filters
+        updateKPIs();
+      });
+    }
+
+    function updateKPIs() {
+      // This would fetch filtered data from an API
+      // For now, we'll keep the static values
+      console.log('Updating KPIs based on filters');
+    }
+  });
+</script>
+
+<style>
+  .gem-c-big-number {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #f3f2f1;
+    border-left: 4px solid #1d70b8;
+  }
+  
+  .gem-c-big-number__value {
+    display: block;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 10px;
+    color: #0b0c0c;
+  }
+  
+  .gem-c-big-number__label {
+    display: block;
+    font-size: 16px;
+    line-height: 1.25;
+    color: #505a5f;
+  }
+
+  .kpi-section {
+    border-bottom: 1px solid #b1b4b6;
+    padding-bottom: 30px;
+  }
+
+  .kpi-section:last-child {
+    border-bottom: none;
+  }
+
+  .govuk-tag--green {
+    background-color: #00703c;
+    color: #ffffff;
+  }
+
+  .govuk-tag--yellow {
+    background-color: #ffdd00;
+    color: #0b0c0c;
+  }
+
+  @media (max-width: 768px) {
+    .gem-c-big-number__value {
+      font-size: 36px;
+    }
+  }
+</style>
+{% endblock %}

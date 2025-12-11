@@ -1,0 +1,1332 @@
+{% extends "layouts/main.html" %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
+{% set pageName = "Edit page 1 - Apply for a county parish holding number in England" %}
+{% set headingPlaceholder = "Page heading" %}
+{% set guidancePlaceholder = "" %}
+
+{% block header %}
+{{ serviceHeader({
+organisationName: "Defra",
+productName: "Form Designer",
+serviceName: "",
+containerClasses: containerClasses,
+accountName: "Chris Smith",
+homepageLink: "/",
+signOutLink: "/onboarding/sign-out-confirmation",
+navigationItems: [
+{ href: "/titan-mvp-1.2/library.html", text: "Forms library", id: "nav-library" },
+{ href: "/titan-mvp-1.2/form-overview/index", text: "Overview", id: "nav-overview" },
+{ href: "/titan-mvp-1.2/form-editor/listing", text: "Editor", id: "nav-editor" } ],
+activeLinkId: "nav-editor"
+}) }}
+
+<div class="x-govuk-masthead x-govuk-masthead--large">
+    <div class="govuk-width-container">
+        {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text:
+        commonTerms.form_editor.information_type.back, href: "/titan-mvp-1.2/form-editor/listing.html" }) }}
+
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
+            style="border-bottom: 1px solid white; margin-bottom: 0" />
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full-from-desktop">
+                <h1 class="x-govuk-masthead__title">
+                    {{ form.name }}
+                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-grid-row">
+            <!-- Left Column for Form Controls -->
+            <div class="govuk-grid-column-one-half-from-desktop" id="container" style="flex: 1 1 75%; overflow-y: auto">
+                <div class="govuk-summary-card govuk-!-margin-top-0" style="border-left: 10px solid #008938">
+                    <div class="govuk-summary-card__content govuk-!-padding-top-0" style="background-color: #f3f2f1">
+                        <dl class="govuk-summary-list">
+                            <div class="govuk-summary-list__row">
+                                <dd class="govuk-summary-list__value">
+                                    <!-- Dynamic Summary List -->
+                                    <!-- Question Settings Container -->
+                                    <div class="govuk-grid-row" id="page-settings-container-1">
+                                        <div id="question-1">
+                                            <div class="govuk-summary-card__content" style="margin-bottom: 0">
+                                                <!-- Sub Navigation for Question -->
+                                                <nav class="moj-sub-navigation govuk-!-padding-top-0 govuk-!-margin-bottom-2 "
+                                                    aria-label="Sub navigation">
+                                                    <ul class="moj-sub-navigation__list" id="nav-list2">
+                                                        <li class="moj-sub-navigation__item">
+                                                            <a class="moj-sub-navigation__link" aria-current="page"
+                                                                href="#question-1-information-type">Question {{
+                                                                pageNumber }}</a>
+                                                        </li>
+                                                        <li class="moj-sub-navigation__item">
+                                                            <a class="moj-sub-navigation__link"
+                                                                href="/titan-mvp-1.2/form-editor/conditions/question-level/{{ currentPage.pageId }}/{{ questionNumber }}">
+                                                                Conditions
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </nav>
+
+                                                <div class="govuk-summary-card__title-wrapper govuk-!-padding-top-0">
+                                                </div>
+
+                                                <span class="govuk-caption-l">Page {{ pageNumber }}</span>
+                                                <h2 class="govuk-heading-l">Edit question {{ questionNumber }}</h2>
+
+                                                <p class="govuk-body">The payment screen appears after the last question in the form, before the 'Check your answers' page.</p>
+
+                                                <form id="s" action="/titan-mvp-1.2/question-configuration-save"
+                                                    method="post">
+
+                                                    <!-- Payment Amounts List -->
+                                                    <div class="govuk-form-group">
+                                                        <h2 class="govuk-heading-m moj-add-another__heading"
+                                                            tabindex="-1">
+                                                            <svg class="govuk-!-margin-right-1"
+                                                                style="position: relative; top: -1px; vertical-align: middle;"
+                                                                width="28" height="28" viewBox="0 0 24 24" fill="none"
+                                                                xmlns="http://www.w3.org/2000/svg">
+                                                                <circle cx="12" cy="12" r="11" fill="currentColor" />
+                                                                <path d="M6 8h12M6 12h12M6 16h12" stroke="white"
+                                                                    stroke-width="2" stroke-linecap="round" />
+                                                            </svg>
+                                                            Payment amounts
+                                                        </h2>
+                                                        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
+                                                            style="border-color:black; border-width: 3px;">
+                                                        <ol class="gem-c-reorderable-list"
+                                                            id="payment-amounts-container">
+                                                            {% if data.paymentAmounts and (data.paymentAmounts | length) > 0 %}
+                                                            {% for paymentAmount in data.paymentAmounts %}
+                                                            <li class="gem-c-reorderable-list__item"
+                                                                data-index="{{ loop.index }}" style="cursor: default;">
+                                                                <div class="gem-c-reorderable-list__wrapper">
+                                                                    <div class="gem-c-reorderable-list__content">
+                                                                        <dl class="govuk-summary-list">
+                                                                            <div class="govuk-summary-list__row">
+                                                                                <dt class="govuk-summary-list__key">Payment amount</dt>
+                                                                                <dd class="govuk-summary-list__value">
+                                                                                    <p class="govuk-body fauxlabel payment-amount-display"
+                                                                                        id="payment-amount-{{ loop.index }}-display">
+                                                                                        £{{ paymentAmount.amount }}
+                                                                                    </p>
+                                                                                </dd>
+                                                                                <dd class="govuk-summary-list__actions">
+                                                                                    <ul class="govuk-summary-list__actions-list">
+                                                                                        <li class="govuk-summary-list__actions-list-item">
+                                                                                            <a href="#"
+                                                                                                class="govuk-link js-edit-payment-amount"
+                                                                                                role="button"
+                                                                                                aria-label="Edit payment amount">Edit<span class="govuk-visually-hidden"> payment amount</span></a>
+                                                                                        </li>
+                                                                                        <li class="govuk-summary-list__actions-list-item">
+                                                                                            <a href="#"
+                                                                                                class="govuk-link govuk-link--destructive js-remove-payment-amount"
+                                                                                                role="button"
+                                                                                                aria-label="Remove payment amount">Remove<span class="govuk-visually-hidden"> payment amount</span></a>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </dd>
+                                                                            </div>
+                                                                            {% if paymentAmount.condition %}
+                                                                            <div class="govuk-summary-list__row">
+                                                                                <dt class="govuk-summary-list__key">Shown if</dt>
+                                                                                <dd class="govuk-summary-list__value">
+                                                                                    <ul class="govuk-list">
+                                                                                        <li style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                                                                            <svg style="min-width: 24px; margin-right: 10px; margin-top: 3px;"
+                                                                                                width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                                                                stroke="#00703c" stroke-width="2">
+                                                                                                <path d="M20 6L9 17l-5-5"></path>
+                                                                                            </svg>
+                                                                                            <div>
+                                                                                                <span class="govuk-!-font-weight-bold">{{ paymentAmount.condition.conditionName }}</span>
+                                                                                                {% if paymentAmount.condition.text %}
+                                                                                                <div class="govuk-!-margin-left-3 govuk-!-margin-top-1">
+                                                                                                    {{ paymentAmount.condition.text }}
+                                                                                                </div>
+                                                                                                {% elif paymentAmount.condition.rules %}
+                                                                                                <div class="govuk-!-margin-left-3 govuk-!-margin-top-1">
+                                                                                                    {% for rule in paymentAmount.condition.rules %}
+                                                                                                    {% if loop.first %}
+                                                                                                    '{{ rule.questionText }}' {{ rule.operator | replace("-", " ") }} '{{ rule.value }}'
+                                                                                                    {% else %}
+                                                                                                    <span class="govuk-!-font-weight-bold">{{ rule.logicalOperator | default('AND') }}</span>
+                                                                                                    '{{ rule.questionText }}' {{ rule.operator | replace("-", " ") }} '{{ rule.value }}'
+                                                                                                    {% endif %}
+                                                                                                    {% endfor %}
+                                                                                                </div>
+                                                                                                {% endif %}
+                                                                                            </div>
+                                                                                        </li>
+                                                                                    </ul>
+                                                                                </dd>
+                                                                            </div>
+                                                                            {% endif %}
+                                                                        </dl>
+                                                                        <input type="hidden"
+                                                                            id="payment-amount-{{ loop.index }}-amount"
+                                                                            name="paymentAmount[{{ loop.index }}][amount]"
+                                                                            value="{{ paymentAmount.amount }}"
+                                                                            class="payment-amount-input-hidden">
+                                                                        {% if paymentAmount.condition %}
+                                                                        <input type="hidden"
+                                                                            id="payment-amount-{{ loop.index }}-conditions"
+                                                                            class="payment-amount-conditions-input"
+                                                                            name="paymentAmount[{{ loop.index }}][conditions]"
+                                                                            value='{{ paymentAmount.condition | dump | e }}'>
+                                                                        {% endif %}
+                                                                    </div>
+                                                                </div>
+                                                            </li>
+                                                            {% endfor %}
+                                                            {% endif %}
+                                                        </ol>
+                                                    </div>
+
+                                                    <!-- Add Payment Amount Form (Initially Hidden) -->
+                                                    <div id="add-payment-amount-form"
+                                                        class="govuk-!-margin-bottom-6 gem-c-reorderable-list__item"
+                                                        style="display: none;">
+                                                        <!-- Payment Amount Value -->
+                                                        <div class="govuk-form-group">
+                                                            <label class="govuk-label govuk-label--m"
+                                                                for="new-payment-amount">
+                                                                <span id="add-payment-amount-heading">Payment amount</span>
+                                                            </label>
+                                                            <div class="govuk-input__wrapper">
+                                                                <div class="govuk-input__prefix" aria-hidden="true">£</div>
+                                                                <input class="govuk-input govuk-input--width-10" id="new-payment-amount"
+                                                                    name="newAmount" type="number" step="0.01" min="0" value="">
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Conditions Section -->
+                                                        <div class="govuk-form-group">
+                                                            <h2 class="govuk-heading-m">Conditions</h2>
+                                                            <p class="govuk-body">Use conditions to show different payment amounts depending on how someone answers earlier questions.</p>
+
+                                                            {{ govukWarningText({
+                                                                text: "If you add multiple payment amounts, each one must have a condition. Otherwise people could be shown the wrong amount.",
+                                                                iconFallbackText: "Warning"
+                                                            }) }}
+
+
+
+
+
+                                                            <details class="govuk-details" data-module="govuk-details">
+                                                                <summary class="govuk-details__summary">
+                                                                    <span class="govuk-details__summary-text">
+                                                                        Show this amount if
+                                                                    </span>
+                                                                </summary>
+                                                                <div class="govuk-details__text">
+                                                                    {% if existingConditions and (existingConditions | length) > 0 %}
+                                                                    <div class="govuk-radios" data-module="govuk-radios">
+                                                                        <!-- Existing condition radio -->
+                                                                        <div class="govuk-radios__item">
+                                                                            <input class="govuk-radios__input" id="mode-existing-payment" name="condition-mode-payment" type="radio"
+                                                                                value="existing" checked data-aria-controls="conditional-existing-payment">
+                                                                            <label class="govuk-label govuk-radios__label" for="mode-existing-payment">
+                                                                                Add an existing condition
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="govuk-radios__conditional" id="conditional-existing-payment">
+                                                                            {{ govukSelect({
+                                                                            label: { text: "Select an existing condition", classes: "govuk-label" },
+                                                                            id: "existing-condition-payment",
+                                                                            items: selectItems
+                                                                            }) }}
+                                                                        </div>
+                                                                        <!-- New condition radio -->
+                                                                        <div class="govuk-radios__item">
+                                                                            <input class="govuk-radios__input" id="mode-new-payment" name="condition-mode-payment" type="radio"
+                                                                                value="new" data-aria-controls="conditional-new-payment">
+                                                                            <label class="govuk-label govuk-radios__label" for="mode-new-payment">
+                                                                                Create condition
+                                                                            </label>
+                                                                        </div>
+                                                                        <div class="govuk-radios__conditional govuk-radios__conditional--hidden" id="conditional-new-payment">
+                                                                            <div class="govuk-form-group" id="conditions-container-payment">
+                                                                                <div class="govuk-form-group">
+                                                                                    <label class="govuk-label" for="questionSelect-payment">
+                                                                                        Select a question
+                                                                                    </label>
+                                                                                    <select class="govuk-select" id="questionSelect-payment" name="question"
+                                                                                        data-available-questions='{{ availableQuestions | dump | safe }}'>
+                                                                                        <option value="">Choose a question</option>
+                                                                                        {% if availableQuestions and (availableQuestions | length) > 0 %}
+                                                                                        {% for question in availableQuestions %}
+                                                                                        <option value="{{ question.value }}" data-type="{{ question.type }}"
+                                                                                            data-options='{{ question.options | dump | safe }}'>
+                                                                                            {{ question.text }}
+                                                                                        </option>
+                                                                                        {% endfor %}
+                                                                                        {% endif %}
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="govuk-form-group">
+                                                                                    <label class="govuk-label" for="operatorSelect-payment">
+                                                                                        Condition type
+                                                                                    </label>
+                                                                                    <select class="govuk-select" id="operatorSelect-payment" name="operator">
+                                                                                        <option value="">Select a condition type</option>
+                                                                                        <option value="is">is</option>
+                                                                                        <option value="is-not">is not</option>
+                                                                                    </select>
+                                                                                </div>
+                                                                                <div class="govuk-form-group" id="valueContainer-payment" style="display: none;">
+                                                                                    <!-- Value inputs will be dynamically populated here -->
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="govuk-form-group">
+                                                                                <label class="govuk-label govuk-label--m" for="conditionName-payment">
+                                                                                    Condition name
+                                                                                </label>
+                                                                                <div class="govuk-hint">
+                                                                                    Condition names help you to identify conditions in your form,
+                                                                                    for example, 'Not a farmer'. Users will not see condition names.
+                                                                                </div>
+                                                                                <input class="govuk-input" id="conditionName-payment" name="conditionName" type="text">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    {% else %}
+                                                                    <div class="govuk-form-group" id="conditions-container-payment">
+                                                                        <div class="govuk-form-group">
+                                                                            <label class="govuk-label" for="questionSelect-payment">
+                                                                                Select a question
+                                                                            </label>
+                                                                            <select class="govuk-select" id="questionSelect-payment" name="question"
+                                                                                data-available-questions='{{ availableQuestions | dump | safe }}'>
+                                                                                <option value="">Choose a question</option>
+                                                                                {% if availableQuestions and (availableQuestions | length) > 0 %}
+                                                                                {% for question in availableQuestions %}
+                                                                                <option value="{{ question.value }}" data-type="{{ question.type }}"
+                                                                                    data-options='{{ question.options | dump | safe }}'>
+                                                                                    {{ question.text }}
+                                                                                </option>
+                                                                                {% endfor %}
+                                                                                {% endif %}
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="govuk-form-group">
+                                                                            <label class="govuk-label" for="operatorSelect-payment">
+                                                                                Condition type
+                                                                            </label>
+                                                                            <select class="govuk-select" id="operatorSelect-payment" name="operator">
+                                                                                <option value="">Select a condition type</option>
+                                                                                <option value="is">is</option>
+                                                                                <option value="is-not">is not</option>
+                                                                            </select>
+                                                                        </div>
+                                                                        <div class="govuk-form-group" id="valueContainer-payment" style="display: none;">
+                                                                            <!-- Value inputs will be dynamically populated here -->
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="govuk-form-group">
+                                                                        <label class="govuk-label govuk-label--m" for="conditionName-payment">
+                                                                            Condition name
+                                                                        </label>
+                                                                        <div class="govuk-hint">
+                                                                            Condition names help you to identify conditions in your form,
+                                                                            for example, 'Not a farmer'. Users will not see condition names.
+                                                                        </div>
+                                                                        <input class="govuk-input" id="conditionName-payment" name="conditionName" type="text">
+                                                                    </div>
+                                                                    {% endif %}
+                                                                </div>
+                                                            </details>
+                                                        </div>
+
+                                                        <div class="govuk-button-group">
+                                                            <button type="button" class="govuk-button"
+                                                                id="save-new-payment-amount">Save payment amount</button>
+                                                            <a class="govuk-link" href="#"
+                                                                id="cancel-add-payment-amount">Cancel</a>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Buttons -->
+                                                    <div class="govuk-button-group">
+                                                        <!-- Add Another Payment Amount Button -->
+                                                        <button id="add-payment-amount-button" type="button"
+                                                            class="govuk-button moj-add-another__add-button govuk-!-margin-bottom-4 govuk-!-margin-bottom-6">
+                                                            Add payment amount
+                                                        </button>
+                                                    </div>
+
+                                                    <!-- Hidden input for payment amounts -->
+                                                    <input type="hidden" name="paymentAmounts" id="payment-amounts-data"
+                                                        value="">
+
+                                                    <!-- Payment Description Input -->
+                                                    <div class="govuk-form-group">
+                                                        <label class="govuk-label govuk-label--m"
+                                                            for="payment-description-input">
+                                                            Payment description
+                                                        </label>
+                                                        <div class="govuk-hint">
+                                                            Tell users what the payment is for, for example, 'Processing fees for your application'
+                                                        </div>
+                                                        <input class="govuk-input" id="payment-description-input" type="text"
+                                                            name="paymentDescriptionInput" value="{{ data.paymentDescriptionInput or '' }}">
+                                                    </div>
+
+                                                    <!-- Short Description Input -->
+                                                    <div class="govuk-form-group">
+                                                        <label class="govuk-label govuk-label--m"
+                                                            for="error-message-input-payment">
+                                                            Short description
+                                                        </label>
+                                                        <div class="govuk-hint">
+                                                            Enter a short description for this question like 'date of birth'. Short descriptions are used in error messages, for example, 'Enter a valid date of birth'
+                                                        </div>
+                                                        <input class="govuk-input" id="error-message-input-payment" type="text"
+                                                            name="errorMessageInputPayment" value="{{ data.errorMessageInputPayment or '' }}">
+                                                    </div>
+
+                                                    <!-- GOV.UK Pay API keys Section -->
+                                                    <h2 class="govuk-heading-m">GOV.UK Pay API keys</h2>
+                                                    <p class="govuk-body">A GOV.UK Pay API key is like a password that lets your form securely connect to GOV.UK Pay, so you can take payments without directly handling card details. You need one GOV.UK API key for testing (used in your draft form) and another for your live form.</p>
+
+                                                    {% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+
+                                                    {{ govukWarningText({
+                                                      text: "Do not share the API keys with anyone else.",
+                                                      iconFallbackText: "Warning"
+                                                    }) }}
+                                                    <!-- How to get a test API key -->
+                                                    <details class="govuk-details" data-module="govuk-details">
+                                                        <summary class="govuk-details__summary">
+                                                            <span class="govuk-details__summary-text">
+                                                                How to get a test API key
+                                                            </span>
+                                                        </summary>
+                                                        <div class="govuk-details__text">
+                                                            <ol class="govuk-list govuk-list--number">
+                                                                <li>Go to GOV.UK Pay</li>
+                                                                <li>Create an account</li>
+                                                                <li>Got to 'Settings'</li>
+                                                                <li>Select 'Developers' from the left hand navigation</li>
+                                                                <li>Select 'API keys'</li>
+                                                                <li>Copy API test key</li>
+                                                            </ol>
+                                                        </div>
+                                                    </details>
+
+                                                    <!-- Test API key -->
+                                                    <div class="govuk-form-group">
+                                                        <label class="govuk-label govuk-label--m" for="test-api-key">
+                                                            Test API key for the draft form
+                                                        </label>
+                                                        <div class="govuk-hint">
+                                                            Use a test API key from your GOV.UK Pay test account. This is used while your form is in draft
+                                                        </div>
+                                                        <input class="govuk-input " id="test-api-key" name="testApiKey" type="text" value="{{ data.testApiKey or '' }}" {% if data.hasTestApiKey %}disabled{% endif %}>
+                                                        <div class="govuk-!-margin-top-4">
+                                                            <a href="#" class="govuk-link" id="clear-test-api-key">Clear test API key</a>
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Request a live GOV.UK Pay account -->
+                                                    <details class="govuk-details" data-module="govuk-details">
+                                                        <summary class="govuk-details__summary">
+                                                            <span class="govuk-details__summary-text">
+                                                                Request a live GOV.UK Pay account
+                                                            </span>
+                                                        </summary>
+                                                        <div class="govuk-details__text">
+                                                            <p class="govuk-body">Before you can request a live account you need to test how GOV.UK Pay works using your test account.</p>
+                                                            <p class="govuk-body">When you are ready to request a live account, go to your dashboard and select 'Setting up your live account'.</p>
+                                                        </div>
+                                                    </details>
+
+                                                    <!-- Live API key -->
+                                                    <div class="govuk-form-group">
+                                                        <label class="govuk-label govuk-label--m" for="live-api-key">
+                                                            Live API key
+                                                        </label>
+                                                        <div class="govuk-hint">
+                                                            Make sure your live API key has been tested and can take real payments
+                                                        </div>
+                                                        <input class="govuk-input" id="live-api-key" name="liveApiKey" type="text" value="{{ data.liveApiKey or '' }}" {% if data.hasLiveApiKey %}disabled{% endif %}>
+                                                        <div class="govuk-!-margin-top-4">
+                                                            <a href="#" class="govuk-link" id="clear-live-api-key">Clear live API key</a>
+                                                        </div>
+                                                    </div>
+
+
+                                                    <!-- Section Break -->
+                                                    <hr
+                                                        class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+                                                    <!-- Question Settings Summary List -->
+                                                    <h2 class="govuk-heading-m">{{
+                                                        commonTerms.form_editor.question_settings.title }}</h2>
+
+                                                    {{ govukSummaryList({
+                                                    "rows": [
+                                                    {
+                                                    "key": {
+                                                    "text": "Type of information"
+                                                    },
+                                                    "value": {
+                                                    "html": commonTerms.form_editor.information_type.payment.title
+                                                    },
+                                                    "actions": {
+                                                    "items": [
+                                                    {
+                                                    "href": "/titan-mvp-1.2/information-type-nf",
+                                                    "text": commonTerms.form_editor.common.edit,
+                                                    "visuallyHiddenText": " type"
+                                                    }
+                                                    ]
+                                                    }
+                                                    }
+                                                    ]
+                                                    }) }}
+
+                                                    <hr
+                                                        class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+
+                                                    <!-- Save Button -->
+                                                    <div class="govuk-button-group">
+                                                        {{ govukButton({
+                                                        text: "Save and continue",
+                                                        type: "submit",
+                                                        id: "save-payment-button"
+                                                        }) }}
+                                                        <a class="govuk-link" href="#">Delete question</a>
+                                                    </div>
+
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column for Preview -->
+            <div class="govuk-grid-column-one-half-from-desktop" id="second-container"
+                style="outline: solid 1px #008938; height: 100%; position: sticky; top: 0; padding: 20px; box-shadow: 5px 10px #008938;">
+                <!-- Before content -->
+                <div id="before-content" style=" background-color:  #cce2d8;">
+                    <p class="govuk-body-s" style="margin-bottom: 0; color: #005a30; padding: 2px 8px 3px;
+  text-align: center;"> Previews
+                    </p>
+                </div>
+
+                <div style="margin-top: 60px;">
+                    {% from "govuk/components/tabs/macro.njk" import govukTabs %}
+
+                    <div class="govuk-tabs" data-module="govuk-tabs">
+                        <h2 class="govuk-tabs__title">Contents</h2>
+                        <ul class="govuk-tabs__list">
+                            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                                <a class="govuk-tabs__tab" href="#tab-one">Page preview</a>
+                            </li>
+                            <li class="govuk-tabs__list-item">
+                                <a class="govuk-tabs__tab" href="#tab-two">Error messages</a>
+                            </li>
+                        </ul>
+
+                        <div class="govuk-tabs__panel" id="tab-one">
+                            <!-- Page Preview Content -->
+                            <p class="govuk-body-s" style="margin-bottom: 30px; border-bottom: #008938 1px;">
+                                <a href="#" class="govuk-link govuk-link--no-visited-state" rel="noreferrer noopener"
+                                    target="_blank">
+                                    Preview this page in a new tab
+                                </a>
+                            </p>
+
+                            <!-- Payment Preview -->
+                            <div class="payment-summary-wrap">
+                                <div class="payment-summary">
+                                    <h1 class="govuk-heading-l" id="preview-question-label">Payment details required</h1>
+
+                                    <p id="preview-payment-description" class="govuk-body">
+                                        {{ data.paymentDescriptionInput or 'Payment description' }}
+                                    </p>
+
+                                    {{ govukWarningText({
+                                        text: "You won't be charged yet. We'll only take payment when you finish your form.",
+                                        classes: "govuk-!-margin-bottom-4",
+                                        iconFallbackText: "Warning"
+                                    }) }}
+
+                                    <p class="govuk-body">
+                                        Once you've added your payment details, you can continue with your form.
+                                    </p>
+
+                                    <p class="govuk-body govuk-!-margin-bottom-0">
+                                        Total amount:
+                                        <span id="preview-payment-amount" class="amount govuk-!-font-size-36 govuk-!-font-weight-bold">£0.00</span>
+                                    </p>
+                                    <div id="preview-payment-amounts-list" style="display: none;">
+                                        <!-- Conditional amounts will be shown here -->
+                                    </div>
+
+                                    {{ govukButton({
+                                        text: "Continue to payment details",
+                                        classes: "govuk-button--primary govuk-!-margin-top-4 govuk-!-margin-bottom-0"
+                                    }) }}
+                                </div>
+                            </div>
+
+                            <a href="#edit-page" class="govuk-skip-link" style="margin-bottom: 30px!important;"
+                                data-module="govuk-skip-link">
+                                Skip to edit page
+                            </a>
+                        </div>
+
+                        <div class="govuk-tabs__panel" id="tab-two">
+                            <!-- Error Messages Content -->
+                            <div class="govuk-error-summary" data-module="govuk-error-summary" data-disable-auto-focus="true">
+                                <h2 class="govuk-error-summary__title">There is a problem</h2>
+                                <ul class="govuk-list govuk-error-summary__list">
+                                    <!-- List of errors -->
+                                    <li>
+                                        <a id="empty-input-error-payment" class="govuk-error-message"
+                                            href="#error-message-input-payment">
+                                            You must pay the <span
+                                                id="error-dynamic-text">{{ data.errorMessageInputPayment or '[short description]' }}</span> to
+                                            continue </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <a href="#error-message-input-payment" class="govuk-skip-link"
+                                style="margin-bottom: 30px!important;" data-module="govuk-skip-link">
+                                Skip to edit error message
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSS for Highlighting -->
+    <style>
+        .highlight {
+            background-color: #ffe5cc;
+            border-bottom: 2px solid #ffb266;
+            color: #000000;
+        }
+
+        #before-content {
+            position: absolute;
+            top: 0;
+            left: 10 !important;
+            right: 0;
+            width: 100%;
+            padding: 10px !important;
+            box-sizing: border-box;
+            z-index: 1;
+            border-bottom: 1px solid #008938;
+            padding-left: 10px;
+        }
+
+        #second-container {
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #second-container>* {
+            padding-left: 0px;
+            z-index: 2;
+        }
+
+        .payment-summary {
+            border-top: 2px solid #1d70b8;
+            padding: 15px;
+            background-color: #f3f2f1;
+        }
+
+        @media all{
+            .amount  {
+                display: block;
+            }
+        }
+
+        /* Styles for the reorderable list */
+        .gem-c-reorderable-list {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .gem-c-reorderable-list__item {
+            margin-bottom: 15px;
+            border-left: 5px solid #008938;
+            outline: 1px solid #b1b4b6;
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .gem-c-reorderable-list__wrapper {
+            display: flex;
+        }
+
+        .gem-c-reorderable-list__content {
+            flex-grow: 1;
+        }
+
+        .gem-c-reorderable-list__actions {
+            display: none;
+            flex-direction: column;
+            margin-left: 15px;
+        }
+
+        .gem-c-reorderable-list__actions .govuk-button {
+            margin-bottom: 10px;
+        }
+
+        .gem-c-reorderable-list__item {
+            cursor: default;
+        }
+
+        .edit-item {
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        #add-payment-amount-form {
+            background: #ffffff;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Get form elements
+            const paymentDescriptionInput = document.getElementById("payment-description-input");
+            const errorMessageInput = document.getElementById("error-message-input-payment");
+            const paymentAmountsContainer = document.getElementById("payment-amounts-container");
+            const addPaymentAmountForm = document.getElementById("add-payment-amount-form");
+            const addPaymentAmountButton = document.getElementById("add-payment-amount-button");
+            const saveNewPaymentAmountButton = document.getElementById("save-new-payment-amount");
+            const cancelAddPaymentAmountButton = document.getElementById("cancel-add-payment-amount");
+            const newPaymentAmountInput = document.getElementById("new-payment-amount");
+
+            // Get preview elements
+            const previewPaymentAmount = document.getElementById("preview-payment-amount");
+            const previewPaymentDescription = document.getElementById("preview-payment-description");
+            const errorMessagePreviewElements = document.querySelectorAll("#error-dynamic-text");
+
+            // Function to format currency
+            function formatCurrency(amount) {
+                if (!amount || isNaN(amount)) return "£0.00";
+                return "£" + parseFloat(amount).toFixed(2);
+            }
+
+            // Function to update preview
+            function updatePreview() {
+                const amounts = Array.from(paymentAmountsContainer.querySelectorAll('.gem-c-reorderable-list__item'));
+
+                if (amounts.length === 0) {
+                    previewPaymentAmount.textContent = "£0.00";
+                    return;
+                }
+
+                // Get the first amount (default) or the amount without conditions
+                const defaultAmount = amounts.find(item => {
+                    const conditionInput = item.querySelector('.payment-amount-conditions-input');
+                    return !conditionInput || !conditionInput.value;
+                });
+
+                if (defaultAmount) {
+                    const amountValue = defaultAmount.querySelector('.payment-amount-input-hidden').value;
+                    previewPaymentAmount.textContent = formatCurrency(amountValue);
+                } else {
+                    // If all amounts have conditions, show the first one
+                    const firstAmount = amounts[0];
+                    const amountValue = firstAmount.querySelector('.payment-amount-input-hidden').value;
+                    previewPaymentAmount.textContent = formatCurrency(amountValue);
+                }
+
+                // Update payment description
+                previewPaymentDescription.textContent = paymentDescriptionInput.value || "Payment description";
+            }
+
+            // Function to update error message preview
+            function updateErrorMessages() {
+                const shortDescription = errorMessageInput.value || "[short description]";
+                errorMessagePreviewElements.forEach(element => {
+                    element.textContent = shortDescription;
+                });
+            }
+
+            // Function to apply highlight on focus
+            function applyHighlightOnFocus(inputElement, targetElements) {
+                if (inputElement && targetElements) {
+                    inputElement.addEventListener('focus', function () {
+                        if (targetElements.forEach) {
+                            targetElements.forEach(target => target.classList.add('highlight'));
+                        } else {
+                            targetElements.classList.add('highlight');
+                        }
+                    });
+                    inputElement.addEventListener('blur', function () {
+                        if (targetElements.forEach) {
+                            targetElements.forEach(target => target.classList.remove('highlight'));
+                        } else {
+                            targetElements.classList.remove('highlight');
+                        }
+                    });
+
+                    if (document.activeElement === inputElement) {
+                        if (targetElements.forEach) {
+                            targetElements.forEach(target => target.classList.add('highlight'));
+                        } else {
+                            targetElements.classList.add('highlight');
+                        }
+                    }
+                }
+            }
+
+            // Add event listeners for real-time preview updates
+            paymentDescriptionInput.addEventListener("input", updatePreview);
+            errorMessageInput.addEventListener("input", updateErrorMessages);
+
+            // Apply highlight on focus for form inputs that affect preview
+            applyHighlightOnFocus(paymentDescriptionInput, previewPaymentDescription);
+            applyHighlightOnFocus(errorMessageInput, errorMessagePreviewElements);
+
+            // Initialize preview
+            updatePreview();
+            updateErrorMessages();
+
+            // Add payment amount button click
+            addPaymentAmountButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                const currentAmounts = paymentAmountsContainer.querySelectorAll('.gem-c-reorderable-list__item');
+                const nextItemNumber = currentAmounts.length + 1;
+                document.getElementById('add-payment-amount-heading').textContent = `Payment amount ${nextItemNumber}`;
+                addPaymentAmountForm.style.display = 'block';
+                addPaymentAmountButton.style.display = 'none';
+                newPaymentAmountInput.focus();
+            });
+
+            // Cancel button click
+            cancelAddPaymentAmountButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                hideForm();
+            });
+
+            // Save new payment amount
+            saveNewPaymentAmountButton.addEventListener('click', function (e) {
+                e.preventDefault();
+                const amountValue = newPaymentAmountInput.value.trim();
+
+                if (!amountValue || isNaN(amountValue)) {
+                    alert('Please enter a valid payment amount');
+                    return;
+                }
+
+                // Get conditions data (matching page-level conditions logic)
+                const conditions = [];
+
+                // Check if using existing condition or creating new one
+                const conditionMode = document.querySelector('input[name="condition-mode-payment"]:checked')?.value;
+
+                if (conditionMode === 'existing') {
+                    // Using existing condition
+                    const existingConditionSelect = document.getElementById('existing-condition-payment');
+                    const selectedConditionId = existingConditionSelect?.value;
+
+                    if (selectedConditionId) {
+                        // Get condition name from the select option
+                        const selectedOption = existingConditionSelect.options[existingConditionSelect.selectedIndex];
+                        const conditionName = selectedOption.text;
+                        const conditionId = selectedOption.value;
+
+                        // Store the condition ID - we'll need to fetch the full condition data
+                        conditions.push({
+                            conditionId: conditionId,
+                            conditionName: conditionName,
+                            isExisting: true
+                        });
+                    }
+                } else {
+                    // Creating new condition (optional)
+                    const conditionName = document.getElementById('conditionName-payment')?.value.trim();
+                    const mainQuestion = document.getElementById('questionSelect-payment');
+                    const mainOperator = document.getElementById('operatorSelect-payment');
+                    const mainValueContainer = document.getElementById('valueContainer-payment');
+
+                    if (conditionName && mainQuestion && mainOperator && mainValueContainer) {
+                        const rules = [];
+
+                        // Get main condition data
+                        const mainQuestionText = mainQuestion.options[mainQuestion.selectedIndex].text;
+                        const questionType = mainQuestion.options[mainQuestion.selectedIndex].getAttribute('data-type');
+
+                        // Handle different input types for main condition
+                        let mainValue;
+                        if (questionType === 'checkboxes') {
+                            const checkedInputs = mainValueContainer.querySelectorAll('input[type="checkbox"]:checked');
+                            mainValue = Array.from(checkedInputs).map(input => input.value);
+                        } else if (questionType === 'yes-no' || questionType === 'radios') {
+                            const checkedInput = mainValueContainer.querySelector('input:checked');
+                            mainValue = checkedInput ? checkedInput.value : null;
+                        } else {
+                            const selectElement = mainValueContainer.querySelector('select');
+                            mainValue = selectElement ? selectElement.value : null;
+                        }
+
+                        if (mainValue) {
+                            rules.push({
+                                questionText: mainQuestionText,
+                                operator: mainOperator.value,
+                                value: mainValue
+                            });
+                        }
+
+                        if (rules.length > 0) {
+                            conditions.push({
+                                conditionName: conditionName,
+                                rules: rules
+                            });
+                        }
+                    }
+                }
+
+                // Add the new payment amount
+                const currentAmounts = paymentAmountsContainer.querySelectorAll('.gem-c-reorderable-list__item');
+                const newIndex = currentAmounts.length;
+
+                // Build condition text if condition exists
+                let conditionRow = '';
+                if (conditions.length > 0) {
+                    const condition = conditions[0];
+                    let conditionText = '';
+
+                    if (condition.isExisting) {
+                        // For existing conditions, we only have the name
+                        conditionText = '';
+                    } else if (condition.rules) {
+                        // For new conditions, build the text from rules
+                        conditionText = condition.rules.map((rule, index) => {
+                            const valueText = Array.isArray(rule.value)
+                                ? rule.value.map(v => `'${v}'`).join(' or ')
+                                : `'${rule.value}'`;
+                            if (index === 0) {
+                                return `'${rule.questionText}' ${rule.operator.replace('-', ' ')} ${valueText}`;
+                            } else {
+                                return ` <span class="govuk-!-font-weight-bold">${rule.logicalOperator || 'AND'}</span> '${rule.questionText}' ${rule.operator.replace('-', ' ')} ${valueText}`;
+                            }
+                        }).join('');
+                    }
+
+                    conditionRow = `
+                                <div class="govuk-summary-list__row">
+                                    <dt class="govuk-summary-list__key">Shown if</dt>
+                                    <dd class="govuk-summary-list__value">
+                                        <ul class="govuk-list">
+                                            <li style="display: flex; align-items: flex-start; margin-bottom: 10px;">
+                                                <svg style="min-width: 24px; margin-right: 10px; margin-top: 3px;"
+                                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                                    stroke="#00703c" stroke-width="2">
+                                                    <path d="M20 6L9 17l-5-5"></path>
+                                                </svg>
+                                                <div>
+                                                    <span class="govuk-!-font-weight-bold">${condition.conditionName}</span>
+                                                    ${conditionText ? `
+                                                    <div class="govuk-!-margin-left-3 govuk-!-margin-top-1">
+                                                        ${conditionText}
+                                                    </div>
+                                                    ` : ''}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </dd>
+                                </div>
+                    `;
+                }
+
+                const newAmountHTML = `
+                    <li class="gem-c-reorderable-list__item" data-index="${newIndex + 1}" style="cursor: default;">
+                        <div class="gem-c-reorderable-list__wrapper">
+                            <div class="gem-c-reorderable-list__content">
+                                <dl class="govuk-summary-list">
+                                    <div class="govuk-summary-list__row">
+                                        <dt class="govuk-summary-list__key">Payment amount</dt>
+                                        <dd class="govuk-summary-list__value">
+                                            <p class="govuk-body fauxlabel payment-amount-display" id="payment-amount-${newIndex + 1}-display">
+                                                ${formatCurrency(amountValue)}
+                                            </p>
+                                        </dd>
+                                        <dd class="govuk-summary-list__actions">
+                                            <ul class="govuk-summary-list__actions-list">
+                                                <li class="govuk-summary-list__actions-list-item">
+                                                    <a href="#" class="govuk-link js-edit-payment-amount"
+                                                        role="button" aria-label="Edit payment amount">Edit<span class="govuk-visually-hidden"> payment amount</span></a>
+                                                </li>
+                                                <li class="govuk-summary-list__actions-list-item">
+                                                    <a href="#" class="govuk-link govuk-link--destructive js-remove-payment-amount"
+                                                        role="button" aria-label="Remove payment amount">Remove<span class="govuk-visually-hidden"> payment amount</span></a>
+                                                </li>
+                                            </ul>
+                                        </dd>
+                                    </div>
+                                    ${conditionRow}
+                                </dl>
+                                <input type="hidden" id="payment-amount-${newIndex + 1}-amount" class="payment-amount-input-hidden" 
+                                    name="paymentAmount[${newIndex + 1}][amount]" value="${amountValue}">
+                                ${conditions.length > 0 ? `
+                                <input type="hidden" id="payment-amount-${newIndex + 1}-conditions" class="payment-amount-conditions-input"
+                                    name="paymentAmount[${newIndex + 1}][conditions]" value='${JSON.stringify(conditions)}'>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </li>
+                `;
+
+                paymentAmountsContainer.insertAdjacentHTML('beforeend', newAmountHTML);
+                hideForm();
+                updatePreview();
+                updateHiddenAmountsData();
+            });
+
+            function hideForm() {
+                addPaymentAmountForm.style.display = 'none';
+                addPaymentAmountButton.style.display = 'inline-block';
+                newPaymentAmountInput.value = '';
+                // Reset condition form
+                document.getElementById('questionSelect-payment').value = '';
+                document.getElementById('operatorSelect-payment').value = '';
+                document.getElementById('conditionName-payment').value = '';
+                const valueContainer = document.getElementById('valueContainer-payment');
+                if (valueContainer) {
+                    valueContainer.style.display = 'none';
+                    valueContainer.innerHTML = '';
+                }
+                addPaymentAmountButton.focus();
+            }
+
+            // Function to update hidden input with all current amounts
+            function updateHiddenAmountsData() {
+                const amounts = [];
+                const amountItems = paymentAmountsContainer.querySelectorAll('.gem-c-reorderable-list__item');
+
+                amountItems.forEach((item, index) => {
+                    const amountInput = item.querySelector('.payment-amount-input-hidden');
+                    const conditionInput = item.querySelector('.payment-amount-conditions-input');
+
+                    if (amountInput) {
+                        const amount = amountInput.value;
+                        const condition = conditionInput ? JSON.parse(conditionInput.value) : null;
+
+                        amounts.push({
+                            amount: amount,
+                            condition: condition
+                        });
+                    }
+                });
+
+                document.getElementById('payment-amounts-data').value = JSON.stringify(amounts);
+            }
+
+            // Add remove and edit button functionality
+            document.addEventListener('click', function (e) {
+                if (e.target.classList.contains('js-remove-payment-amount') || e.target.closest('.js-remove-payment-amount')) {
+                    e.preventDefault();
+                    const item = e.target.closest('.gem-c-reorderable-list__item');
+                    if (confirm('Are you sure you want to remove this payment amount?')) {
+                        item.remove();
+                        updatePreview();
+                        updateHiddenAmountsData();
+                    }
+                }
+
+                if (e.target.classList.contains('js-edit-payment-amount') || e.target.closest('.js-edit-payment-amount')) {
+                    e.preventDefault();
+                    const item = e.target.closest('.gem-c-reorderable-list__item');
+                    const amountInput = item.querySelector('.payment-amount-input-hidden');
+                    const conditionInput = item.querySelector('.payment-amount-conditions-input');
+
+                    if (amountInput) {
+                        // Populate the form with existing values
+                        newPaymentAmountInput.value = amountInput.value;
+
+                        // Populate condition fields if condition exists
+                        if (conditionInput && conditionInput.value) {
+                            try {
+                                const condition = JSON.parse(conditionInput.value);
+                                if (condition && condition.length > 0 && condition[0].rules) {
+                                    // Set condition name
+                                    document.getElementById('conditionName-payment').value = condition[0].conditionName || '';
+
+                                    // Set question select
+                                    const questionSelect = document.getElementById('questionSelect-payment');
+                                    const operatorSelect = document.getElementById('operatorSelect-payment');
+
+                                    if (condition[0].rules && condition[0].rules.length > 0) {
+                                        const firstRule = condition[0].rules[0];
+                                        // Find and select the question
+                                        for (let i = 0; i < questionSelect.options.length; i++) {
+                                            if (questionSelect.options[i].text === firstRule.questionText) {
+                                                questionSelect.selectedIndex = i;
+                                                break;
+                                            }
+                                        }
+
+                                        // Set operator
+                                        operatorSelect.value = firstRule.operator;
+
+                                        // Trigger value container update
+                                        updateValueContainerPayment();
+
+                                        // Set the value after a short delay to allow value container to populate
+                                        setTimeout(() => {
+                                            const valueContainer = document.getElementById('valueContainer-payment');
+                                            if (valueContainer && firstRule.value) {
+                                                if (Array.isArray(firstRule.value)) {
+                                                    // For checkboxes
+                                                    firstRule.value.forEach(val => {
+                                                        const checkbox = valueContainer.querySelector(`input[value="${val}"]`);
+                                                        if (checkbox) checkbox.checked = true;
+                                                    });
+                                                } else {
+                                                    // For radios or select
+                                                    const input = valueContainer.querySelector(`input[value="${firstRule.value}"]`) ||
+                                                                  valueContainer.querySelector(`select`);
+                                                    if (input) {
+                                                        if (input.tagName === 'SELECT') {
+                                                            input.value = firstRule.value;
+                                                        } else {
+                                                            input.checked = true;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }, 100);
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('Error parsing condition:', e);
+                            }
+                        }
+
+                        // Show the form
+                        const currentAmounts = paymentAmountsContainer.querySelectorAll('.gem-c-reorderable-list__item');
+                        const itemIndex = Array.from(currentAmounts).indexOf(item);
+                        document.getElementById('add-payment-amount-heading').textContent = `Payment amount ${itemIndex + 1}`;
+                        addPaymentAmountForm.style.display = 'block';
+                        addPaymentAmountButton.style.display = 'none';
+
+                        // Remove the item being edited (will be re-added when saved)
+                        item.remove();
+                        updatePreview();
+                        updateHiddenAmountsData();
+                    }
+                }
+            });
+
+            // Form submission handler
+            const form = document.getElementById('s');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    updateHiddenAmountsData();
+                    return true;
+                });
+            }
+
+            // Handle API key clearing functionality
+            const testApiKeyInput = document.getElementById("test-api-key");
+            const liveApiKeyInput = document.getElementById("live-api-key");
+            const clearTestApiKeyLink = document.getElementById("clear-test-api-key");
+            const clearLiveApiKeyLink = document.getElementById("clear-live-api-key");
+
+            if (clearTestApiKeyLink) {
+                clearTestApiKeyLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    testApiKeyInput.value = "";
+                    testApiKeyInput.disabled = false;
+                });
+            }
+
+            if (clearLiveApiKeyLink) {
+                clearLiveApiKeyLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    liveApiKeyInput.value = "";
+                    liveApiKeyInput.disabled = false;
+                });
+            }
+
+            // Initialize
+            updateHiddenAmountsData();
+
+            // Add live preview for new payment amount input
+            newPaymentAmountInput.addEventListener('input', function() {
+                if (addPaymentAmountForm.style.display === 'block') {
+                    const amount = newPaymentAmountInput.value || "0";
+                    previewPaymentAmount.textContent = formatCurrency(amount);
+                    previewPaymentAmount.classList.add('highlight');
+                }
+            });
+
+            newPaymentAmountInput.addEventListener('blur', function() {
+                previewPaymentAmount.classList.remove('highlight');
+            });
+
+            // Handle condition question selection and value input (matching page-level conditions)
+            const questionSelectPayment = document.getElementById('questionSelect-payment');
+            const operatorSelectPayment = document.getElementById('operatorSelect-payment');
+            const valueContainerPayment = document.getElementById('valueContainer-payment');
+
+            function updateValueContainerPayment() {
+                const questionSelected = questionSelectPayment.value !== "";
+                const operatorSelected = operatorSelectPayment.value !== "";
+
+                if (questionSelected && operatorSelected) {
+                    valueContainerPayment.style.display = 'block';
+                    const selectedOption = questionSelectPayment.options[questionSelectPayment.selectedIndex];
+                    const questionType = selectedOption.getAttribute('data-type');
+                    const optionsData = selectedOption.getAttribute('data-options');
+
+                    // Clear previous value inputs
+                    valueContainerPayment.innerHTML = '';
+
+                    if (optionsData) {
+                        try {
+                            const options = JSON.parse(optionsData);
+
+                            // Add the label only when we have a question selected
+                            const label = document.createElement('label');
+                            label.className = 'govuk-label';
+                            label.htmlFor = 'condition-value-payment';
+                            label.textContent = 'Select a value';
+                            valueContainerPayment.appendChild(label);
+
+                            if (questionType === 'yes-no') {
+                                // Create radio buttons for Yes/No
+                                const fieldset = document.createElement('div');
+                                fieldset.className = 'govuk-form-group';
+
+                                const radiosDiv = document.createElement('div');
+                                radiosDiv.className = 'govuk-radios govuk-radios--small';
+                                radiosDiv.setAttribute('data-module', 'govuk-radios');
+
+                                ['yes', 'no'].forEach((value, index) => {
+                                    const itemDiv = document.createElement('div');
+                                    itemDiv.className = 'govuk-radios__item';
+
+                                    const input = document.createElement('input');
+                                    input.className = 'govuk-radios__input';
+                                    input.type = 'radio';
+                                    input.id = `main-value-payment-${value}`;
+                                    input.name = 'main-value-payment';
+                                    input.value = value;
+
+                                    const label = document.createElement('label');
+                                    label.className = 'govuk-label govuk-radios__label';
+                                    label.htmlFor = `main-value-payment-${value}`;
+                                    label.textContent = value.charAt(0).toUpperCase() + value.slice(1);
+
+                                    itemDiv.appendChild(input);
+                                    itemDiv.appendChild(label);
+                                    radiosDiv.appendChild(itemDiv);
+                                });
+
+                                fieldset.appendChild(radiosDiv);
+                                valueContainerPayment.appendChild(fieldset);
+
+                            } else if (questionType === 'radios') {
+                                // Create radio buttons for options
+                                const fieldset = document.createElement('div');
+                                fieldset.className = 'govuk-form-group';
+
+                                const radiosDiv = document.createElement('div');
+                                radiosDiv.className = 'govuk-radios govuk-radios--small';
+                                radiosDiv.setAttribute('data-module', 'govuk-radios--small');
+
+                                options.forEach((option, index) => {
+                                    const itemDiv = document.createElement('div');
+                                    itemDiv.className = 'govuk-radios__item';
+
+                                    const input = document.createElement('input');
+                                    input.className = 'govuk-radios__input';
+                                    input.type = 'radio';
+                                    input.id = `value-payment-${index}`;
+                                    input.name = 'value-payment';
+                                    input.value = option.value || option.text;
+
+                                    const label = document.createElement('label');
+                                    label.className = 'govuk-label govuk-radios__label';
+                                    label.htmlFor = `value-payment-${index}`;
+                                    label.textContent = option.text || option.label;
+
+                                    itemDiv.appendChild(input);
+                                    itemDiv.appendChild(label);
+                                    radiosDiv.appendChild(itemDiv);
+                                });
+
+                                fieldset.appendChild(radiosDiv);
+                                valueContainerPayment.appendChild(fieldset);
+
+                            } else if (questionType === 'checkboxes') {
+                                // Create checkboxes for options
+                                const fieldset = document.createElement('div');
+                                fieldset.className = 'govuk-form-group';
+
+                                const checkboxesDiv = document.createElement('div');
+                                checkboxesDiv.className = 'govuk-checkboxes govuk-checkboxes--small';
+                                checkboxesDiv.setAttribute('data-module', 'govuk-checkboxes');
+
+                                options.forEach((option, index) => {
+                                    const itemDiv = document.createElement('div');
+                                    itemDiv.className = 'govuk-checkboxes__item';
+
+                                    const input = document.createElement('input');
+                                    input.className = 'govuk-checkboxes__input';
+                                    input.type = 'checkbox';
+                                    input.id = `value-payment-${index}`;
+                                    input.name = 'value-payment';
+                                    input.value = option.value || option.text;
+
+                                    const label = document.createElement('label');
+                                    label.className = 'govuk-label govuk-checkboxes__label';
+                                    label.htmlFor = `value-payment-${index}`;
+                                    label.textContent = option.text || option.label;
+
+                                    itemDiv.appendChild(input);
+                                    itemDiv.appendChild(label);
+                                    checkboxesDiv.appendChild(itemDiv);
+                                });
+
+                                fieldset.appendChild(checkboxesDiv);
+                                valueContainerPayment.appendChild(fieldset);
+                            }
+                        } catch (e) {
+                            console.error('Error parsing options:', e);
+                        }
+                    }
+                } else {
+                    valueContainerPayment.style.display = 'none';
+                }
+            }
+
+            if (questionSelectPayment && operatorSelectPayment && valueContainerPayment) {
+                questionSelectPayment.addEventListener('change', updateValueContainerPayment);
+                operatorSelectPayment.addEventListener('change', updateValueContainerPayment);
+            }
+
+        });
+    </script>
+
+    {% endblock %}

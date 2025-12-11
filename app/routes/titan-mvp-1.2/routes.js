@@ -1881,16 +1881,16 @@ router.get("/titan-mvp-1.2/form-editor/listing", function (req, res) {
     }
   });
 
-  // Sort pages so payment pages appear before "Check your answers" page
+  // Sort pages so payment pages appear after "Check your answers" page
   formPages.sort((a, b) => {
     const aHasPayment = a.questions && a.questions.some(q => q.type === "payment");
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
 
-    // Payment pages come before check answers
-    if (aHasPayment && bIsCheckAnswers) return -1;
-    if (bHasPayment && aIsCheckAnswers) return 1;
+    // Payment pages come after check answers
+    if (aHasPayment && bIsCheckAnswers) return 1;
+    if (bHasPayment && aIsCheckAnswers) return -1;
 
     // Otherwise maintain original order
     return 0;
@@ -1931,16 +1931,16 @@ router.get("/titan-mvp-1.2/form-editor/listing.html", function (req, res) {
     }
   });
 
-  // Sort pages so payment pages appear before "Check your answers" page
+  // Sort pages so payment pages appear after "Check your answers" page
   formPages.sort((a, b) => {
     const aHasPayment = a.questions && a.questions.some(q => q.type === "payment");
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
 
-    // Payment pages come before check answers
-    if (aHasPayment && bIsCheckAnswers) return -1;
-    if (bHasPayment && aIsCheckAnswers) return 1;
+    // Payment pages come after check answers
+    if (aHasPayment && bIsCheckAnswers) return 1;
+    if (bHasPayment && aIsCheckAnswers) return -1;
 
     // Otherwise maintain original order
     return 0;
@@ -1983,16 +1983,16 @@ router.get("/titan-mvp-1.2/form-editor/listing-v2", function (req, res) {
     }
   });
 
-  // Sort pages so payment pages appear before "Check your answers" page
+  // Sort pages so payment pages appear after "Check your answers" page
   formPages.sort((a, b) => {
     const aHasPayment = a.questions && a.questions.some(q => q.type === "payment");
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
 
-    // Payment pages come before check answers
-    if (aHasPayment && bIsCheckAnswers) return -1;
-    if (bHasPayment && aIsCheckAnswers) return 1;
+    // Payment pages come after check answers
+    if (aHasPayment && bIsCheckAnswers) return 1;
+    if (bHasPayment && aIsCheckAnswers) return -1;
 
     // Otherwise maintain original order
     return 0;
@@ -2038,16 +2038,16 @@ router.get("/titan-mvp-1.2/form-editor/listing-v2.html", function (req, res) {
     }
   });
 
-  // Sort pages so payment pages appear before "Check your answers" page
+  // Sort pages so payment pages appear after "Check your answers" page
   formPages.sort((a, b) => {
     const aHasPayment = a.questions && a.questions.some(q => q.type === "payment");
     const bHasPayment = b.questions && b.questions.some(q => q.type === "payment");
     const aIsCheckAnswers = a.pageHeading && a.pageHeading.toLowerCase().includes("check your answers");
     const bIsCheckAnswers = b.pageHeading && b.pageHeading.toLowerCase().includes("check your answers");
 
-    // Payment pages come before check answers
-    if (aHasPayment && bIsCheckAnswers) return -1;
-    if (bHasPayment && aIsCheckAnswers) return 1;
+    // Payment pages come after check answers
+    if (aHasPayment && bIsCheckAnswers) return 1;
+    if (bHasPayment && aIsCheckAnswers) return -1;
 
     // Otherwise maintain original order
     return 0;
@@ -2361,7 +2361,7 @@ router.get("/titan-mvp-1.2/question-configuration", function (req, res) {
       "/titan-mvp-1.2/form-editor/question-type/declaration/edit-nf.html";
   } else if (mainType === "payment") {
     templateToRender =
-      "/titan-mvp-1.2/form-editor/question-type/payment/edit-nf.html";
+      "/titan-mvp-1.2/form-editor/question-type/payment/edit-nf-v2.html";
   } else if (
     (mainType === "list" && listSubType === "select") ||
     mainType === "autocomplete" ||
@@ -2386,6 +2386,73 @@ router.get("/titan-mvp-1.2/question-configuration", function (req, res) {
   const formPages = formData.formPages || [];
   const currentPage = formPages[pageIndex] || {};
 
+  // Get available questions for conditions (needed for payment amounts with conditions)
+  const availableQuestions = formPages
+    .flatMap((page) => page.questions)
+    .filter((question) => {
+      const type = question.subType || question.type;
+      return ["radios", "checkboxes", "yes-no", "autocomplete"].includes(type);
+    })
+    .map((question) => ({
+      value: question.questionId,
+      text: question.label,
+      type: question.subType || question.type,
+      options: question.options,
+    }));
+
+  // Get existing conditions for payment amounts (form-level and page-level)
+  const existingConditions = [];
+  // Add form-level conditions first
+  if (formData.conditions) {
+    existingConditions.push(
+      ...formData.conditions.map((condition) => ({
+        value: condition.id.toString(),
+        text: condition.conditionName,
+        hint: {
+          text: condition.rules
+            .map(
+              (rule) =>
+                `${rule.questionText} ${rule.operator} ${
+                  Array.isArray(rule.value)
+                    ? rule.value.join(" or ")
+                    : rule.value
+                }`
+            )
+            .join(" AND "),
+        },
+      }))
+    );
+  }
+  // Add page-level conditions from all pages
+  formPages.forEach((page) => {
+    if (page.conditions) {
+      existingConditions.push(
+        ...page.conditions.map((condition) => ({
+          value: condition.id.toString(),
+          text: condition.conditionName,
+          hint: {
+            text: condition.rules
+              .map(
+                (rule) =>
+                  `${rule.questionText} ${rule.operator} ${
+                    Array.isArray(rule.value)
+                      ? rule.value.join(" or ")
+                      : rule.value
+                  }`
+              )
+              .join(" AND "),
+          },
+        }))
+      );
+    }
+  });
+
+  // Combine default option and existingConditions for the select
+  const selectItems = [
+    { value: "", text: "Select existing condition" },
+    ...existingConditions,
+  ];
+
   res.render(templateToRender, {
     form: {
       name: formData.formName || "Form name",
@@ -2394,6 +2461,9 @@ router.get("/titan-mvp-1.2/question-configuration", function (req, res) {
     questionNumber: questionNumber,
     data: req.session.data,
     currentPage: currentPage,
+    availableQuestions: availableQuestions,
+    existingConditions: existingConditions,
+    selectItems: selectItems,
   });
 });
 
@@ -2733,8 +2803,82 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
 
     // Update payment-specific fields for existing questions
     if (questionType === "payment") {
-      currentPage.questions[existingQuestionIndex].paymentAmount =
-        req.body["paymentAmountInput"] || "0.00";
+      // Handle multiple payment amounts
+      const paymentAmountsData = req.body["paymentAmounts"];
+      if (paymentAmountsData) {
+        try {
+          const amounts = JSON.parse(paymentAmountsData);
+
+          // Save any new conditions to the conditions manager
+          req.session.data.conditions = req.session.data.conditions || [];
+          const updatedAmounts = amounts.map((amountItem, index) => {
+            const updatedAmount = { ...amountItem };
+            if (amountItem.condition && amountItem.condition.rules && !amountItem.condition.isExisting && !amountItem.condition.id) {
+              // This is a new condition, save it to the manager
+              const newCondition = {
+                id: Date.now() + index, // Generate unique ID
+                conditionName: amountItem.condition.conditionName,
+                rules: amountItem.condition.rules.map((rule) => ({
+                  questionText: rule.questionText,
+                  operator: rule.operator,
+                  value: rule.value,
+                  logicalOperator: rule.logicalOperator,
+                })),
+                text: amountItem.condition.rules
+                  .map((rule) => {
+                    const valueText = Array.isArray(rule.value)
+                      ? rule.value.map((v) => `'${v}'`).join(" or ")
+                      : `'${rule.value}'`;
+                    return `${rule.questionText} ${rule.operator} ${valueText}`;
+                  })
+                  .join(" "),
+              };
+
+              // Check if condition already exists (by name)
+              const alreadyExists = req.session.data.conditions.some(
+                (c) => c.conditionName === newCondition.conditionName
+              );
+              if (!alreadyExists) {
+                req.session.data.conditions.push(newCondition);
+                // Update the condition in the amount to reference the saved condition
+                updatedAmount.condition = {
+                  ...amountItem.condition,
+                  id: newCondition.id,
+                  isExisting: true
+                };
+              } else {
+                // Use existing condition ID
+                const existingCondition = req.session.data.conditions.find(
+                  (c) => c.conditionName === newCondition.conditionName
+                );
+                if (existingCondition) {
+                  updatedAmount.condition = {
+                    ...amountItem.condition,
+                    id: existingCondition.id,
+                    isExisting: true
+                  };
+                }
+              }
+            }
+            return updatedAmount;
+          });
+
+          currentPage.questions[existingQuestionIndex].paymentAmounts = updatedAmounts;
+          // Set default paymentAmount to first amount for backward compatibility
+          currentPage.questions[existingQuestionIndex].paymentAmount =
+            amounts.length > 0 ? amounts[0].amount : "0.00";
+        } catch (e) {
+          console.error("Error parsing payment amounts:", e);
+          // Fallback to single amount if parsing fails
+          currentPage.questions[existingQuestionIndex].paymentAmount =
+            req.body["paymentAmountInput"] || "0.00";
+        }
+      } else {
+        // Fallback to single amount for backward compatibility
+        currentPage.questions[existingQuestionIndex].paymentAmount =
+          req.body["paymentAmountInput"] || "0.00";
+      }
+
       currentPage.questions[existingQuestionIndex].paymentDescription =
         req.body["paymentDescriptionInput"] || "Payment description";
       currentPage.questions[existingQuestionIndex].errorMessage =
@@ -2811,8 +2955,82 @@ router.post("/titan-mvp-1.2/question-configuration-save", function (req, res) {
 
     // Add payment-specific fields
     if (questionType === "payment") {
-      newQuestion.paymentAmount =
-        req.body["paymentAmountInput"] || "0.00";
+      // Handle multiple payment amounts
+      const paymentAmountsData = req.body["paymentAmounts"];
+      if (paymentAmountsData) {
+        try {
+          const amounts = JSON.parse(paymentAmountsData);
+
+          // Save any new conditions to the conditions manager
+          req.session.data.conditions = req.session.data.conditions || [];
+          const updatedAmounts = amounts.map((amountItem, index) => {
+            const updatedAmount = { ...amountItem };
+            if (amountItem.condition && amountItem.condition.rules && !amountItem.condition.isExisting && !amountItem.condition.id) {
+              // This is a new condition, save it to the manager
+              const newCondition = {
+                id: Date.now() + index, // Generate unique ID
+                conditionName: amountItem.condition.conditionName,
+                rules: amountItem.condition.rules.map((rule) => ({
+                  questionText: rule.questionText,
+                  operator: rule.operator,
+                  value: rule.value,
+                  logicalOperator: rule.logicalOperator,
+                })),
+                text: amountItem.condition.rules
+                  .map((rule) => {
+                    const valueText = Array.isArray(rule.value)
+                      ? rule.value.map((v) => `'${v}'`).join(" or ")
+                      : `'${rule.value}'`;
+                    return `${rule.questionText} ${rule.operator} ${valueText}`;
+                  })
+                  .join(" "),
+              };
+
+              // Check if condition already exists (by name)
+              const alreadyExists = req.session.data.conditions.some(
+                (c) => c.conditionName === newCondition.conditionName
+              );
+              if (!alreadyExists) {
+                req.session.data.conditions.push(newCondition);
+                // Update the condition in the amount to reference the saved condition
+                updatedAmount.condition = {
+                  ...amountItem.condition,
+                  id: newCondition.id,
+                  isExisting: true
+                };
+              } else {
+                // Use existing condition ID
+                const existingCondition = req.session.data.conditions.find(
+                  (c) => c.conditionName === newCondition.conditionName
+                );
+                if (existingCondition) {
+                  updatedAmount.condition = {
+                    ...amountItem.condition,
+                    id: existingCondition.id,
+                    isExisting: true
+                  };
+                }
+              }
+            }
+            return updatedAmount;
+          });
+
+          newQuestion.paymentAmounts = updatedAmounts;
+          // Set default paymentAmount to first amount for backward compatibility
+          newQuestion.paymentAmount =
+            amounts.length > 0 ? amounts[0].amount : "0.00";
+        } catch (e) {
+          console.error("Error parsing payment amounts:", e);
+          // Fallback to single amount if parsing fails
+          newQuestion.paymentAmount =
+            req.body["paymentAmountInput"] || "0.00";
+        }
+      } else {
+        // Fallback to single amount for backward compatibility
+        newQuestion.paymentAmount =
+          req.body["paymentAmountInput"] || "0.00";
+      }
+
       newQuestion.paymentDescription =
         req.body["paymentDescriptionInput"] || "Payment description";
       newQuestion.errorMessage =
@@ -2883,11 +3101,22 @@ router.get("/titan-mvp-1.2/page-overview", function (req, res) {
 router.get("/titan-mvp-1.2/edit-page/:pageId", function (req, res) {
   const pageId = req.params.pageId;
   const formPages = req.session.data["formPages"] || [];
-  const pageIndex = formPages.findIndex(
-    (page) => String(page.pageId) === pageId
+
+  // Try to find the page with more flexible matching
+  let pageIndex = formPages.findIndex(
+    (page) => String(page.pageId) === String(pageId)
   );
 
+  // If not found, try without string conversion (in case pageId is already a number)
   if (pageIndex === -1) {
+    pageIndex = formPages.findIndex(
+      (page) => page.pageId == pageId
+    );
+  }
+
+  if (pageIndex === -1) {
+    console.error("Page not found in session. PageId:", pageId, "Type:", typeof pageId);
+    console.error("Available pages:", formPages.map(p => ({ id: p.pageId, type: typeof p.pageId })));
     return res.redirect("/titan-mvp-1.2/form-editor/listing.html");
   }
 
@@ -2982,7 +3211,58 @@ router.get("/titan-mvp-1.2/edit-question", function (req, res) {
     req.session.data["listSubType"] = question.subType;
   } else if (question.type === "payment") {
     // Set payment-specific fields for editing
-    req.session.data["paymentAmountInput"] = question.paymentAmount || "";
+    // Handle payment amounts - support both new multiple amounts and legacy single amount
+    if (question.paymentAmounts && Array.isArray(question.paymentAmounts) && question.paymentAmounts.length > 0) {
+      // Enrich existing conditions with full condition data
+      const formData = req.session.data || {};
+      const enrichedAmounts = question.paymentAmounts.map((amountItem) => {
+        if (amountItem.condition && amountItem.condition.isExisting && amountItem.condition.conditionId) {
+          // Look up the full condition from form-level or page-level conditions
+          const conditionId = String(amountItem.condition.conditionId);
+          let fullCondition = null;
+
+          // Check form-level conditions
+          if (formData.conditions) {
+            fullCondition = formData.conditions.find(c => String(c.id) === conditionId);
+          }
+
+          // Check page-level conditions if not found
+          if (!fullCondition) {
+            const allFormPages = formData.formPages || [];
+            for (const page of allFormPages) {
+              if (page.conditions) {
+                fullCondition = page.conditions.find(c => String(c.id) === conditionId);
+                if (fullCondition) break;
+              }
+            }
+          }
+
+          // If found, merge the full condition data
+          if (fullCondition) {
+            return {
+              ...amountItem,
+              condition: {
+                ...amountItem.condition,
+                conditionName: fullCondition.conditionName,
+                text: fullCondition.text,
+                rules: fullCondition.rules
+              }
+            };
+          }
+        }
+        return amountItem;
+      });
+
+      req.session.data["paymentAmounts"] = enrichedAmounts;
+      req.session.data["paymentAmountInput"] = enrichedAmounts[0].amount || "";
+    } else {
+      // Legacy single amount support
+      req.session.data["paymentAmountInput"] = question.paymentAmount || "";
+      req.session.data["paymentAmounts"] = [{
+        amount: question.paymentAmount || "0.00",
+        condition: null
+      }];
+    }
     req.session.data["paymentDescriptionInput"] = question.paymentDescription || "";
     req.session.data["errorMessageInputPayment"] = question.errorMessage || "";
 
@@ -6938,6 +7218,19 @@ router.get("/titan-mvp-1.2/product-pages/resources", function (req, res) {
   res.render("titan-mvp-1.2/product-pages/resources");
 });
 
+// Metrics dashboard routes
+router.get("/titan-mvp-1.2/metrics/v1", function (req, res) {
+  res.render("titan-mvp-1.2/metrics/v1");
+});
+
+router.get("/titan-mvp-1.2/metrics/v2", function (req, res) {
+  res.render("titan-mvp-1.2/metrics/v2");
+});
+
+router.get("/titan-mvp-1.2/metrics/v3", function (req, res) {
+  res.render("titan-mvp-1.2/metrics/v3");
+});
+
 // Handle prototype routing selection
 router.post("/titan-mvp-1.2/choose", function (req, res) {
   const selection = req.body.prototype;
@@ -7007,10 +7300,10 @@ router.get("/titan-mvp-1.2/roles/admin-panel", function (req, res) {
   // Store and clear the success message
   const successMessage = req.session.data.successMessage;
   delete req.session.data.successMessage;
-  
+
   // Check if there's a success message to show from query parameter
   const showSuccessMessage = req.query.success === 'true';
-  
+
   res.render("titan-mvp-1.2/roles/admin-panel.html", {
     data: {
       users: usersWithNames,

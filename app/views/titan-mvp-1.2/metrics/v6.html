@@ -1,0 +1,426 @@
+{% extends "layouts/main.html" %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+
+{% block pageTitle %}
+Dashboard – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block header %}
+{{ serviceHeader({
+    organisationName: "Defra",
+    productName: "Form Designer",
+    serviceName: "",
+    homepageLink: "/titan-mvp-1.2/product-pages/homepage",
+    signInLink: "/titan-mvp-1.2/library",
+    showSupportLink: false,
+    navigationItems: [
+    { href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
+    { href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
+    { href: "/titan-mvp-1.2/product-pages/features", text: "Features", id: "nav-features" },
+    { href: "/titan-mvp-1.2/product-pages/resources", text: "Resources", id: "nav-resources" },
+    { href: "/titan-mvp-1.2/product-pages/support", text: "Support", id: "nav-support" }
+    ],
+    activeLinkId: "nav-about"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl">Dashboard</h1>
+  </div>
+</div>
+
+<!-- Forms Created per Quarter -->
+<div class="kpi-section govuk-!-margin-bottom-8">
+  <h2 class="kpi-title">
+    <a href="#" class="kpi-title-link">Forms created per quarter</a>
+  </h2>
+  <p class="govuk-body govuk-!-margin-bottom-2">Total number of forms created each quarter</p>
+  
+  <div class="kpi-current-value">
+    <span class="kpi-value">142</span>
+    <span class="kpi-period">Oct to Dec 2024</span>
+  </div>
+
+  <div class="kpi-chart-container">
+    <div class="kpi-chart">
+      <div class="kpi-chart-y-axis">
+        <span>0</span>
+        <span>50</span>
+        <span>100</span>
+        <span>150</span>
+      </div>
+      <div class="kpi-chart-bars">
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 81%;">
+            <span class="kpi-chart-value">115</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2023</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 89%;">
+            <span class="kpi-chart-value">126</span>
+          </div>
+          <span class="kpi-chart-label">Jan to Mar 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 92%;">
+            <span class="kpi-chart-value">131</span>
+          </div>
+          <span class="kpi-chart-label">Apr to June 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 87%;">
+            <span class="kpi-chart-value">123</span>
+          </div>
+          <span class="kpi-chart-label">July to Sep 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 100%;">
+            <span class="kpi-chart-value">142</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2024</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="govuk-body govuk-!-margin-top-4">
+    <a href="#" class="govuk-link">Table view of "Forms created per quarter" data</a>
+  </p>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-8">
+
+<!-- Forms Published per Quarter -->
+<div class="kpi-section govuk-!-margin-bottom-8">
+  <h2 class="kpi-title">
+    <a href="#" class="kpi-title-link">Forms published per quarter</a>
+  </h2>
+  <p class="govuk-body govuk-!-margin-bottom-2">Total number of forms published to live status each quarter</p>
+  
+  <div class="kpi-current-value">
+    <span class="kpi-value">86</span>
+    <span class="kpi-period">Oct to Dec 2024</span>
+  </div>
+
+  <div class="kpi-chart-container">
+    <div class="kpi-chart">
+      <div class="kpi-chart-y-axis">
+        <span>0</span>
+        <span>25</span>
+        <span>50</span>
+        <span>75</span>
+        <span>100</span>
+      </div>
+      <div class="kpi-chart-bars">
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 70%;">
+            <span class="kpi-chart-value">60</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2023</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 78%;">
+            <span class="kpi-chart-value">67</span>
+          </div>
+          <span class="kpi-chart-label">Jan to Mar 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 85%;">
+            <span class="kpi-chart-value">73</span>
+          </div>
+          <span class="kpi-chart-label">Apr to June 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 90%;">
+            <span class="kpi-chart-value">77</span>
+          </div>
+          <span class="kpi-chart-label">July to Sep 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 100%;">
+            <span class="kpi-chart-value">86</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2024</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="govuk-body govuk-!-margin-top-4">
+    <a href="#" class="govuk-link">Table view of "Forms published per quarter" data</a>
+  </p>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-8">
+
+<!-- Form Submissions per Quarter -->
+<div class="kpi-section govuk-!-margin-bottom-8">
+  <h2 class="kpi-title">
+    <a href="#" class="kpi-title-link">Form submissions per quarter</a>
+  </h2>
+  <p class="govuk-body govuk-!-margin-bottom-2">Total number of form submissions each quarter</p>
+  
+  <div class="kpi-current-value">
+    <span class="kpi-value">12.5k</span>
+    <span class="kpi-period">Oct to Dec 2024</span>
+  </div>
+
+  <div class="kpi-chart-container">
+    <div class="kpi-chart">
+      <div class="kpi-chart-y-axis">
+        <span>0</span>
+        <span>5k</span>
+        <span>10k</span>
+        <span>15k</span>
+      </div>
+      <div class="kpi-chart-bars">
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 72%;">
+            <span class="kpi-chart-value">9.0k</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2023</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 80%;">
+            <span class="kpi-chart-value">10.0k</span>
+          </div>
+          <span class="kpi-chart-label">Jan to Mar 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 88%;">
+            <span class="kpi-chart-value">11.0k</span>
+          </div>
+          <span class="kpi-chart-label">Apr to June 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 96%;">
+            <span class="kpi-chart-value">12.0k</span>
+          </div>
+          <span class="kpi-chart-label">July to Sep 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 100%;">
+            <span class="kpi-chart-value">12.5k</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2024</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="govuk-body govuk-!-margin-top-4">
+    <a href="#" class="govuk-link">Table view of "Form submissions per quarter" data</a>
+  </p>
+</div>
+
+<hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-8">
+
+<!-- Average Days to Publish -->
+<div class="kpi-section govuk-!-margin-bottom-8">
+  <h2 class="kpi-title">
+    <a href="#" class="kpi-title-link">Average days to publish</a>
+  </h2>
+  <p class="govuk-body govuk-!-margin-bottom-2">Average number of days between form creation and first publication each quarter</p>
+  
+  <div class="kpi-current-value">
+    <span class="kpi-value">18</span>
+    <span class="kpi-period">Oct to Dec 2024</span>
+  </div>
+
+  <div class="kpi-chart-container">
+    <div class="kpi-chart">
+      <div class="kpi-chart-y-axis">
+        <span>0</span>
+        <span>10</span>
+        <span>20</span>
+        <span>30</span>
+      </div>
+      <div class="kpi-chart-bars">
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 83%;">
+            <span class="kpi-chart-value">25</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2023</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 80%;">
+            <span class="kpi-chart-value">24</span>
+          </div>
+          <span class="kpi-chart-label">Jan to Mar 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 77%;">
+            <span class="kpi-chart-value">23</span>
+          </div>
+          <span class="kpi-chart-label">Apr to June 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 73%;">
+            <span class="kpi-chart-value">22</span>
+          </div>
+          <span class="kpi-chart-label">July to Sep 2024</span>
+        </div>
+        <div class="kpi-chart-bar-wrapper">
+          <div class="kpi-chart-bar" style="width: 60%;">
+            <span class="kpi-chart-value">18</span>
+          </div>
+          <span class="kpi-chart-label">Oct to Dec 2024</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="govuk-body govuk-!-margin-top-4">
+    <a href="#" class="govuk-link">Table view of "Average days to publish" data</a>
+  </p>
+</div>
+
+{% endblock %}
+
+{% block pageScripts %}
+<style>
+  .kpi-section {
+    margin-bottom: 40px;
+  }
+
+  .kpi-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .kpi-title-link {
+    color: #1d70b8;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .kpi-title-link:hover {
+    text-decoration-thickness: 3px;
+  }
+
+  .kpi-current-value {
+    margin: 20px 0;
+  }
+
+  .kpi-value {
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1;
+    color: #0b0c0c;
+    display: inline-block;
+    margin-right: 12px;
+  }
+
+  .kpi-period {
+    font-size: 16px;
+    color: #505a5f;
+  }
+
+  .kpi-chart-container {
+    margin: 30px 0;
+  }
+
+  .kpi-chart {
+    display: flex;
+    gap: 20px;
+    position: relative;
+    min-height: 300px;
+  }
+
+  .kpi-chart-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 40px;
+    font-size: 14px;
+    color: #505a5f;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .kpi-chart-bars {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 0;
+  }
+
+  .kpi-chart-bar-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    position: relative;
+  }
+
+  .kpi-chart-bar {
+    background-color: #b1d4f0;
+    border-top: 3px solid #1d70b8;
+    height: 40px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 10px;
+    min-width: 60px;
+  }
+
+  .kpi-chart-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #0b0c0c;
+    white-space: nowrap;
+  }
+
+  .kpi-chart-label {
+    font-size: 14px;
+    color: #0b0c0c;
+    min-width: 120px;
+    text-align: left;
+  }
+
+  @media (max-width: 768px) {
+    .kpi-value {
+      font-size: 36px;
+    }
+
+    .kpi-chart {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .kpi-chart-y-axis {
+      flex-direction: row;
+      justify-content: space-between;
+      min-width: 100%;
+      padding: 0;
+      margin-bottom: 10px;
+    }
+
+    .kpi-chart-bar-wrapper {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 5px;
+    }
+
+    .kpi-chart-bar {
+      width: 100% !important;
+      min-width: 100%;
+    }
+
+    .kpi-chart-label {
+      min-width: auto;
+    }
+  }
+</style>
+{% endblock %}
+
+

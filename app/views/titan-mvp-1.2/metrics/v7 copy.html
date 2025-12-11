@@ -1,0 +1,1360 @@
+{% extends "layouts/main.html" %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
+{%- from "moj/components/filter/macro.njk" import mojFilter -%}
+{%- from "govuk/components/checkboxes/macro.njk" import govukCheckboxes -%}
+{%- from "govuk/components/input/macro.njk" import govukInput -%}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
+{%- from "moj/components/button-menu/macro.njk" import mojButtonMenu -%}
+{%- from "govuk/components/tag/macro.njk" import govukTag -%}
+{%- from "govuk/components/button/macro.njk" import govukButton -%}
+{%- from "govuk/components/tabs/macro.njk" import govukTabs -%}
+
+{% block pageTitle %}
+Dashboard – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block header %}
+{{ serviceHeader({
+    organisationName: "Defra",
+    productName: "Form Designer",
+    serviceName: "",
+    homepageLink: "/titan-mvp-1.2/product-pages/homepage",
+    signInLink: "/titan-mvp-1.2/library",
+    showSupportLink: false,
+    navigationItems: [
+    { href: "/titan-mvp-1.2/product-pages/about", text: "About", id: "nav-about" },
+    { href: "/titan-mvp-1.2/product-pages/get-started", text: "Get started", id: "nav-get-started" },
+    { href: "/titan-mvp-1.2/product-pages/features", text: "Features", id: "nav-features" },
+    { href: "/titan-mvp-1.2/product-pages/resources", text: "Resources", id: "nav-resources" },
+    { href: "/titan-mvp-1.2/product-pages/support", text: "Support", id: "nav-support" }
+    ],
+    activeLinkId: "nav-about"
+}) }}
+{% endblock %}
+
+{% block content %}
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-full">
+    <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">Dashboard</h1>
+    <p class="govuk-body-s app-dashboard-caption">Data up to 25 Nov 2024</p>
+  </div>
+</div>
+
+{% set sevenDaysContent %}
+<!-- Form Activity Section -->
+<div class="govuk-!-margin-bottom-6">
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Form activity</h2>
+  <div class="govuk-grid-row">
+
+    <!-- Forms Created -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-third-from-desktop app-metric-tile" data-testid="headline-column-forms-created">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">New forms created</span>
+        <span class="gem-c-big-number__value">142</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "12 (+9.2%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-up",
+          attributes: {
+            "aria-label": "There has been an increase of +12 (+9.2%) compared to the previous 7 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">More teams are creating new forms</p>
+    </div>
+
+    <!-- Forms Published -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-third-from-desktop app-metric-tile" data-testid="headline-column-forms-published">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Forms published</span>
+        <span class="gem-c-big-number__value">86</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "8 (+10.3%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-up",
+          attributes: {
+            "aria-label": "There has been an increase of +8 (+10.3%) compared to the previous 7 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">More teams are completing and releasing forms</p>
+    </div>
+
+    <!-- Form Submissions -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-third-from-desktop app-metric-tile" data-testid="headline-column-submissions">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Form submissions</span>
+        <span class="gem-c-big-number__value">12,500</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "1,200 (+10.6%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-up",
+          attributes: {
+            "aria-label": "There has been an increase of +1,200 (+10.6%) compared to the previous 7 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">Strong week for user engagement</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Pipeline + Performance Section -->
+<div class="govuk-!-margin-bottom-8">
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Pipeline + performance</h2>
+  <div class="govuk-grid-row">
+
+    <!-- Forms in Draft -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-half-from-desktop app-metric-tile" data-testid="headline-column-draft">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Forms in draft</span>
+        <span class="gem-c-big-number__value">56</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "4 (–6.7%)",
+          classes: "govuk-tag--red app-tag-with-icon app-tag-arrow-down",
+          attributes: {
+            "aria-label": "There has been a decrease of -4 (–6.7%) compared to the previous 7 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">Draft backlog shrinking</p>
+    </div>
+
+    <!-- Average Time to Publish -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-half-from-desktop app-metric-tile" data-testid="headline-column-days-to-publish">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Average time to publish</span>
+        <span class="gem-c-big-number__value">18<span class="app-big-number-unit"> days</span></span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "2 days (–10.0%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-down",
+          attributes: {
+            "aria-label": "There has been a decrease of -2 days (–10.0%) compared to the previous 7 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">Time to publish improving</p>
+    </div>
+
+  </div>
+</div>
+{% endset %}
+
+{% set thirtyDaysContent %}
+<!-- Form Activity Section -->
+<div class="govuk-!-margin-bottom-6">
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Form activity</h2>
+  <div class="govuk-grid-row">
+
+    <!-- Forms Created -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-third-from-desktop app-metric-tile" data-testid="headline-column-forms-created-30d">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">New forms created</span>
+        <span class="gem-c-big-number__value">598</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "52 (+9.5%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-up",
+          attributes: {
+            "aria-label": "There has been an increase of +52 (+9.5%) compared to the previous 30 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">More teams are creating new forms</p>
+    </div>
+
+    <!-- Forms Published -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-third-from-desktop app-metric-tile" data-testid="headline-column-forms-published-30d">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Forms published</span>
+        <span class="gem-c-big-number__value">364</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "34 (+10.3%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-up",
+          attributes: {
+            "aria-label": "There has been an increase of +34 (+10.3%) compared to the previous 30 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">More teams are completing and releasing forms</p>
+    </div>
+
+    <!-- Form Submissions -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-third-from-desktop app-metric-tile" data-testid="headline-column-submissions-30d">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Form submissions</span>
+        <span class="gem-c-big-number__value">54,200</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "5,100 (+10.4%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-up",
+          attributes: {
+            "aria-label": "There has been an increase of +5,100 (+10.4%) compared to the previous 30 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">Strong month for user engagement</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Pipeline + Performance Section -->
+<div class="govuk-!-margin-bottom-8">
+  <h2 class="govuk-heading-m govuk-!-margin-bottom-4">Pipeline + performance</h2>
+  <div class="govuk-grid-row">
+
+    <!-- Forms in Draft -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-half-from-desktop app-metric-tile" data-testid="headline-column-draft-30d">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Forms in draft</span>
+        <span class="gem-c-big-number__value">56</span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "18 (–24.3%)",
+          classes: "govuk-tag--red app-tag-with-icon app-tag-arrow-down",
+          attributes: {
+            "aria-label": "There has been a decrease of -18 (–24.3%) compared to the previous 30 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">Draft backlog shrinking</p>
+    </div>
+
+    <!-- Average Time to Publish -->
+    <div class="govuk-grid-column-one-half govuk-grid-column-one-third-from-tablet govuk-grid-column-one-half-from-desktop app-metric-tile" data-testid="headline-column-days-to-publish-30d">
+      <div class="gem-c-big-number">
+        <span class="gem-c-big-number__label">Average time to publish</span>
+        <span class="gem-c-big-number__value">18<span class="app-big-number-unit"> days</span></span>
+      </div>
+      <div class="govuk-!-margin-top-2 govuk-!-margin-bottom-2">
+        {{ govukTag({
+          text: "2 days (–10.0%)",
+          classes: "govuk-tag--green app-tag-with-icon app-tag-arrow-down",
+          attributes: {
+            "aria-label": "There has been a decrease of -2 days (–10.0%) compared to the previous 30 days."
+          }
+        }) }}
+      </div>
+      <p class="govuk-body-xs app-metric-caption">Time to publish improving</p>
+    </div>
+
+  </div>
+</div>
+{% endset %}
+
+{{ govukTabs({
+  items: [
+    {
+      label: "Last 7 days",
+      id: "last-7-days",
+      panel: {
+        html: sevenDaysContent
+      }
+    },
+    {
+      label: "Last 30 days",
+      id: "last-30-days",
+      panel: {
+        html: thirtyDaysContent
+      }
+    }
+  ]
+}) }}
+
+{% set filterOptionsHtml %}
+
+  <button type="submit" class="govuk-button" data-module="govuk-button">
+    Apply filters
+  </button>
+
+  {{ govukInput({
+    id: "keywords",
+    name: "keywords",
+    label: {
+      text: "Keywords",
+      classes: "govuk-label--m"
+    }
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: "status",
+    name: "status",
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: "Status",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    items: [
+      {
+        value: "live",
+        text: "Live (86)"
+      },
+      {
+        value: "draft",
+        text: "Draft (56)"
+      },
+      {
+        value: "archived",
+        text: "Archived (12)"
+      }
+    ]
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: "organisation",
+    name: "organisation",
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: "Organisation / ALB group",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    items: [
+      {
+        value: "defra",
+        text: "Defra (45)"
+      },
+      {
+        value: "ea",
+        text: "Environment Agency (32)"
+      },
+      {
+        value: "rpa",
+        text: "Rural Payments Agency (28)"
+      },
+      {
+        value: "ne",
+        text: "Natural England (25)"
+      },
+      {
+        value: "apha",
+        text: "APHA (12)"
+      }
+    ]
+  }) }}
+
+  {{ govukCheckboxes({
+    idPrefix: "form-type",
+    name: "form-type",
+    classes: "govuk-checkboxes--small",
+    fieldset: {
+      legend: {
+        text: "Form type",
+        classes: "govuk-fieldset__legend--m"
+      }
+    },
+    items: [
+      {
+        value: "new",
+        text: "New (98)"
+      },
+      {
+        value: "existing",
+        text: "Existing (44)"
+      }
+    ]
+  }) }}
+
+{% endset %}
+
+<div class="moj-filter-layout">
+
+  <div class="moj-filter-layout__filter" style="display: none;">
+
+    {{ mojFilter({
+      heading: {
+      text: "Filter"
+      },
+      selectedFilters: {
+
+      heading: {
+        text: "Selected filters"
+      },
+
+      clearLink: {
+        text: "Clear filters"
+      },
+
+      categories: []
+    },
+      optionsHtml: filterOptionsHtml
+    }) }}
+
+  </div>
+
+  <div class="moj-filter-layout__content">
+
+  <div class="moj-action-bar">
+
+    <div class="moj-action-bar__filter">
+      {{ govukButton({
+        text: "Show filter",
+        classes: "govuk-button--secondary moj-button--filter",
+        attributes: {
+          "aria-controls": "moj-filter",
+          "aria-expanded": "false"
+        }
+      }) }}
+    </div>
+
+    {{ mojButtonMenu({
+      items: [{
+        text: "Export data",
+        classes: "govuk-button--secondary"
+      }, {
+        text: "Manage columns",
+        classes: "govuk-button--secondary"
+      }]
+    }) }}
+
+  </div>
+
+    {{ govukTable({
+      firstCellIsHeader: true,
+      head: [
+        { text: "Form name" },
+        { text: "Organisation / ALB" },
+        { text: "Status" },
+        { text: "Pages" },
+        { text: "Question types" },
+        { text: "Conditions" },
+        { text: "Sections" },
+        { text: "Re-published" },
+        { text: "Days to publish" },
+        { text: "Features" },
+        { text: "Submissions" }
+      ],
+      rows: [
+        [
+          { html: '<a href="#" class="govuk-link">Waste carrier registration</a>' },
+          { text: "Environment Agency" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "14" },
+          { text: "8" },
+          { text: "12" },
+          { text: "3" },
+          { text: "5" },
+          { text: "12" },
+          { html: "File upload, Email confirmation" },
+          { text: "1,234" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Export health certificate</a>' },
+          { text: "APHA" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "28" },
+          { text: "12" },
+          { text: "18" },
+          { text: "5" },
+          { text: "3" },
+          { text: "21" },
+          { html: "File upload, Declarations, GOV.UK Pay" },
+          { text: "856" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Fishing licence application</a>' },
+          { text: "Defra" },
+          { html: govukTag({ text: "Draft", classes: "govuk-tag--yellow" }) },
+          { text: "8" },
+          { text: "5" },
+          { text: "4" },
+          { text: "2" },
+          { text: "0" },
+          { text: "-" },
+          { html: "Email confirmation" },
+          { text: "0" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Basic Payment Scheme claim</a>' },
+          { text: "Rural Payments Agency" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "42" },
+          { text: "15" },
+          { text: "28" },
+          { text: "8" },
+          { text: "7" },
+          { text: "15" },
+          { html: "File upload, Email confirmation, Declarations, GOV.UK Pay" },
+          { text: "3,421" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Protected species licence</a>' },
+          { text: "Natural England" },
+          { html: govukTag({ text: "Draft", classes: "govuk-tag--yellow" }) },
+          { text: "18" },
+          { text: "10" },
+          { text: "9" },
+          { text: "4" },
+          { text: "0" },
+          { text: "-" },
+          { html: "File upload, Declarations" },
+          { text: "0" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Water abstraction return</a>' },
+          { text: "Environment Agency" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "6" },
+          { text: "4" },
+          { text: "2" },
+          { text: "1" },
+          { text: "2" },
+          { text: "8" },
+          { html: "Email confirmation" },
+          { text: "567" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Pet travel declaration</a>' },
+          { text: "Defra" },
+          { html: govukTag({ text: "Draft", classes: "govuk-tag--yellow" }) },
+          { text: "5" },
+          { text: "3" },
+          { text: "1" },
+          { text: "1" },
+          { text: "0" },
+          { text: "-" },
+          { html: "Email confirmation" },
+          { text: "0" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Countryside Stewardship application</a>' },
+          { text: "Rural Payments Agency" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "35" },
+          { text: "14" },
+          { text: "22" },
+          { text: "6" },
+          { text: "4" },
+          { text: "18" },
+          { html: "File upload, Email confirmation, Declarations, GOV.UK Pay" },
+          { text: "2,189" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Hazardous waste consignment</a>' },
+          { text: "Environment Agency" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "12" },
+          { text: "7" },
+          { text: "8" },
+          { text: "3" },
+          { text: "3" },
+          { text: "14" },
+          { html: "File upload, Email confirmation, Declarations" },
+          { text: "923" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Tree felling licence</a>' },
+          { text: "Forestry Commission" },
+          { html: govukTag({ text: "Draft", classes: "govuk-tag--yellow" }) },
+          { text: "9" },
+          { text: "6" },
+          { text: "5" },
+          { text: "2" },
+          { text: "0" },
+          { text: "-" },
+          { html: "File upload" },
+          { text: "0" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Animal movement licence</a>' },
+          { text: "Defra" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "4" },
+          { text: "3" },
+          { text: "1" },
+          { text: "1" },
+          { text: "1" },
+          { text: "6" },
+          { html: "Email confirmation" },
+          { text: "445" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Land management grant</a>' },
+          { text: "Natural England" },
+          { html: govukTag({ text: "Draft", classes: "govuk-tag--yellow" }) },
+          { text: "22" },
+          { text: "13" },
+          { text: "15" },
+          { text: "5" },
+          { text: "0" },
+          { text: "-" },
+          { html: "File upload, Email confirmation, Declarations" },
+          { text: "0" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Farm waste management</a>' },
+          { text: "Environment Agency" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "16" },
+          { text: "9" },
+          { text: "11" },
+          { text: "4" },
+          { text: "6" },
+          { text: "22" },
+          { html: "File upload, Email confirmation, GOV.UK Pay" },
+          { text: "1,567" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Wildlife survey return</a>' },
+          { text: "Natural England" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "7" },
+          { text: "5" },
+          { text: "3" },
+          { text: "2" },
+          { text: "2" },
+          { text: "9" },
+          { html: "Email confirmation" },
+          { text: "678" }
+        ],
+        [
+          { html: '<a href="#" class="govuk-link">Agricultural subsidy claim</a>' },
+          { text: "Rural Payments Agency" },
+          { html: govukTag({ text: "Live", classes: "govuk-tag--green" }) },
+          { text: "38" },
+          { text: "16" },
+          { text: "25" },
+          { text: "7" },
+          { text: "8" },
+          { text: "19" },
+          { html: "File upload, Email confirmation, Declarations, GOV.UK Pay" },
+          { text: "4,123" }
+        ]
+      ]
+    }) }}
+
+</div>
+
+<!-- Component Usage Section -->
+<div class="govuk-!-margin-top-8">
+  <h2 class="govuk-heading-l govuk-!-margin-bottom-4">Component usage</h2>
+  <p class="govuk-body govuk-!-margin-bottom-6">Breakdown of how different components are being used across all forms.</p>
+
+  {% set questionTypesTable %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Question type" },
+        { text: "Total usage" },
+        { text: "Forms using" },
+        { text: "Percentage" }
+      ],
+      rows: [
+        [
+          { text: "Short text" },
+          { text: "1,245" },
+          { text: "142" },
+          { text: "87.3%" }
+        ],
+        [
+          { text: "Long text" },
+          { text: "892" },
+          { text: "124" },
+          { text: "62.5%" }
+        ],
+        [
+          { text: "Yes/No" },
+          { text: "678" },
+          { text: "98" },
+          { text: "54.2%" }
+        ],
+        [
+          { text: "Radio buttons" },
+          { text: "534" },
+          { text: "76" },
+          { text: "42.8%" }
+        ],
+        [
+          { text: "Checkboxes" },
+          { text: "456" },
+          { text: "68" },
+          { text: "38.1%" }
+        ],
+        [
+          { text: "Date" },
+          { text: "389" },
+          { text: "89" },
+          { text: "35.6%" }
+        ],
+        [
+          { text: "Number" },
+          { text: "312" },
+          { text: "54" },
+          { text: "28.4%" }
+        ],
+        [
+          { text: "Email" },
+          { text: "267" },
+          { text: "92" },
+          { text: "24.1%" }
+        ],
+        [
+          { text: "File upload" },
+          { text: "198" },
+          { text: "68" },
+          { text: "17.9%" }
+        ],
+        [
+          { text: "Address" },
+          { text: "156" },
+          { text: "45" },
+          { text: "14.1%" }
+        ]
+      ]
+    }) }}
+  {% endset %}
+
+  {% set featuresTable %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Feature" },
+        { text: "Forms using" },
+        { text: "Percentage" }
+      ],
+      rows: [
+        [
+          { text: "Email confirmation" },
+          { text: "124" },
+          { text: "87.3%" }
+        ],
+        [
+          { text: "File upload" },
+          { text: "68" },
+          { text: "47.9%" }
+        ],
+        [
+          { text: "Declarations" },
+          { text: "45" },
+          { text: "31.7%" }
+        ],
+        [
+          { text: "GOV.UK Pay" },
+          { text: "32" },
+          { text: "22.5%" }
+        ],
+        [
+          { text: "Sections" },
+          { text: "89" },
+          { text: "62.7%" }
+        ],
+        [
+          { text: "Conditional logic" },
+          { text: "112" },
+          { text: "78.9%" }
+        ],
+        [
+          { text: "Check answers page" },
+          { text: "98" },
+          { text: "69.0%" }
+        ],
+        [
+          { text: "Confirmation page" },
+          { text: "142" },
+          { text: "100.0%" }
+        ]
+      ]
+    }) }}
+  {% endset %}
+
+  {% set formStructureTable %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Metric" },
+        { text: "Average" },
+        { text: "Minimum" },
+        { text: "Maximum" }
+      ],
+      rows: [
+        [
+          { text: "Pages per form" },
+          { text: "12.3" },
+          { text: "1" },
+          { text: "42" }
+        ],
+        [
+          { text: "Questions per form" },
+          { text: "28.5" },
+          { text: "3" },
+          { text: "156" }
+        ],
+        [
+          { text: "Sections per form" },
+          { text: "4.1" },
+          { text: "0" },
+          { text: "12" }
+        ],
+        [
+          { text: "Conditions per form" },
+          { text: "9.2" },
+          { text: "0" },
+          { text: "45" }
+        ],
+        [
+          { text: "Question types per form" },
+          { text: "8.5" },
+          { text: "1" },
+          { text: "18" }
+        ]
+      ]
+    }) }}
+  {% endset %}
+
+  {{ govukTabs({
+    items: [
+      {
+        label: "Question types",
+        id: "question-types",
+        panel: {
+          html: questionTypesTable
+        }
+      },
+      {
+        label: "Features",
+        id: "features",
+        panel: {
+          html: featuresTable
+        }
+      },
+      {
+        label: "Form structure",
+        id: "form-structure",
+        panel: {
+          html: formStructureTable
+        }
+      }
+    ]
+  }) }}
+
+</div>
+
+{% endblock %}
+
+{% block pageScripts %}
+<style>
+  /* Metric tiles - consistent height and spacing */
+  .app-dashboard-caption {
+    color: #505a5f;
+    margin-bottom: 24px;
+  }
+
+  /* Smaller unit text for big numbers, e.g. "days" */
+  .app-big-number-unit {
+    font-size: 0.6em;
+    font-weight: 400;
+  }
+  .app-metric-tile {
+    background-color: #f3f2f1;
+    padding: 24px;
+    margin-bottom: 1rem;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+  }
+
+  @media (min-width: 40.0625em) {
+    .app-metric-tile {
+      min-height: 200px;
+    }
+  }
+
+  /* GOV.UK Publishing Components big number styles */
+  .gem-c-big-number {
+    margin-bottom: 0;
+  }
+
+  .gem-c-big-number__value {
+    display: block;
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: 0;
+    color: #0b0c0c;
+  }
+
+  @media (min-width: 40.0625em) {
+    .gem-c-big-number__value {
+      font-size: 3.5rem;
+    }
+  }
+
+  .gem-c-big-number__label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    color: #0b0c0c;
+  }
+
+  /* Tag styles with arrow icons */
+  .app-tag-with-icon {
+    position: relative;
+    padding-left: 26px;
+    white-space: nowrap;
+  }
+
+  .app-tag-arrow-up::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 0l6 6H7v6H5V6H0z'/%3E%3C/svg%3E");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 0l6 6H7v6H5V6H0z'/%3E%3C/svg%3E");
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+  }
+
+  .app-tag-arrow-down::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 12px;
+    height: 12px;
+    background-color: currentColor;
+    mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 12L0 6h5V0h2v6h5z'/%3E%3C/svg%3E");
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 12L0 6h5V0h2v6h5z'/%3E%3C/svg%3E");
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+  }
+
+
+  /* Ensure consistent vertical alignment */
+  .app-metric-tile .gem-c-big-number {
+    flex: 1 0 auto;
+  }
+
+  /* Metric captions - short insights */
+  .app-metric-caption {
+    color: #505a5f;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+
+  .moj-filter__tag-icon {
+    margin-left: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+    color: inherit;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Toggle filter panel visibility
+    const filterPanel = document.querySelector('.moj-filter-layout__filter');
+    const showFilterButton = document.querySelector('.moj-button--filter');
+
+    if (filterPanel && showFilterButton) {
+      // Ensure filter is hidden by default
+      filterPanel.style.display = 'none';
+
+      // Toggle filter on button click
+      showFilterButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        const isHidden = filterPanel.style.display === 'none' || filterPanel.style.display === '';
+        filterPanel.style.display = isHidden ? 'block' : 'none';
+        showFilterButton.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+        showFilterButton.textContent = isHidden ? 'Hide filter' : 'Show filter';
+      });
+    }
+
+    const filterContainer = document.querySelector('.moj-filter');
+    const filterForm = filterContainer ? filterContainer.querySelector('form') : null;
+    const table = document.querySelector('.moj-filter-layout__content table');
+
+    if (!table) {
+      console.error('Table not found');
+      return;
+    }
+
+    if (!filterContainer) {
+      console.error('Filter container not found');
+      return;
+    }
+
+    // Find or create the Apply filters button
+    let applyFiltersButton = filterContainer.querySelector('button[type="submit"]');
+    if (!applyFiltersButton) {
+      // Look for button with text "Apply filters"
+      const buttons = filterContainer.querySelectorAll('button');
+      applyFiltersButton = Array.from(buttons).find(btn => btn.textContent.trim().includes('Apply filters'));
+    }
+
+    if (!applyFiltersButton) {
+      console.error('Apply filters button not found');
+      return;
+    }
+
+    // Organisation mapping
+    const orgMap = {
+      'defra': 'Defra',
+      'ea': 'Environment Agency',
+      'rpa': 'Rural Payments Agency',
+      'ne': 'Natural England',
+      'apha': 'APHA'
+    };
+
+    const statusMap = {
+      'live': 'Live',
+      'draft': 'Draft',
+      'archived': 'Archived'
+    };
+
+    const formTypeMap = {
+      'new': 'New',
+      'existing': 'Existing'
+    };
+
+    // Get selected filters section
+    const selectedFiltersSection = filterContainer.querySelector('.moj-filter__selected');
+    const clearFiltersLink = selectedFiltersSection ? selectedFiltersSection.querySelector('.moj-filter__heading-action a') : null;
+
+    function updateSelectedFiltersDisplay() {
+      const statusCheckboxes = document.querySelectorAll('input[name="status"]:checked');
+      const orgCheckboxes = document.querySelectorAll('input[name="organisation"]:checked');
+      const formTypeCheckboxes = document.querySelectorAll('input[name="form-type"]:checked');
+      const keywords = document.getElementById('keywords')?.value.trim() || '';
+
+      const selectedStatuses = Array.from(statusCheckboxes).map(cb => cb.value);
+      const selectedOrgs = Array.from(orgCheckboxes).map(cb => cb.value);
+      const selectedFormTypes = Array.from(formTypeCheckboxes).map(cb => cb.value);
+
+      // Remove existing filter tags
+      const existingTags = selectedFiltersSection.querySelectorAll('.moj-filter-tags');
+      existingTags.forEach(tagList => tagList.remove());
+
+      // Build categories array for selected filters
+      const categories = [];
+
+      // Status filters
+      if (selectedStatuses.length > 0) {
+        const statusItems = selectedStatuses.map(status => ({
+          href: '#',
+          text: statusMap[status] || status,
+          dataFilter: 'status',
+          dataValue: status
+        }));
+        categories.push({
+          heading: { text: 'Status' },
+          items: statusItems
+        });
+      }
+
+      // Organisation filters
+      if (selectedOrgs.length > 0) {
+        const orgItems = selectedOrgs.map(org => ({
+          href: '#',
+          text: orgMap[org] || org,
+          dataFilter: 'organisation',
+          dataValue: org
+        }));
+        categories.push({
+          heading: { text: 'Organisation / ALB group' },
+          items: orgItems
+        });
+      }
+
+      // Form type filters
+      if (selectedFormTypes.length > 0) {
+        const formTypeItems = selectedFormTypes.map(type => ({
+          href: '#',
+          text: formTypeMap[type] || type,
+          dataFilter: 'form-type',
+          dataValue: type
+        }));
+        categories.push({
+          heading: { text: 'Form type' },
+          items: formTypeItems
+        });
+      }
+
+      // Keywords filter
+      if (keywords) {
+        categories.push({
+          heading: { text: 'Keywords' },
+          items: [{
+            href: '#',
+            text: keywords,
+            dataFilter: 'keywords',
+            dataValue: keywords
+          }]
+        });
+      }
+
+      // Show/hide selected filters section
+      if (categories.length > 0) {
+        selectedFiltersSection.style.display = 'block';
+
+        // Add filter tags
+        categories.forEach(category => {
+          const heading = document.createElement('h3');
+          heading.className = 'govuk-heading-s govuk-!-margin-bottom-0';
+          heading.textContent = category.heading.text;
+          selectedFiltersSection.appendChild(heading);
+
+          const tagList = document.createElement('ul');
+          tagList.className = 'moj-filter-tags';
+
+          category.items.forEach(item => {
+            const listItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.className = 'moj-filter__tag';
+            link.href = '#';
+            link.setAttribute('data-filter', item.dataFilter);
+            link.setAttribute('data-value', item.dataValue);
+
+            const visuallyHidden = document.createElement('span');
+            visuallyHidden.className = 'govuk-visually-hidden';
+            visuallyHidden.textContent = 'Remove this filter';
+
+            // Add the filter text
+            link.appendChild(document.createTextNode(item.text));
+
+            // Add the X icon
+            const icon = document.createElement('span');
+            icon.className = 'moj-filter__tag-icon';
+            icon.innerHTML = '×';
+            icon.setAttribute('aria-hidden', 'true');
+            link.appendChild(icon);
+
+            // Add visually hidden text after icon
+            link.appendChild(visuallyHidden);
+
+            listItem.appendChild(link);
+            tagList.appendChild(listItem);
+          });
+
+          selectedFiltersSection.appendChild(tagList);
+        });
+      } else {
+        selectedFiltersSection.style.display = 'none';
+      }
+    }
+
+    function applyFilters() {
+      console.log('applyFilters called');
+      const keywords = document.getElementById('keywords')?.value.toLowerCase() || '';
+      const statusCheckboxes = document.querySelectorAll('input[name="status"]:checked');
+      const orgCheckboxes = document.querySelectorAll('input[name="organisation"]:checked');
+      const formTypeCheckboxes = document.querySelectorAll('input[name="form-type"]:checked');
+
+      console.log('Keywords:', keywords);
+      console.log('Selected statuses:', Array.from(statusCheckboxes).map(cb => cb.value));
+      console.log('Selected orgs:', Array.from(orgCheckboxes).map(cb => cb.value));
+      console.log('Selected form types:', Array.from(formTypeCheckboxes).map(cb => cb.value));
+
+      const selectedStatuses = Array.from(statusCheckboxes).map(cb => cb.value);
+      const selectedOrgs = Array.from(orgCheckboxes).map(cb => orgMap[cb.value] || cb.value);
+      const selectedFormTypes = Array.from(formTypeCheckboxes).map(cb => cb.value);
+
+      // Find table rows
+      let rows = table.querySelectorAll('tbody tr');
+      if (rows.length === 0) {
+        // If no tbody, get all tr elements and filter out header rows
+        const allRows = table.querySelectorAll('tr');
+        rows = Array.from(allRows).filter(row => {
+          const firstCell = row.querySelector('th, td');
+          return firstCell && firstCell.tagName.toLowerCase() === 'td';
+        });
+      }
+
+      console.log('Total rows found:', rows.length);
+      console.log('Selected filters - Status:', selectedStatuses, 'Orgs:', selectedOrgs, 'Form types:', selectedFormTypes, 'Keywords:', keywords);
+
+      let visibleCount = 0;
+
+      rows.forEach((row, index) => {
+        // Get all cells (both th and td) since firstCellIsHeader might be true
+        const allCells = row.querySelectorAll('th, td');
+        if (allCells.length < 3) {
+          console.log(`Row ${index}: Not enough cells (${allCells.length})`);
+          return;
+        }
+
+        // If firstCellIsHeader is true, first cell is th, otherwise all are td
+        // Form name is always the first cell (index 0)
+        const formNameCell = allCells[0];
+        const formName = formNameCell.textContent.toLowerCase();
+
+        // Organisation is second cell (index 1)
+        const organisationCell = allCells[1];
+        const organisation = organisationCell.textContent.trim();
+
+        // Status is third cell (index 2)
+        const statusCell = allCells[2];
+        const statusTag = statusCell.querySelector('.govuk-tag');
+        const status = statusTag ? statusTag.textContent.trim().toLowerCase() : statusCell.textContent.trim().toLowerCase();
+
+        // Keywords filter - if keywords provided, must match
+        const matchesKeywords = !keywords || formName.includes(keywords) || organisation.toLowerCase().includes(keywords);
+
+        // Status filter - if statuses selected, must match one of them
+        const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(status);
+
+        // Organisation filter - if orgs selected, must match one of them
+        const matchesOrg = selectedOrgs.length === 0 || selectedOrgs.some(org => organisation === org);
+
+        // Form type filter (simplified - would need actual data)
+        const matchesFormType = selectedFormTypes.length === 0 || selectedFormTypes.length > 0;
+
+        const matches = matchesKeywords && matchesStatus && matchesOrg && matchesFormType;
+
+        if (index < 3) {
+          console.log(`Row ${index} (${formName.substring(0, 30)}...): Status="${status}", Org="${organisation}", Matches=${matches} (Keywords:${matchesKeywords}, Status:${matchesStatus}, Org:${matchesOrg})`);
+        }
+
+        if (matches) {
+          row.style.display = 'table-row';
+          row.removeAttribute('hidden');
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+          row.setAttribute('hidden', 'hidden');
+        }
+      });
+
+      console.log('Result: Visible rows:', visibleCount, 'out of', rows.length);
+
+      // Show message if no results
+      const noResultsMsg = document.getElementById('no-results-message');
+      if (visibleCount === 0) {
+        if (!noResultsMsg) {
+          const msg = document.createElement('p');
+          msg.id = 'no-results-message';
+          msg.className = 'govuk-body';
+          msg.textContent = 'No forms match your filters.';
+          table.parentNode.insertBefore(msg, table);
+        }
+      } else if (noResultsMsg) {
+        noResultsMsg.remove();
+      }
+
+      // Update selected filters display
+      updateSelectedFiltersDisplay();
+    }
+
+    function removeFilter(filterType, filterValue) {
+      if (filterType === 'keywords') {
+        const keywordsInput = document.getElementById('keywords');
+        if (keywordsInput) keywordsInput.value = '';
+      } else {
+        const checkbox = document.querySelector(`input[name="${filterType}"][value="${filterValue}"]`);
+        if (checkbox) checkbox.checked = false;
+      }
+      applyFilters();
+    }
+
+    function clearAllFilters() {
+      // Uncheck all checkboxes
+      document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+
+      // Clear keywords
+      const keywordsInput = document.getElementById('keywords');
+      if (keywordsInput) keywordsInput.value = '';
+
+      // Apply filters (which will show all rows)
+      applyFilters();
+    }
+
+    // Apply filters on button click or form submit
+    if (applyFiltersButton) {
+      applyFiltersButton.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('Apply filters button clicked');
+        applyFilters();
+      });
+    }
+
+    if (filterForm) {
+      filterForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Form submitted');
+        applyFilters();
+      });
+    }
+
+    // Handle clicking on selected filter tags
+    if (selectedFiltersSection) {
+      selectedFiltersSection.addEventListener('click', function(e) {
+        const tagLink = e.target.closest('.moj-filter__tag');
+        if (tagLink) {
+          e.preventDefault();
+          const filterType = tagLink.getAttribute('data-filter');
+          const filterValue = tagLink.getAttribute('data-value');
+          removeFilter(filterType, filterValue);
+        }
+      });
+    }
+
+    // Handle clear filters link
+    if (clearFiltersLink) {
+      clearFiltersLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        clearAllFilters();
+      });
+    }
+
+    // Initial state - show all rows, no filters selected
+    // Don't call applyFilters() initially - just show all rows
+    let initialRows = table.querySelectorAll('tbody tr');
+    if (initialRows.length === 0) {
+      const allRows = table.querySelectorAll('tr');
+      initialRows = Array.from(allRows).filter(row => {
+        const firstCell = row.querySelector('th, td');
+        return firstCell && firstCell.tagName.toLowerCase() === 'td';
+      });
+    }
+
+    initialRows.forEach(row => {
+      row.style.display = 'table-row';
+      row.removeAttribute('hidden');
+    });
+
+    // Hide the no results message initially
+    const noResultsMsg = document.getElementById('no-results-message');
+    if (noResultsMsg) {
+      noResultsMsg.remove();
+    }
+
+    updateSelectedFiltersDisplay();
+  });
+</script>
+{% endblock %}
+

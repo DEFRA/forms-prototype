@@ -1,0 +1,309 @@
+{% extends "layouts/main.html" %}
+{% from "components/service-header/macro.njk" import serviceHeader %}
+{%- from "govuk/components/table/macro.njk" import govukTable -%}
+{%- from "govuk/components/tabs/macro.njk" import govukTabs -%}
+{%- from "moj/components/sub-navigation/macro.njk" import mojSubNavigation -%}
+
+{% block pageTitle %}
+Component usage – {{ serviceName }} – GOV.UK Prototype Kit
+{% endblock %}
+
+{% block header %}
+{{ serviceHeader({
+organisationName: "Defra",
+productName: "Form Designer",
+serviceName: "",
+containerClasses: containerClasses,
+accountName: "Chris Smith ",
+homepageLink: "/",
+signOutLink: "/onboarding/sign-out-confirmation",
+navigationItems: [
+{ href: "/titan-mvp-1.2/roles/my-account.html", text: "My account", id: "my-account" },
+{ href: "/titan-mvp-1.2/roles/manage-users.html", text: "Manage users", id: "manage-users" },
+{ href: "/titan-mvp-1.2/roles/manage-users.html", text: "Admin tools", id: "admin-tools" }
+
+],
+activeLinkId: "admin-tools"
+}) }}
+
+<div class="x-govuk-masthead x-govuk-masthead--large">
+    <div class="govuk-width-container">
+        {{ govukBackLink({ classes: "govuk-back-link--inverse govuk-!-margin-bottom-0", text: "Back to admin tools",
+        href: "/titan-mvp-1.2/library.html" }) }}
+
+        <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible"
+            style="border-bottom: 1px solid white; margin-bottom: 0" />
+
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full-from-desktop">
+                <h1 class="x-govuk-masthead__title">
+Defra Form Designer metrics                </h1>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+{%- from "moj/components/sub-navigation/macro.njk" import mojSubNavigation -%}
+
+{{ mojSubNavigation({
+  label: "Sub navigation",
+  items: [{
+    text: "Form activity",
+    href: "/titan-mvp-1.2/metrics/v7"
+  }, {
+    text: "Component usage",
+    href: "/titan-mvp-1.2/metrics/component-usage",
+    active: true
+  }]
+}) }}
+
+<!-- Component Usage Section -->
+<div class="govuk-!-margin-top-8">
+  <h2 class="govuk-heading-l govuk-!-margin-bottom-4">Component usage</h2>
+  <p class="govuk-body govuk-!-margin-bottom-6">Breakdown of how different components are being used across all forms.</p>
+
+  {% set questionTypesTable %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Question type" },
+        { text: "Total usage" },
+        { text: "Forms using" },
+        { text: "Percentage" }
+      ],
+      rows: [
+        [
+          { text: "Short text" },
+          { text: "1,245" },
+          { text: "142" },
+          { text: "87.3%" }
+        ],
+        [
+          { text: "Long text" },
+          { text: "892" },
+          { text: "124" },
+          { text: "62.5%" }
+        ],
+        [
+          { text: "Yes/No" },
+          { text: "678" },
+          { text: "98" },
+          { text: "54.2%" }
+        ],
+        [
+          { text: "Radio buttons" },
+          { text: "534" },
+          { text: "76" },
+          { text: "42.8%" }
+        ],
+        [
+          { text: "Checkboxes" },
+          { text: "456" },
+          { text: "68" },
+          { text: "38.1%" }
+        ],
+        [
+          { text: "Date" },
+          { text: "389" },
+          { text: "89" },
+          { text: "35.6%" }
+        ],
+        [
+          { text: "Number" },
+          { text: "312" },
+          { text: "54" },
+          { text: "28.4%" }
+        ],
+        [
+          { text: "Email" },
+          { text: "267" },
+          { text: "92" },
+          { text: "24.1%" }
+        ],
+        [
+          { text: "File upload" },
+          { text: "198" },
+          { text: "68" },
+          { text: "17.9%" }
+        ],
+        [
+          { text: "Address" },
+          { text: "156" },
+          { text: "45" },
+          { text: "14.1%" }
+        ],
+        [
+          { text: "Autocomplete" },
+          { text: "134" },
+          { text: "38" },
+          { text: "12.1%" }
+        ],
+        [
+          { text: "Phone" },
+          { text: "123" },
+          { text: "52" },
+          { text: "11.1%" }
+        ],
+        [
+          { text: "Date (MM/YY)" },
+          { text: "98" },
+          { text: "34" },
+          { text: "8.8%" }
+        ],
+        [
+          { text: "Declaration" },
+          { text: "87" },
+          { text: "45" },
+          { text: "7.8%" }
+        ],
+        [
+          { text: "Precise location" },
+          { text: "76" },
+          { text: "28" },
+          { text: "6.8%" }
+        ],
+        [
+          { text: "Coordinates" },
+          { text: "54" },
+          { text: "19" },
+          { text: "4.9%" }
+        ],
+        [
+          { text: "Payment" },
+          { text: "32" },
+          { text: "12" },
+          { text: "2.9%" }
+        ]
+      ]
+    }) }}
+  {% endset %}
+
+  {% set featuresTable %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Feature" },
+        { text: "Forms using" },
+        { text: "Percentage" }
+      ],
+      rows: [
+        [
+          { text: "Email confirmation" },
+          { text: "124" },
+          { text: "87.3%" }
+        ],
+        [
+          { text: "File upload" },
+          { text: "68" },
+          { text: "47.9%" }
+        ],
+        [
+          { text: "Declarations" },
+          { text: "45" },
+          { text: "31.7%" }
+        ],
+        [
+          { text: "GOV.UK Pay" },
+          { text: "32" },
+          { text: "22.5%" }
+        ],
+        [
+          { text: "Sections" },
+          { text: "89" },
+          { text: "62.7%" }
+        ],
+        [
+          { text: "Conditional logic" },
+          { text: "112" },
+          { text: "78.9%" }
+        ],
+        [
+          { text: "Check answers page" },
+          { text: "98" },
+          { text: "69.0%" }
+        ],
+        [
+          { text: "Confirmation page" },
+          { text: "142" },
+          { text: "100.0%" }
+        ]
+      ]
+    }) }}
+  {% endset %}
+
+  {% set formStructureTable %}
+    {{ govukTable({
+      firstCellIsHeader: false,
+      head: [
+        { text: "Metric" },
+        { text: "Average" },
+        { text: "Minimum" },
+        { text: "Maximum" }
+      ],
+      rows: [
+        [
+          { text: "Pages per form" },
+          { text: "12.3" },
+          { text: "1" },
+          { text: "42" }
+        ],
+        [
+          { text: "Questions per form" },
+          { text: "28.5" },
+          { text: "3" },
+          { text: "156" }
+        ],
+        [
+          { text: "Sections per form" },
+          { text: "4.1" },
+          { text: "0" },
+          { text: "12" }
+        ],
+        [
+          { text: "Conditions per form" },
+          { text: "9.2" },
+          { text: "0" },
+          { text: "45" }
+        ],
+        [
+          { text: "Question types per form" },
+          { text: "8.5" },
+          { text: "1" },
+          { text: "18" }
+        ]
+      ]
+    }) }}
+  {% endset %}
+
+  {{ govukTabs({
+    items: [
+      {
+        label: "Question types",
+        id: "question-types",
+        panel: {
+          html: questionTypesTable
+        }
+      },
+      {
+        label: "Features",
+        id: "features",
+        panel: {
+          html: featuresTable
+        }
+      },
+      {
+        label: "Form structure",
+        id: "form-structure",
+        panel: {
+          html: formStructureTable
+        }
+      }
+    ]
+  }) }}
+
+</div>
+
+{% endblock %}
